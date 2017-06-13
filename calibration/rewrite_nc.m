@@ -2,7 +2,8 @@ function fname=rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,PRES)
 ovarnames={'PRES','TEMP','PSAL','DOXY','TEMP_DOXY','BPHASE_DOXY'};
 adjornot={'_ADJUSTED',''};
 fe=netcdf.open(flnm.input,'NOWRITE');
-[~,N_CALIB] = netcdf.inqDim(fe,netcdf.inqDimID(fe,'N_CALIB'));
+[foo,N_CALIB] = netcdf.inqDim(fe,netcdf.inqDimID(fe,'N_CALIB'));
+clear foo;
 scc=netcdf.getVar(fe,netcdf.inqVarID(fe,'SCIENTIFIC_CALIB_COMMENT'));
 netcdf.close(fe);
 ok=find(flnm.output==filesep);

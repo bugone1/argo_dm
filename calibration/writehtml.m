@@ -23,7 +23,8 @@ fprintf(fid,linimg([floatNum '_PRES_ADJ-RAW.png']));
 fprintf(fid,[linimg(['pres_' floatNum '.png']) '<br>']);
 
 fprintf(fid,['<a name="diagS">Salinity Diagnosis Plots (WJO)</a><br>']);
-for i=1:9
+% The OW routines produce 8 plots; if using WJO change this to 9.
+for i=1:8
     fprintf(fid,linimg([floatNum '_' num2str(i) '.png']));
 end
 fprintf(fid,'<a name="TS"><br>TS raw & adjust</a><br>');

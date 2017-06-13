@@ -1,64 +1,73 @@
-function viewplots(lo_system_configuration,local_config,floatNum)
+% Modified version of viewplots to process a .mat file of float data where
+% a pressure correction has been obtained and visual QC has been done, but
+% OW has not been run. In this case the pressure correction is applied as
+% usual, but no conductivity correction is done.
+%
+% Isabelle Gaboury, 31 May 2017, based on viewplots.m dated 19 May 2017.
+
+function viewplots_nocorr(lo_system_configuration,local_config,floatNum, psal_comment)
+
+% NetCDF setup
 conf.dbname=lo_system_configuration.DBNAME;
 conf.swname=lo_system_configuration.SWNAME;
 conf.swv=lo_system_configuration.SWV;
 conf.m1=sprintf('%i/%i',[lo_system_configuration.MAPSCALE_LONGITUDE_LARGE lo_system_configuration.MAPSCALE_LONGITUDE_SMALL]);
 conf.m2=sprintf('%i/%i',[lo_system_configuration.MAPSCALE_LATITUDE_LARGE lo_system_configuration.MAPSCALE_LATITUDE_SMALL]);
-%READ OLD COEFFICIENTS------
-%---------------
-load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'calseries_' floatNum '.mat'],'calib_profile_no');
-load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'cal_' floatNum '.mat'],'cal_COND','cal_SAL','cal_COND_err','cal_SAL_err','pcond_factor','pcond_factor_err');
+%Read in the visually-QC'd data and the pressure correction (we have no OW
+%results to load)
+% load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'calseries_' floatNum '.mat'],'calib_profile_no');
+% load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'cal_' floatNum '.mat'],'cal_COND','cal_SAL','cal_COND_err','cal_SAL_err','pcond_factor','pcond_factor_err');
 load([local_config.RAWFLAGSPRES_DIR floatNum],'presscorrect','t');
 load([lo_system_configuration.FLOAT_SOURCE_DIRECTORY floatNum '.mat'],'PRES','TEMP','SAL','PTMP','PROFILE_NO',...
     'DATES','LAT','LONG');
-%------
-CalFile=dir([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'cal_' floatNum '.mat']);
+%Get the calibration date from the visual QC file
+% CalFile=dir([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'cal_' floatNum '.mat']);
+CalFile=dir([lo_system_configuration.FLOAT_SOURCE_DIRECTORY floatNum '.mat']);
 CalDate=datestr(CalFile.datenum,'yyyymmddHHMMSS');
 %-----
-min_err=str2num(local_config.MIN_MAP_ERR)*ones(size(pcond_factor));
+% min_err=str2num(local_config.MIN_MAP_ERR)*ones(size(pcond_factor));
 oldcoeff=getoldcoeffs([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep '*' floatNum '*.nc']);
-displaygraphs;
-% The load/save lines for piaction can optionally be used to restore previous results and skip the 
-% call to piaction_psal. The file piaction.mat is not used outside this routine.
+% displaygraphs;
 % load piaction CellK slope offset start ende psalflag adjpsalflag
-[CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal(PROFILE_NO,pcond_factor,oldcoeff);
+% [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal(PROFILE_NO,pcond_factor,oldcoeff);
 % save piaction CellK slope offset start ende psalflag adjpsalflag
 
 beg=piaction_pres(lo_system_configuration,floatNum);
 presscorrect.tnpd(presscorrect.cyc>beg)=5;
-try
-    CellK(CellK>40*100*min_err)=nan;
-catch
-end
-if all(CellK==1)
-    scical.PSAL.comment='No conductivity adjustment was judged needed because no significant sensor drift was detected.';
-elseif any(CellK(~isnan(CellK))~=1)    
-    if max(abs(diff(CellK)))>=.001
-        sucyc=sprintf('%i',cat(1,t(1+find((abs(diff(CellK)))>.001,1)).cycle_number));
-        scical.PSAL.comment=['Sudden drift in sensor detected at cycle ' sucyc '. Adjusted salinity to ' conf.swname ' statistical recommendation with ' conf.dbname ' as reference database. Mapping scales used are ' conf.m1 ' (lon) ' conf.m2 ' (lat). Visual piecewise linear fit done upon inspection of profiles ' num2str(PROFILE_NO(1)) ' to ' num2str(PROFILE_NO(end)) '. ' num2str(length(unique(ende))) ' breakpoints.'];
-    else
-        scical.PSAL.comment=['Sensor drift/offset detected. Adjusted salinity to ' conf.swname ' statistical recommendation with ' conf.dbname ' as reference database. Mapping scales used are ' conf.m1 ' (lon) ' conf.m2 ' (lat). Visual piecewise linear fit done upon inspection of profiles ' num2str(PROFILE_NO(1)) ' to ' num2str(PROFILE_NO(end)) '. ' num2str(length(unique(ende))) ' breakpoints.'];
-    end
-else
-    scical.PSAL.comment='No conductivity adjustment was judged needed.';
-end
+% try
+%     CellK(CellK>40*100*min_err)=nan;
+% catch
+% end
+% if all(CellK==1)
+%     scical.PSAL.comment='No conductivity adjustment was judged needed because no significant sensor drift was detected.';
+% elseif any(CellK(~isnan(CellK))~=1)    
+%     if max(abs(diff(CellK)))>=.001
+%         sucyc=sprintf('%i',cat(1,t(1+find((abs(diff(CellK)))>.001,1)).cycle_number));
+%         scical.PSAL.comment=['Sudden drift in sensor detected at cycle ' sucyc '. Adjusted salinity to ' conf.swname ' statistical recommendation with ' conf.dbname ' as reference database. Mapping scales used are ' conf.m1 ' (lon) ' conf.m2 ' (lat). Visual piecewise linear fit done upon inspection of profiles ' num2str(PROFILE_NO(1)) ' to ' num2str(PROFILE_NO(end)) '. ' num2str(length(unique(ende))) ' breakpoints.'];
+%     else
+%         scical.PSAL.comment=['Sensor drift/offset detected. Adjusted salinity to ' conf.swname ' statistical recommendation with ' conf.dbname ' as reference database. Mapping scales used are ' conf.m1 ' (lon) ' conf.m2 ' (lat). Visual piecewise linear fit done upon inspection of profiles ' num2str(PROFILE_NO(1)) ' to ' num2str(PROFILE_NO(end)) '. ' num2str(length(unique(ende))) ' breakpoints.'];
+%     end
+% else
+%     scical.PSAL.comment='No conductivity adjustment was judged needed.';
+% end
+scical.PSAL.comment = psal_comment;
 ocomment=scical.PSAL.comment;
-anomaliesornot='The float showed no major T/S anomalies thus far.';
-% save dump
+% anomaliesornot='The float showed no major T/S anomalies thus far.';
+save dump
 for i=1:length(PROFILE_NO)
     ok=find(cat(1,t.cycle_number)==PROFILE_NO(i));
     if ok>length(presscorrect.tnpd)
         ok=length(presscorrect.tnpd);
     end
-    if i>length(CellK)
-        CellK(i)=CellK(i-1);
-        pcond_factor(i)=pcond_factor(i-1);
-        pcond_factor_err(i)=pcond_factor_err(i-1);
-    end
-    if ~isnan(CellK(i)) && (CellK(i)>.99 && CellK(i)<1.01) && all(t(ok).psal_qc=='1') && all(t(ok).temp_qc=='1') && psalflag(i)=='1'
-    else
-        anomaliesornot='';
-    end
+%     if i>length(CellK)
+%         CellK(i)=CellK(i-1);
+%         pcond_factor(i)=pcond_factor(i-1);
+%         pcond_factor_err(i)=pcond_factor_err(i-1);
+%     end
+%     if ~isnan(CellK(i)) && (CellK(i)>.99 && CellK(i)<1.01) && all(t(ok).psal_qc=='1') && all(t(ok).temp_qc=='1') && psalflag(i)=='1'
+%     else
+%         anomaliesornot='';
+%     end
     %PRESSURE
     if presscorrect.tnpd(ok)==1
         scical.PRES.comment=['TNPD: APEX float that truncated negative pressure drift. ' anomaliesornot ' At least one positive surface pressure value was reported after this profile was sampled.'];
@@ -96,17 +105,17 @@ for i=1:length(PROFILE_NO)
     end
     scical.PRES.coefficient=['ADDITIVE COEFFICIENT FOR PRESSURE ADJUSTMENT IS ' num2str(addcoeff) ' dbar'];
     %SALINITY
-    if ~isnan(CellK(i)) && any(CellK(1:i)~=1)
-        scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', � ' num2str(pcond_factor_err(i),7)];
-        scical.PSAL.equation='PSAL_ADJUSTED is calculated from a potential conductivity (ref to 0 dbar) multiplicative adjustment term r.';
-        if pcond_factor(i)~=CellK(i)
-            scical.PSAL.comment=[ocomment ' The DMQC software initially suggested r=' num2str(pcond_factor(i),7) ' for this cycle.'];
-        end
-    elseif CellK(i)==1
-        scical.PSAL.comment='No adjustment is needed on this parameter because no significant sensor drift has been detected.';
-    elseif isnan(CellK(i))
-        scical.PSAL.comment='No adjustment was performed on this parameter because it seemed beyond correction by actual methods.';
-    end
+%     if ~isnan(CellK(i)) && any(CellK(1:i)~=1)
+%         scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', � ' num2str(pcond_factor_err(i),7)];
+%         scical.PSAL.equation='PSAL_ADJUSTED is calculated from a potential conductivity (ref to 0 dbar) multiplicative adjustment term r.';
+%         if pcond_factor(i)~=CellK(i)
+%             scical.PSAL.comment=[ocomment ' The DMQC software initially suggested r=' num2str(pcond_factor(i),7) ' for this cycle.'];
+%         end
+%     elseif CellK(i)==1
+%         scical.PSAL.comment='No adjustment is needed on this parameter because no significant sensor drift has been detected.';
+%     elseif isnan(CellK(i))
+%         scical.PSAL.comment='No adjustment was performed on this parameter because it seemed beyond correction by actual methods.';
+%     end
     dots=find(scical.PSAL.comment=='.');
     while length(scical.PSAL.comment)>256 && length(dots)>1
         scical.PSAL.comment=scical.PSAL.comment(1:dots(end-1));
@@ -125,20 +134,12 @@ for i=1:length(PROFILE_NO)
     ingested_flnm=dir([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep '*' flnmp]);
     clear flnm
     flnm.input=[local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep ingested_flnm(1).name];
-    %if all(isnan(PRES(x,i)))
-    %    copyfile(input_flnm,[local_config.OUT 'error\' output_flnm]);
-    %else
     %VALUES
-    if CellK(i)~=1 && ~isnan(CellK(i))
+    if exist('CellK','var') && CellK(i)~=1 && ~isnan(CellK(i))
         tem.PSAL=sw_salt(cal_COND(x,i)*CellK(i)/pcond_factor(i)/sw_c3515,PTMP(x,i),0*SAL(x,i));
     else
         tem.PSAL=SAL(x,i);
     end
-    %    if CellK(i)~=1 || presscorrect.pres(ok)~=0 || presscorrect.tnpd(ok)>0
-    %        %            uc='changed';
-    %    else
-    %        %            uc='unchanged';
-    %    end
     uc='changed';
     flnm.output=[local_config.OUT uc filesep output_flnm];
     tem.PRES=PRES(x,i);
@@ -159,10 +160,11 @@ for i=1:length(PROFILE_NO)
         qc.TEMP.ADJ(qc.TEMP.ADJ<'4')='4';
         qc.PSAL.ADJ(qc.PSAL.ADJ<'4')='4';
     end
-    if isnan(CellK(i))
-        qc.PSAL.ADJ(:)='4';
-        qc.PSAL.RAW(:)='4';
-    end
+%     if isnan(CellK(i))
+%         qc.PSAL.ADJ(:)='4';
+%         qc.PSAL.RAW(:)='4';
+%     end
+    qc.PSAL.ADJ(:)='4';
     %ERROR
     err.PRES=2.4*ones(length(x),1);
     if presscorrect.tnpd(ok)==4 || presscorrect.tnpd(ok)==3
@@ -176,36 +178,14 @@ for i=1:length(PROFILE_NO)
     err.PSAL=max(err.PSAL,str2num(local_config.MIN_MAP_ERR));
     err.TEMP=.002*ones(length(x),1);
     flnm.input
-%     if findstr('4901189',flnm.input)
-%         if PROFILE_NO(i)>15
-%             ep=t(ok).pres*.35;
-%             err.PRES=max(err.PRES,ep');
-%             qc.PRES.ADJ(:)='4';
-%             qc.PRES.RAW(:)='4';
-%             qc.PSAL.RAW(:)='4';
-%             qc.PSAL.ADJ(:)='4';
-%             qc.TEMP.RAW(:)='3';
-%             qc.TEMP.ADJ(:)='3';
-%             scical.TEMP.comment='Temperature is compromised because pressure sensor is unreliable';
-%             scical.PSAL.comment='Salinity is compromised because pressure sensor is unreliable. The conductivity sensor also appears to be defective.';
-%             scical.PRES.comment='The pressure sensor appears defective in a way that can''t be corrected with the approved methods.';
-%         end
-%     elseif findstr('4900632',flnm.input)
-%         ep=(double(PROFILE_NO(i))-60)*2.75*ones(length(x),1);
-%         err.PRES=max(err.PRES,ep);
-%     elseif findstr('4901132',flnm.input)
-%         ep=abs(addcoeff(:));
-%         err.PRES=max(err.PRES,ep);
+%     if any(qc.PSAL.RAW~='1') && adjpsalflag(i)=='2'
+%         stop=1;
 %     end
-    if any(qc.PSAL.RAW~='1') && adjpsalflag(i)=='2'
-        stop=1;
-    end
-    qc.PSAL.RAW(qc.PSAL.RAW<psalflag(i))=psalflag(i);
-    qc.PSAL.ADJ(qc.PSAL.ADJ<=adjpsalflag(i))=adjpsalflag(i);
-    if adjpsalflag(i)=='0'
-        qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='4'; %(DMQC-3)
-    end
+%     qc.PSAL.RAW(qc.PSAL.RAW<psalflag(i))=psalflag(i);
+%     qc.PSAL.ADJ(qc.PSAL.ADJ<=adjpsalflag(i))=adjpsalflag(i);
+%     if adjpsalflag(i)=='0'
+%         qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='4'; %(DMQC-3)
+%     end
     rawpress=tem.PRES-addcoeff; %raw pressure vector calculated this way for sorting purposes
     rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
 end
-22;

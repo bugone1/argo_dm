@@ -68,7 +68,7 @@ if yn(1)=='y'
         cyc=cyc(ok);
         netcdf.close(nc);
         for j=1:lok
-            pres(j)=str2num(values(ok(j),:));
+            pres(j)=str2double(values(ok(j),:));
             if apex
                 sdn(j)=datenum(values(oktime(j),:),'yyyymmdd');
             else

@@ -4,6 +4,10 @@ function t=read_all_nc(dire,files,t,dokeep)
 %If a previous version of "t" existed:
 % If dokeep(1)==1, Qc parms from struct t will be kept
 % If dokeep(2)==1, other parms from struct t will be kept
+%
+% VERSION HISTORY:
+%   Isabelle Gaboury, 30 May 2017: After discussion with Mathieu Ouellet,
+%       fixed a bug where dokeep was being interpreted incorrectly.
 
 for i=1:length(files)
     at(i)=read_nc([dire filesep files(i).name]);
@@ -16,10 +20,10 @@ if ~isempty(t)
         for i=1:length(fn)
             pos=strfind(fn{i},'_qc');
             ok=find(cyc2==cyc1(j));
-            if ~isempty(pos) && ~dokeep(1)
+            if ~isempty(pos) && dokeep(1)
                 at(j).(fn{i})=t(ok).(fn{i});
             end
-            if isempty(pos) && ~dokeep(2)
+            if isempty(pos) && dokeep(2)
                 at(j).(fn{i})=t(ok).(fn{i});
             end
         end        
