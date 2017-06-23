@@ -40,13 +40,30 @@ for ii=1:n_cyc
     qc_psal(1:length(t(ii).psal_qc),ii) = t(ii).psal_qc;
 end
 
-% Output to file
-header=[t.cycle_number];
-dlmwrite([float_name '_pres_qc.csv'], header);
-dlmwrite([float_name '_pres_qc.csv'], qc_pres, '-append');
-dlmwrite([float_name '_temp_qc.csv'], header);
-dlmwrite([float_name '_temp_qc.csv'], qc_temp, '-append');
-dlmwrite([float_name '_psal_qc.csv'], header);
-dlmwrite([float_name '_psal_qc.csv'], qc_psal, '-append');
+% % Output to file--full report. Not currently used, as this was kind of
+% long to sort through
+% header=[t.cycle_number];
+% dlmwrite([float_name '_pres_qc.csv'], header);
+% dlmwrite([float_name '_pres_qc.csv'], qc_pres, '-append');
+% dlmwrite([float_name '_temp_qc.csv'], header);
+% dlmwrite([float_name '_temp_qc.csv'], qc_temp, '-append');
+% dlmwrite([float_name '_psal_qc.csv'], header);
+% dlmwrite([float_name '_psal_qc.csv'], qc_psal, '-append');
 
+% Output to file--brief report, only non-1 flags
+fid=fopen([float_name '_qc.csv'],'w');
+fprintf(fid, 'cycle,depth,variable(s),flag\n');
+for ii_cyc=1:n_cyc
+    for ii_z=1:n_z
+        if qc_pres(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%c,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'P',qc_pres(ii_z,ii_cyc));
+        end
+        if qc_temp(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%c,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'T',qc_temp(ii_z,ii_cyc));
+        end
+        if qc_psal(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%c,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'S',qc_psal(ii_z,ii_cyc));
+        end
+    end
 end
+fclose(fid);

@@ -132,22 +132,25 @@ end
             % current axis.
             if but_ptsel~='q'
                 ii_plot_fn = find(h_axes==gca);
-                pdif=(prof_data{ii_plot_fn}(:,1)-xi)/diff(get(gca,'xlim')); 
-                idif=(prof_data{ii_plot_fn}(:,2)-yi)/diff(get(gca,'ylim'));
-                [tr,i]=min(pdif.^2+idif.^2);
-                if but==1
-                    if prof_data_qc{ii_plot_fn}(i,indxy)=='1'
-                        prof_data_qc{ii_plot_fn}(i,indxy)='4';
-                    elseif prof_data_qc{ii_plot_fn}(i,indxy)=='4'
-                        prof_data_qc{ii_plot_fn}(i,indxy)='3';
-                    elseif prof_data_qc{ii_plot_fn}(i,indxy)=='3'
+                if strcmp(plot_labels{ii_plot_fn}(1,1:4),'dens'), warning('Cannot select points from the density plot'); 
+                else
+                    pdif=(prof_data{ii_plot_fn}(:,1)-xi)/diff(get(gca,'xlim')); 
+                    idif=(prof_data{ii_plot_fn}(:,2)-yi)/diff(get(gca,'ylim'));
+                    [tr,i]=min(pdif.^2+idif.^2);
+                    if but==1
+                        if prof_data_qc{ii_plot_fn}(i,indxy)=='1'
+                            prof_data_qc{ii_plot_fn}(i,indxy)='4';
+                        elseif prof_data_qc{ii_plot_fn}(i,indxy)=='4'
+                            prof_data_qc{ii_plot_fn}(i,indxy)='3';
+                        elseif prof_data_qc{ii_plot_fn}(i,indxy)=='3'
+                            prof_data_qc{ii_plot_fn}(i,indxy)='1';
+                        end
+                    elseif but==3
                         prof_data_qc{ii_plot_fn}(i,indxy)='1';
                     end
-                elseif but==3
-                    prof_data_qc{ii_plot_fn}(i,indxy)='1';
+                    update_related_profiles(ii_plot_fn);
+                    update_qc_flag_curves;
                 end
-                update_related_profiles(ii_plot_fn);
-                update_qc_flag_curves;
             end
         end
     end
@@ -161,14 +164,17 @@ end
         if fla > 1, fla = fla+1; end
         if fla>=0 && fla<5, fla=char(fla+'0'); end
         ii_plot_fn = find(h_axes==gca);
-        xlims = minmax(xy(:,1));
-        ylims = minmax(xy(:,2));
-        ok1=inpolygon(prof_data{ii_plot_fn}(:,1),prof_data{ii_plot_fn}(:,2),...
-            [xlims, fliplr(xlims)], [ylims(1),ylims(1),ylims(2),ylims(2)]);
-%             minmax(xy(:,1)),minmax(xy(:,2)));
-        prof_data_qc{ii_plot_fn}(ok1,indxy)=char(fla);
-        update_related_profiles(ii_plot_fn);
-        update_qc_flag_curves;
+        if strcmp(plot_labels{ii_plot_fn}(1,1:4),'dens'), warning('Cannot select points from the density plot'); 
+        else
+            xlims = minmax(xy(:,1));
+            ylims = minmax(xy(:,2));
+            ok1=inpolygon(prof_data{ii_plot_fn}(:,1),prof_data{ii_plot_fn}(:,2),...
+                [xlims, fliplr(xlims)], [ylims(1),ylims(1),ylims(2),ylims(2)]);
+    %             minmax(xy(:,1)),minmax(xy(:,2)));
+            prof_data_qc{ii_plot_fn}(ok1,indxy)=char(fla);
+            update_related_profiles(ii_plot_fn);
+            update_qc_flag_curves;
+        end
     end
 
     % Toggle profile flags
@@ -178,15 +184,17 @@ end
             ii_plot_fn = 1:length(h_axes);
         else ii_plot_fn = find(h_axes==gca);
         end
-        if isempty(ii_plot_fn), warning('Please select a plot first'); end
+        if isempty(ii_plot_fn), warning('Please select a plot first'); 
+        elseif length(ii_plot_fn)==1 && strcmp(plot_labels{ii_plot_fn}(1,1:4),'dens')
+            warning('Cannot select points from the density plot'); 
+        end
         for ii_fn=1:length(ii_plot_fn)
+            if strcmp(plot_labels{ii_plot_fn}(1,1:4),'dens'), continue; end
             prof_data_qc{ii_plot_fn(ii_fn)}(:,indxy) = new_flag;
             update_related_profiles(ii_plot_fn(ii_fn));
             update_qc_flag_curves;
         end
         % Reset control for later reuse
-        % TODO: I guess these should really be buttons for the way this is
-        % being used...
         set(tog_flag_bg,'selectedobject','');
         
     end
@@ -194,13 +202,17 @@ end
     % Switch between QC flags 1 and 4
     function swap_flags_1_and_4(hObject, event, handles)
         ii_plot_fn = find(h_axes==gca);
-        if isempty(ii_plot_fn), warning('Please select a plot first'); end
-        ok1=prof_data_qc{ii_plot_fn}(:,indxy)=='4';
-        ok2=prof_data_qc{ii_plot_fn}(:,indxy)=='1';
-        prof_data_qc{ii_plot_fn}(ok1,indxy)='1';
-        prof_data_qc{ii_plot_fn}(ok2,indxy)='4';
-        update_related_profiles(ii_plot_fn);
-        update_qc_flag_curves;
+        if isempty(ii_plot_fn), warning('Please select a plot first'); 
+        elseif strcmp(plot_labels{ii_plot_fn}{1},'dens')
+            warning('Cannot select points from the density plot'); 
+        else
+            ok1=prof_data_qc{ii_plot_fn}(:,indxy)=='4';
+            ok2=prof_data_qc{ii_plot_fn}(:,indxy)=='1';
+            prof_data_qc{ii_plot_fn}(ok1,indxy)='1';
+            prof_data_qc{ii_plot_fn}(ok2,indxy)='4';
+            update_related_profiles(ii_plot_fn);
+            update_qc_flag_curves;
+        end
     end
 
     % Toggle axes for selection
@@ -250,8 +262,11 @@ end
             if ii_plot_fn == ii_plot_origin, continue;
             else
                 for ii_ax=1:2
-                    if strcmp(deblank(plot_labels{ii_plot_fn}(ii_ax,:)),var_to_update)
+                    var_dest = deblank(plot_labels{ii_plot_fn}(ii_ax,:));
+                    if strcmp(var_dest,var_to_update)
                         prof_data_qc{ii_plot_fn}(:,ii_ax) = prof_data_qc{ii_plot_origin}(:,indxy);
+                    elseif strcmp(var_dest,'dens') && ismember(var_to_update,{'pres','temp','psal'})
+                        prof_data_qc{ii_plot_fn}(:,strcmp(var_to_update,{'pres','temp','psal'})) = prof_data_qc{ii_plot_origin}(:,indxy);
                     end
                 end
             end
@@ -264,7 +279,15 @@ end
         if nargin<1, ii_plots_all=1:n_plots; end
         for ii_fn=1:length(ii_plots_all)
             for ii_flag=1:length(h_qc_flags{ii_plots_all(ii_fn)})
-                ok=prof_data_qc{ii_plots_all(ii_fn)}(:,indxy)==num2str(ii_flag);
+                if size(h_qc_flags{ii_plots_all(ii_fn)},2)>2 && strcmp(plot_labels{ii_fn}(1,1:4),'dens')
+                    if indxy==1
+                        ok=char(max(prof_data_qc{ii_plots_all(ii_fn)}(:,1:end-1),[],2))==num2str(ii_flag);
+                    else
+                        ok=prof_data_qc{ii_plots_all(ii_fn)}(:,end)==num2str(ii_flag);
+                    end
+                else
+                    ok=prof_data_qc{ii_plots_all(ii_fn)}(:,indxy)==num2str(ii_flag);
+                end
                 set(h_qc_flags{ii_plots_all(ii_fn)}{ii_flag},...
                     'xdata', prof_data{ii_plots_all(ii_fn)}(ok,1), ...
                     'ydata', prof_data{ii_plots_all(ii_fn)}(ok,2));

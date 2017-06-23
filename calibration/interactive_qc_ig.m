@@ -178,10 +178,13 @@ if ~isempty(todo)
                 break;  
             end
         else
-            i=i+1;
+            if q==8
+                display('testing'); 
+            else i=i+1;
+            end
         end
     end
-    close(fig_ts,fig_gui);
+    close(fig_traj,fig_ts,fig_gui);
 end
 
 % Proceed to additional flagging, range checks, etc. This is skipped if the
@@ -213,6 +216,19 @@ if ~strcmp(q, 'Q')
         t(i).psal_qc((flag.psal | tempOrPres) & t(i).psal_qc<'3')='3';
         [t(i).temp_qc(tempOrPres),t(i).ptmp_qc(tempOrPres)]=deal('3');
         t(i).pres_qc(flag.pres & t(i).pres_qc<'3')='3';
+    end
+    
+    % Deal with any density flags
+    for ii=1:lf
+        if isfield(t(i),'dens_qc')
+            input_flags = char(max([t(i).pres_qc; t(i).temp_qc; t(i).psal_qc]));
+            ii_temp = find(input_flags < t(i).dens_qc);
+            if ~isempty(ii_temp)
+                t(i).pres_qc(ii_temp) = t(i).dens_qc(ii_temp);
+                t(i).temp_qc(ii_temp) = t(i).dens_qc(ii_temp);
+                t(i).psal_qc(ii_temp) = t(i).dens_qc(ii_temp);
+            end
+        end
     end
 end
 % If the user has used the 'Q' option they may not want to save their work

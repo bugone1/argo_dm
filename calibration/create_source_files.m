@@ -1,4 +1,20 @@
 function create_source_files(local_config,lo_system_configuration,floatname)
+% CREATE_SOURCE_FILES - Prepare files for DMQC. Display the float pressure
+%   and bathymetry, display the TS profiles, and create .mat files for
+%   further QC
+%   USAGE: 
+%       create_source_files(local_config,lo_system_configuration,floatname)
+%   INPUTS:
+%       local_config - Configuration structure, containing the field
+%           RAWFLAGPRES_DIR
+%       lo_system_configuration - OW configuration structure, containing
+%           the fields FLOAT_SOURCE_DIRECTORY and FLOAT_PLOTS_DIRECTORY
+%       floatname - Float number, as a string
+%   VERSION HISTORY
+%       13 September 2016: Current working version; changes before this
+%           date not tracked.
+%       22 June 2017, Isabelle Gaboury: Fixed a minor issue with the legend
+%           for the bathymetry plot, affecting Linux systems.
 dbstop if error
 ITS90toIPTS68=1.00024;
 load([local_config.RAWFLAGSPRES_DIR floatname],'presscorrect','t')
@@ -35,7 +51,10 @@ a(3)=patch(cyc([1 1:end end]),[mb bathy mb],'k');
 plot(cyc,-lastpres,'b','linewidth',2)
 xlabel('Cycle');
 ylabel('-Pressure (db)');
-legend(a,'Range of Pressures sampled','Surface pres (tech file)','Bathymetry (1º)²',4);
+% IG: Can delete the following (commented) line once we verify that my
+% replacement works on both Linux and Windows
+%legend(a,'Range of Pressures sampled','Surface pres (tech file)','Bathymetry (1ï¿½)ï¿½',4);
+legend(a,'Range of Pressures sampled','Surface pres (tech file)',['Bathymetry (1' char(176) ')^2'],4);
 print('-dpng',[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep 'pres_bath_' floatname '.png']);
 %pause
 close

@@ -61,16 +61,31 @@ if yn(1)=='y'
     end
     
     if numel(ok)>0
+        % Get the technical parameter values and cycle numbers
         values=lower(netcdf.getVar(nc,netcdf.inqVarID(nc,'TECHNICAL_PARAMETER_VALUE')))';
         lok=length(ok);
         [pres,sdn]=deal(nan(lok,1));
-        cyc=netcdf.getVar(nc,netcdf.inqVarID(nc,'CYCLE_NUMBER'));macyc=max(cyc);
-        cyc=cyc(ok);
+        if apex, med_cyc_dur = median(diff(datenum(values(oktime,1:8),'yyyymmdd'))); end
+        cyc_all=netcdf.getVar(nc,netcdf.inqVarID(nc,'CYCLE_NUMBER'));
+        cyc=cyc_all(ok); macyc=max(cyc_all);
+        loktime = numel(oktime);
         netcdf.close(nc);
         for j=1:lok
             pres(j)=str2double(values(ok(j),:));
             if apex
-                sdn(j)=datenum(values(oktime(j),:),'yyyymmdd');
+                % The "ok" and "oktime" vectors may not match, as there can
+                % be cycles without one of the pressure or the satellite
+                % time.
+                if j <= loktime && cyc_all(oktime(j)) == cyc_all(ok(j))
+                    sdn(j)=datenum(values(oktime(j),:),'yyyymmdd');
+                else
+                    j_temp = find(cyc_all(oktime(j:end))==cyc_all(ok(j)),1,'first');
+                    if ~isempty(j_temp)
+                        sdn(j)=datenum(values(oktime(j_temp),:),'yyyymmdd');
+                    else
+                        sdn(j)=sdn(j-1)+(cyc(j)-cyc(j-1))*med_cyc_dur;
+                    end
+                end
             else
                 sdn(j)=datenum(values(okhour(j),:),'hh')+datenum(values(okdate(j),:),'yyyymmdd');
             end

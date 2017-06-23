@@ -53,7 +53,10 @@ end
 [filestoprocess,floatname]=deal([]);
 ow=ones(1,4);
 % Exit without doing anything
-if q=='0', return; end
+if q=='0'
+    ow=zeros(1,4);
+    return; 
+end
 
 % If the user selected "1" above, get a float number to process, then ask
 % what the user whats to do with the float
@@ -90,7 +93,7 @@ switch lower(q(1))
             qow=argu{3};
             display(['Processing step selected via argu: ', num2str(qow)])
         else
-            qow=input('0)FTP 1)Pre-OW, 2)OW, 3)Post-OW, 4)Reduce history, 5)Publish to web ?');
+            qow=input('0)FTP 1)Pre-OW, 2)OW, 3)Post-OW, 4)Prepare to publish to web?'); %, 5)Delete local files ?');
         end
         if ~isempty(qow)
             ow(qow+1)=true;

@@ -72,9 +72,14 @@ ylabel(labs(2,:));
 % For each possible QC flag, plot the points
 h_qc = cell(length(colscheme),2);
 for i=1:length(colscheme)
-    ok=qcxy(:,1)==num2str(i);
+    if size(qcxy,2)>2 
+        if strncmp(labs(1,:),'dens',4), ok=char(max(qcxy(:,1:end-1),[],2))==num2str(i);
+        else error('Unable to process the QC flags');
+        end
+    else ok=qcxy(:,1)==num2str(i);
+    end
     if ~any(ok==1), h_qc{i,1} = plot(NaN,NaN,['.' colscheme(i)]);   % This just leaves a placeholder we can use later
-    else h_qc{i,1}=plot(axedesxy(ok,1),axedesxy(ok,2),['.' colscheme(i)]);
+    else h_qc{i,1}=plot(axedesxy(ok,1),axedesxy(ok,end),['.' colscheme(i)]);
     end
 end
 set(cat(1,h_qc{:}),'markersize',16);
@@ -83,9 +88,10 @@ set(cat(1,h_qc{:}),'markersize',16);
 % plot
 xxlim = get(gca,'xlim');
 for i=2:length(colscheme)
-    ok=qcxy(:,2)==num2str(i);
+    ok=qcxy(:,end)==num2str(i);
     if ~any(ok==1), h_qc{i,2} = plot(NaN,NaN,['+' colscheme(i)]);   % This just leaves a placeholder we can use later
-    else h_qc{i,2}=plot(xxlim(1),axedesxy(ok,2),['+' colscheme(i)]);
+    else
+        h_qc{i,2}=plot(xxlim(1),axedesxy(ok,end),['+' colscheme(i)]);
     end
 end
     

@@ -71,7 +71,8 @@ if strmatch('temp',fieldnames(s))
         plots{i}=char({fn{i},'pres'}); %TP
     end
     if ~isempty(strmatch('psal',fn))
-        plots{end+1}=char({'psal','temp'}); %TS
+        plots{end+1}=char({'dens','pres'}); % Density
+        plots{end+1}=char({'psal','temp'}); % TS
     end
     
     % Fetch the profile data for all available plots
@@ -79,17 +80,29 @@ if strmatch('temp',fieldnames(s))
     prof_data_qc = cell(1,length(plots));
     for ii_plot=1:length(plots)
         jj=0;
+        jj2=0;
         for j=1:size(plots{ii_plot},1)
             % Fetch the profile and QC data
-            if ~strcmp(plots{ii_plot}(j,:),'ptmp')
+            if strncmp(plots{ii_plot}(j,:),'dens',4)
+                jj=jj+1;
+                jj2=jj2+1;
+                % Calculate the potential density
+                [sal_abs,foo] = gsw_SA_from_SP(s.psal,s.pres,s.longitude,s.latitude);
+                temp_cons = gsw_CT_from_t(sal_abs,s.temp,s.pres);
+                dens_ct = gsw_rho_CT(sal_abs,temp_cons,mean(s.pres));
+                prof_data{ii_plot}(:,jj)=dens_ct';
+                prof_data_qc{ii_plot}(:,jj2:jj2+2)=[s.pres_qc; s.temp_qc; s.psal_qc]';
+                jj2=jj2+2;
+            elseif ~strncmp(plots{ii_plot}(j,:),'ptmp',4)
                 temp_fieldname = deblank(plots{ii_plot}(j,:));
                 jj=jj+1;
+                jj2=jj2+1;
                 prof_data{ii_plot}(:,jj)=s.(temp_fieldname);
                 % If necessary, add a field to s for the QC data
                 if ~isfield(s,([temp_fieldname '_qc'])) || isempty(s.([temp_fieldname '_qc']))
                     s.([temp_fieldname '_qc'])=char('1'*ones(size(s.pres))');
                 end
-                prof_data_qc{ii_plot}(:,jj)=(s.([temp_fieldname '_qc']));
+                prof_data_qc{ii_plot}(:,jj2)=(s.([temp_fieldname '_qc']));
             else
                 prof_data{ii_plot} = [];
                 prof_data_qc{ii_plot} = [];
@@ -108,7 +121,8 @@ if strmatch('temp',fieldnames(s))
         % Get the climatologies
         S_clim = cell(length(plots));
         for ii_plot=1:length(plots)
-            if (strcmp(plots{ii_plot}(1,:),'psal') || strcmp(plots{ii_plot}(1,:),'temp')) && strcmp(plots{ii_plot}(2,:),'pres') && length(s.longitude)==1
+            if (strcmp(plots{ii_plot}(1,:),'psal') || strcmp(plots{ii_plot}(1,:),'temp')) && ...
+                    strcmp(plots{ii_plot}(2,:),'pres') && length(s.longitude)==1
                 S_clim{ii_plot}=getClimGTSPP(s.longitude,s.latitude,datestr(s.dates,'mm'),plots{ii_plot}(1,:));
             elseif ((strcmp(plots{ii_plot}(1,:),'psal') && strcmp(plots{ii_plot}(2,:),'temp')) || ...
                     (strcmp(plots{ii_plot}(2,:),'psal') && strcmp(plots{ii_plot}(1,:),'temp'))) && ...

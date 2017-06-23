@@ -1,12 +1,16 @@
 % Single-purpose (mostly) routine to apply the results of GlazeO processing
 % to the float data. Note that user input is required throughout.
 %
-% WARNING: Routine is intended to be used under Linux; paths etc. have not
-% been conditioned for Windows.
+% WARNING: This routine doesn't actually seem to work, as not all the
+% necessary information is found in the GlazeO .mat files. I'm keeping it
+% on hand for possible recycling while I work through the floats, but once
+% this is done this routine can be deleted.
 %
 % Isabelle Gaboury, 12 June 2017
 
 function process_glazeo_floats(float_name)
+
+error('This routine does not work');
 
 %%%%%% Setup %%%%%%
 
