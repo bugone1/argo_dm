@@ -97,7 +97,8 @@ for i=1:length(PROFILE_NO)
     scical.PRES.coefficient=['ADDITIVE COEFFICIENT FOR PRESSURE ADJUSTMENT IS ' num2str(addcoeff) ' dbar'];
     %SALINITY
     if ~isnan(CellK(i)) && any(CellK(1:i)~=1)
-        scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', � ' num2str(pcond_factor_err(i),7)];
+        %scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', � ' num2str(pcond_factor_err(i),7)];
+        scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', +/- ' num2str(pcond_factor_err(i),7)];
         scical.PSAL.equation='PSAL_ADJUSTED is calculated from a potential conductivity (ref to 0 dbar) multiplicative adjustment term r.';
         if pcond_factor(i)~=CellK(i)
             scical.PSAL.comment=[ocomment ' The DMQC software initially suggested r=' num2str(pcond_factor(i),7) ' for this cycle.'];

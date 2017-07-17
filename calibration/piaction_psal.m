@@ -86,6 +86,14 @@ if any(ok)
         CellK(ok)=1;
     end
 end
+ok=CellK~=1;
+if any(ok)
+    [find(ok)' CellK(ok)']
+    newv=input('Round to a number of decimal places ? (empty=no, anything else = number of decimal places)');
+    if ~isempty(newv)
+        CellK = round(CellK*10^newv)/10^newv;
+    end
+end
 if (~isempty(q) && q=='q') || any(abs(1-CellK)>.0005)
     newv=input('Enter manual factor ? (empty=no, anything else = factor)');
     if ~isempty(newv)

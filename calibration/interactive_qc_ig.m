@@ -67,9 +67,12 @@ t=remove_redundant_struct(t,'cycle_number'); %this also sorts the structure by c
 cyc1=(cat(1,t.cycle_number));
 lf=length(t);
 
-% Plot the float positions. Load the coast data, deal with discontinuities
+% Plot the float positions, dates. Load the coast data, deal with discontinuities
 % and wrap-around, display.
 fig_traj = figure('units','normalized','position',[0.7 0.25 0.25 0.5]);
+subplot(2,1,1);
+dates_temp = [t.dates];
+cycles_temp = [t.cycle_number];
 lon_temp = [t.longitude];
 lat_temp = [t.latitude];
 plot(lon_temp,lat_temp,'k');
@@ -77,7 +80,20 @@ scatter3(lon_temp,lat_temp,[t.cycle_number],30,[t.cycle_number],'filled');
 xlabel('Longitude');
 ylabel('Latitude');
 grid on;
-colorbar;
+foo=colorbar;
+set(get(foo,'xlabel'),'string','Cycle #');
+subplot(2,1,2);
+scatter(dates_temp,cycles_temp,30,cycles_temp,'filled');
+foo=find([t.juld_qc]>'1');
+if ~isempty(foo)
+    hold on;
+    plot(dates_temp(foo),cycles_temp(foo),'o');
+end
+xlabel('Date'); ylabel('Cycle number');
+grid on;
+foo=colorbar;
+set(get(foo,'xlabel'),'string','Cycle #');
+datetick('x','dd mmm yyyy')
 
 %write KML file for Google Earth
 writekml([floatname '.kml'],[cat(1,t.longitude) cat(1,t.latitude)],cat(1,t.cycle_number));
@@ -137,12 +153,17 @@ if ~isempty(todo)
     if i>1
         i=i-1;
     end
-    % Create a figure
+    % Create a figure, prepare the axes and UI elements
+    % TODO: The passing of h_axes, h_ui is a temporary fix to avoid having
+    % to constantly redraw the UI elements, which is hurting performance.
+    % The longer-term fix is to redesign the code so that the GUI is more nearly top-level
     fig_gui = figure('units','normalized','position',[0 0 0.5 1]);
+    h_axes = [];
+    h_ui=[];
     % Iterate through all available cycles, processing those marked
     % previously as needing to be done (i.e., those greater than the
     % starting cycle that still need QC)
-    while i<lf
+    while i<lf || (i==lf && q==8)
         if any(cyc1(i)==todo)
             % Adjust our bookmark forward or backward. Note that q=8 is the
             % backspace
@@ -163,7 +184,7 @@ if ~isempty(todo)
             % future, though, to make sure this doesn't cause undesirable
             % effects.
             if ~strcmpi(q,'q')
-                [temm,q]=visual_qc_ig(t(i),q);
+                [temm,q,h_axes,h_ui]=visual_qc_ig(t(i),q,h_axes,h_ui);
                 % Update the overall structure
                 temm=rmfield(temm,setdiff(fieldnames(temm),fieldnames(t)));
                 t(i)=temm;
@@ -180,7 +201,8 @@ if ~isempty(todo)
         else
             if q==8
                 display('testing'); 
-            else i=i+1;
+            else
+                i=i+1;
             end
         end
     end
@@ -218,18 +240,6 @@ if ~strcmp(q, 'Q')
         t(i).pres_qc(flag.pres & t(i).pres_qc<'3')='3';
     end
     
-    % Deal with any density flags
-    for ii=1:lf
-        if isfield(t(i),'dens_qc')
-            input_flags = char(max([t(i).pres_qc; t(i).temp_qc; t(i).psal_qc]));
-            ii_temp = find(input_flags < t(i).dens_qc);
-            if ~isempty(ii_temp)
-                t(i).pres_qc(ii_temp) = t(i).dens_qc(ii_temp);
-                t(i).temp_qc(ii_temp) = t(i).dens_qc(ii_temp);
-                t(i).psal_qc(ii_temp) = t(i).dens_qc(ii_temp);
-            end
-        end
-    end
 end
 % If the user has used the 'Q' option they may not want to save their work
 if q == 'Q'

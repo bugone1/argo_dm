@@ -1,4 +1,4 @@
-function [filestoprocess,floatname,ow]=menudmqc_ig(local_config,argu)
+function [filestoprocess,floatname,ow]=menudmqc_ig(local_config,config,argu)
 % MENUDMQC_IG  DMQC menu handling (Isabelle's version)
 %   DESCRIPTION:
 %       Launches DMQC given the provided configuration. Some QC steps are
@@ -25,6 +25,7 @@ function [filestoprocess,floatname,ow]=menudmqc_ig(local_config,argu)
 %           code dated 2 Feb. 2017.
 
 % Setup
+ftpaddress.ifremer='ftp.ifremer.fr';   % FTP address for the climatology
 dire=local_config.DATA;
 
 % If argu is provided, make sure the first and third elements are strings,
@@ -77,14 +78,17 @@ switch lower(q(1))
     case 'q'
         q=q(q~='*');
         pathe=[dire findnameofsubdir(q,dirs) filesep];
-        allfilestoprocess=dir([pathe '*' q(2:end) '*.nc']);
+        %allfilestoprocess=dir([pathe '*' q(2:end) '*.nc']);
+        allfilestoprocess=[dir([pathe 'D' q(2:end) '*.nc']);dir([pathe 'R' q(2:end) '*.nc'])];
         if ~isempty(allfilestoprocess)
             clean(pathe,allfilestoprocess);
-            allfilestoprocess=dir([pathe '*' q(2:end) '*.nc']);
+%             allfilestoprocess=dir([pathe '*' q(2:end) '*.nc']);
+            allfilestoprocess=[dir([pathe 'D' q(2:end) '*.nc']);dir([pathe 'R' q(2:end) '*.nc'])];
             allfilestoprocess=allfilestoprocess(cat(1,allfilestoprocess.bytes)>0);
             undr=find(allfilestoprocess(1).name=='_');
             floatname=allfilestoprocess(1).name(2:undr-1);
-            filestoprocess=dir([pathe '*' floatname '*.nc']);
+%             filestoprocess=dir([pathe '*' floatname '*.nc']);
+            filestoprocess=[dir([pathe 'D' q(2:end) '*.nc']);dir([pathe 'R' q(2:end) '*.nc'])];
             filestoprocess=orderfilesbycycle(filestoprocess);
         else
             floatname=q(2:end);
@@ -93,7 +97,7 @@ switch lower(q(1))
             qow=argu{3};
             display(['Processing step selected via argu: ', num2str(qow)])
         else
-            qow=input('0)FTP 1)Pre-OW, 2)OW, 3)Post-OW, 4)Prepare to publish to web?'); %, 5)Delete local files ?');
+            qow=input('0)FTP 1)Pre-OW, 2)OW, 3)Post-OW, 4)Publish to web?'); %, 5)Delete local files ?');
         end
         if ~isempty(qow)
             ow(qow+1)=true;

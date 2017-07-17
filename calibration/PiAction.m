@@ -28,7 +28,7 @@ xlabel('Profile Number');
 ylabel('Conductivity Slope Correction');
 set(gca,'xlim',[1 max(profile_no)]);
 foo = get(gca,'ylim');
-set(gca,'ylim',[foo(1),max(foo(2),1)]);
+% set(gca,'ylim',[foo(1),max(foo(2),1)]);
 ishappy=0;firsttime=0;
 while ishappy~=1
     hold on

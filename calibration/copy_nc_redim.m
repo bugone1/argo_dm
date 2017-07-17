@@ -1,4 +1,25 @@
 function copy_nc_redim(input,output,redimname,num)
+% COPY_NC_REDIM - Copy a NetCDF file, changing a dimension in the process
+%   USAGE: copy_nc_redim(input,output,redimname,num)
+%   INPUTS:
+%       input - Input NetCDF file name
+%       output - Output NetCDF file name
+%       redimname - Name of the dimension to change
+%       num - Number by which to increase the dimension or 'unlimited' to
+%           make it unlimited.
+%   VERSION HISTORY:
+%       Before May 2017: Changes not tracked
+%       12 July 2017, Isabelle Gaboury: Added the 'unlimited' option for
+%           num
+
+% Special case for making a variable unlimited in size
+if ischar(num)
+    if strcmp(num,'unlimited'), make_unlim = 1;
+    else error('num must be either numeric or ''unlimited''');
+    end
+else make_unlim = 0;
+end
+
 %Creates a new file while increasing the dimension of "redimname" by "num"
 f1=netcdf.open(input,'NOWRITE');
 f2=netcdf.create(output,'CLOBBER');
@@ -7,8 +28,16 @@ for i=1:ndims
     dimid=i-1;
     [dimname,dimlen]=netcdf.inqDim(f1,dimid);
     if strcmp(dimname,redimname)
+        if make_unlim
+            if unlimdimid>-1 && dimid~=unlimdimid
+                error('An unlimited dimension is already specified in the NetCDF file');
+            else unlimdimid = dimid;
+            end
+            i_redim=-1;
+        else
         dimlen=dimlen+num;
         i_redim=dimid;
+    end
     end
     if dimid==unlimdimid
         nunlimdimid=dimlen;

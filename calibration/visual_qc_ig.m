@@ -1,4 +1,4 @@
-function [s,q]=visual_qc_ig(s,q)
+function [s,q,h_axes,h_ui]=visual_qc_ig(s,q,h_axes,h_ui)
 % VISUAL_QC_IG Visual QC of a single Argo profile (Isabelle's version)
 %   DESCRIPTION:
 %       Interactively QC a single Argo profile. Display the profile, and
@@ -14,6 +14,10 @@ function [s,q]=visual_qc_ig(s,q)
 %   VERSION HISTORY:
 %       26 May 2017, Isabelle Gaboury: Created, based on the version in
 %           vms_tools dated 09 January 2017.
+
+% By default, we assume no existing axes or UI elements
+if nargin < 4, h_ui = []; end
+if nargin < 3, h_axes = []; end
 
 % If there's a "deph" field, rename to "pres"
 if isfield(s,'deph')
@@ -87,10 +91,15 @@ if strmatch('temp',fieldnames(s))
                 jj=jj+1;
                 jj2=jj2+1;
                 % Calculate the potential density
-                [sal_abs,foo] = gsw_SA_from_SP(s.psal,s.pres,s.longitude,s.latitude);
-                temp_cons = gsw_CT_from_t(sal_abs,s.temp,s.pres);
-                dens_ct = gsw_rho_CT(sal_abs,temp_cons,mean(s.pres));
-                prof_data{ii_plot}(:,jj)=dens_ct';
+                try
+                    [sal_abs,foo] = gsw_SA_from_SP(s.psal,s.pres,s.longitude,s.latitude);
+                    temp_cons = gsw_CT_from_t(sal_abs,s.temp,s.pres);
+                    dens_ct = gsw_rho_CT(sal_abs,temp_cons,mean(s.pres));
+                    prof_data{ii_plot}(:,jj)=dens_ct'-1000.0;
+                catch ex
+                    warning(ex.identifier, ['Failed to calculate the potential density: ' ex.message]);
+                    prof_data{ii_plot}=nan*ones(size(s.pres))';
+                end
                 prof_data_qc{ii_plot}(:,jj2:jj2+2)=[s.pres_qc; s.temp_qc; s.psal_qc]';
                 jj2=jj2+2;
             elseif ~strncmp(plots{ii_plot}(j,:),'ptmp',4)
@@ -153,13 +162,20 @@ if strmatch('temp',fieldnames(s))
         else
             station_string = '';
         end
+%         display('Profile data:')
+%         prof_data_qc{1}(1:3,:)
         [prof_data_qc,q]=qc_window_ig(prof_data,S_clim,prof_data_qc,plots,[s.longitude s.latitude s.dates],...
             platform_string,station_string);
         % Update the original data structure for return to the calling
-        % program
+        % program. We don't need to do anything with the density or TS
+        % plots
         for ii_plot=1:length(plots)
-            s.([deblank(plots{ii_plot}(1,:)) '_qc'])(:,:)=prof_data_qc{ii_plot}(:,1);
-            s.([deblank(plots{ii_plot}(2,:)) '_qc'])(:,:)=prof_data_qc{ii_plot}(:,2);
+            % Skip the dens and TS plots
+            % TODO: Generalize this
+            if strcmp(plots{ii_plot}(2,1:4),'pres') && ~strcmp(plots{ii_plot}(1,1:4),'dens')
+                s.([deblank(plots{ii_plot}(1,:)) '_qc'])(:,:)=prof_data_qc{ii_plot}(:,1);
+                s.([deblank(plots{ii_plot}(2,:)) '_qc'])(:,:)=prof_data_qc{ii_plot}(:,2);
+            end
         end
     end
        

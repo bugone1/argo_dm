@@ -1,9 +1,10 @@
-function [h_ax, h_qc]=qc_window_plots_ig(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr)
+function h_ax=qc_window_plots_ig(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr)
 % QC_WINDOW_PLOTS - Create subplots for QC purposes
 %   DESCRIPTION:
-%       Create subplots for QC, showing the current QC flags
+%       Create subplots for QC, showing the current QC flags. Note that
+%           lines are tagged for further modification by other routines
 %   USAGE:
-%      [h_ax,h_qc]=qc_window_plots(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr)
+%      h_ax=qc_window_plots(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr)
 %   INPUTS:   
 %       axesdesxy - Profile data. This is a 2D array, with one plot
 %           variable per column
@@ -16,7 +17,6 @@ function [h_ax, h_qc]=qc_window_plots_ig(axedesxy,clim,qcxy,labs,xyt,crn,pfn,sub
 %       subplot_arr - Array descriptor of the subplot
 %   OUTPUTS:
 %       h_ax - Handle to the subplot axes
-%       h_qc - Cell array of handles to the QC flag plots, one per flag level
 %   VERSION HISTORY:
 %       25 May 2017, Isabelle Gaboury: Created, based on code in the
 %           vms_tools directory dated 9 January 2017.
@@ -58,7 +58,7 @@ if  ~isempty(clim)
 end
 
 % Plot the data
-plot(axedesxy(:,1),axedesxy(:,2),'-');
+plot(axedesxy(:,1),axedesxy(:,2),'-','tag','profile');
 yylim=[min(axedesxy(:,2)) max(axedesxy(:,2))]+[-.05 .05];
 if all(isnan(yylim))
     yylim=[0 1];
@@ -78,8 +78,8 @@ for i=1:length(colscheme)
         end
     else ok=qcxy(:,1)==num2str(i);
     end
-    if ~any(ok==1), h_qc{i,1} = plot(NaN,NaN,['.' colscheme(i)]);   % This just leaves a placeholder we can use later
-    else h_qc{i,1}=plot(axedesxy(ok,1),axedesxy(ok,end),['.' colscheme(i)]);
+    if ~any(ok==1), h_qc{i,1} = plot(NaN,NaN,['.' colscheme(i)],'tag',['x' num2str(i)]);   % This just leaves a placeholder we can use later
+    else h_qc{i,1}=plot(axedesxy(ok,1),axedesxy(ok,end),['.' colscheme(i)],'tag',['x' num2str(i)]);
     end
 end
 set(cat(1,h_qc{:}),'markersize',16);
@@ -89,9 +89,9 @@ set(cat(1,h_qc{:}),'markersize',16);
 xxlim = get(gca,'xlim');
 for i=2:length(colscheme)
     ok=qcxy(:,end)==num2str(i);
-    if ~any(ok==1), h_qc{i,2} = plot(NaN,NaN,['+' colscheme(i)]);   % This just leaves a placeholder we can use later
+    if ~any(ok==1), h_qc{i,2} = plot(NaN,NaN,['+' colscheme(i)],'tag',['y' num2str(i)]);   % This just leaves a placeholder we can use later
     else
-        h_qc{i,2}=plot(xxlim(1),axedesxy(ok,end),['+' colscheme(i)]);
+        h_qc{i,2}=plot(xxlim(1),axedesxy(ok,end),['+' colscheme(i)],'tag',['y' num2str(i)]);
     end
 end
     

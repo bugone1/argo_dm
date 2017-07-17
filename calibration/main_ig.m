@@ -5,6 +5,8 @@
 
 function argu = main_ig(region, argu)
 
+close all;
+
 % FTP user name (for Isabelle)
 ftp_user = 'igabouryi@sshreadwrite';
 
@@ -15,7 +17,7 @@ end
 region = lower(region);
 if ~ismember(region,{'atlantic','pacific',''}), error('No parameters exist for this region'); 
 elseif strcmp(region,'pacific'), region=''; % This is currently the default case
-else region = ['_' lower(region)];
+elseif ~isempty(region), region = ['_' lower(region)];
 end
 
 if nargin < 2, argu = []; end
@@ -59,7 +61,7 @@ end
 % Get files to process
 i=1;
 % floatnames = {};
-[filestoprocess,floatnames{i},ow]=menudmqc_ig(local_config,argu);
+[filestoprocess,floatnames{i},ow]=menudmqc_ig(local_config,lo_system_configuration,argu);
 % if ow(1)
 %     fetch_from_web(local_config.DATA, floatnames{i});
 % end
@@ -97,8 +99,8 @@ while ~isempty(filestoprocess) || ow(1)
         viewplots(lo_system_configuration,local_config,floatnames{i});
     end
     if ow(5)
-        %reducehistory(local_config,floatnames{i});
-        publishtoweb(local_config,lo_system_configuration,floatnames{i},1,0);
+        reducehistory(local_config,floatnames{i});
+        publishtoweb(local_config,lo_system_configuration,floatnames{i},1,ftp_user);
     end
 %     if ow(7)
 %         % I've jotted down the paths here, but haven't yet tested them

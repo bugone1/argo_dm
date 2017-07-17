@@ -15,11 +15,15 @@ function create_source_files(local_config,lo_system_configuration,floatname)
 %           date not tracked.
 %       22 June 2017, Isabelle Gaboury: Fixed a minor issue with the legend
 %           for the bathymetry plot, affecting Linux systems.
+%       04 July 2017, IG: Fixed an issue causing QC flags to be associated
+%           with the wrong profiles if profile dates are out of order.
+
 dbstop if error
 ITS90toIPTS68=1.00024;
 load([local_config.RAWFLAGSPRES_DIR floatname],'presscorrect','t')
 s=t;
-[DATES,j]=sort(cat(1,s.dates)');s=s(j);
+[DATES,j_dates]=sort(cat(1,s.dates)');
+s=s(j_dates);
 lt=length(t);si=zeros(lt,1);
 
 %pressure/bathy plot
@@ -123,9 +127,9 @@ while ~isempty(but)
     end
 end
 for i=1:length(t)
-    t(i).temp_qc=s(i).temp_qc;
-    t(i).psal_qc=s(i).psal_qc;
-    t(i).pres_qc=s(i).pres_qc;
+    t(i).temp_qc=s(j_dates(i)).temp_qc;
+    t(i).psal_qc=s(j_dates(i)).psal_qc;
+    t(i).pres_qc=s(j_dates(i)).pres_qc;
 end
 save([local_config.RAWFLAGSPRES_DIR floatname],'t','-append') %save flags
 

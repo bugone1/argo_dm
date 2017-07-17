@@ -8,9 +8,11 @@
 %       run is complete.
 %
 % IG, June 2017
-function glazeo_ow(action)
+function glazeo_ow(action, float_names)
 
 if nargin < 1, action = 'process'; end
+if nargin < 2, float_names = {'4901750','4901752'}; end
+if ischar(float_names), float_names = {float_names}; end
 
 % Paths
 addpath('/u01/rapps/argo_dm/calibration');
@@ -19,10 +21,11 @@ addpath('/u01/rapps/vms_tools');
 addpath('/u01/rapps/m_map');
 
 % Setup
-float_names = {'4901123','4901125','4901151','4901154','4901156','4901159', ...
-    '4901160','4901168','4901172'};
 local_config=load_configuration('local_OW.txt');
 lo_system_configuration=load_configuration([local_config.BASE 'config_ow_atlantic.txt']);
+
+% Default figure position
+set(0,'defaultfigureposition',[500 500 560 420]);
  
 % Processing
 cd(local_config.MATLAB)
