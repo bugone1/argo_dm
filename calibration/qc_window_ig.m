@@ -32,6 +32,16 @@ function [prof_data_qc,but]=qc_window_ig(prof_data,S,prof_data_qc,plot_labels,ti
 %   VERSION HISTORY:
 %       26 May 2017, Isabelle Gaboury: Created, based on code in the
 %           vms_tools directory dated 9 January 2017.
+%       Jun.-Jul. 2017, IG: Fairly heavy rework, customising the overall
+%           visual QC process.
+
+% Configuration
+ui_position = [0.8 0 0.19 1];
+x0_gui=0.01;
+y0_gui=1.0;
+but_width =0.5;
+but_height=0.03;
+stretch_factor=[1.1,1.1]; % Matlab leaves a lot of space around subplots, so we tighten them up a bit
 
 % Starting values
 n_plots = length(plot_labels);
@@ -47,34 +57,48 @@ else
     for ii_ax=1:length(h_axes), cla(h_axes(ii_ax)); end
 end
 
+n_doxy=0;
+for ii=1:n_plots
+    if strfind(plot_labels{ii}(1,:),'doxy')
+        n_doxy=n_doxy+1;
+    end
+end
+if n_doxy > 0, subplot_layout = [2, max(n_doxy,n_plots-n_doxy)];
+else subplot_layout = [1,n_plots];
+end
+
 % Update the application data to be used by the callbacks
 setappdata(gui_fig,'but',1);
 setappdata(gui_fig,'indxy',1);  % We assume that we're doing QC on the x-variable
 setappdata(gui_fig,'plot_labels',plot_labels);
 setappdata(gui_fig,'prof_data_qc',prof_data_qc);
 
+h_ui_plots = uipanel('position',[0,0,ui_position(1),1]);
+ii_plot_core=0;
+ii_plot_doxy=0;
 for ii_plot = 1:n_plots
+    if strfind(plot_labels{ii_plot}(1,:),'doxy')
+        ii_plot_doxy=ii_plot_doxy+1;
+        ii_plot_cur=subplot_layout(2)+ii_plot_doxy;
+    else
+        ii_plot_core=ii_plot_core+1;
+        ii_plot_cur=ii_plot_core;
+    end
     h_axes(ii_plot) = qc_window_plots_ig(prof_data{ii_plot}, S{ii_plot},prof_data_qc{ii_plot},...
         plot_labels{ii_plot},title_string, platform_string, station_string, ...
-        [1, length(plot_labels)+1, ii_plot]);
+        [subplot_layout(1), subplot_layout(2), ii_plot_cur], h_ui_plots);
+    pos_temp=get(h_axes(ii_plot),'position');
+    pos_temp = [pos_temp(1) pos_temp(2)-pos_temp(4)*(stretch_factor(2)-1)/2 pos_temp(3)*stretch_factor(1) pos_temp(4)*stretch_factor(2)];
+    set(h_axes(ii_plot),'position',pos_temp);
 end
 % Store the list of axes for later use. We could count on the fact that the
 % handles are always in order, but this seems safer
 setappdata(gui_fig,'h_axes',h_axes);
 
-% Link the axes to simplify zooming
-linkaxes(h_axes(1:end-1),'y');
-
 % Add the GUI elements
-if isempty(findobj('parent',gui_fig,'type','uipanel'))
-    % Get the right edge of the right-most plot
-    foo = get(h_axes(end),'position');
-    h_ui = uipanel('Title','Visual QC','Position',[foo(1)+foo(3)*1.05,0.05,(0.99-(foo(1)+foo(3)*1.05)),0.9]);
-    x0_gui=0.02;
-    y0_gui=1.0;
+if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
+    h_ui = uipanel('tag','gui_panel','Position',ui_position);
     y_cur=y0_gui-0.04;
-    but_width =0.4;
-    but_height=0.03;
     % Select individual points
     uicontrol('parent',h_ui,'style','pushbutton','string','Flag points (q to stop)', ...
         'units','normalized', 'position', [x0_gui,y_cur,but_width,but_height], 'callback', @flag_points);
@@ -92,10 +116,10 @@ if isempty(findobj('parent',gui_fig,'type','uipanel'))
             'units','normalized','position',[(ii-1)*0.25,0,0.25,1]);
     end
     set(tog_flag_bg,'selectedobject','');
-    uicontrol('parent',h_ui,'style','checkbox','tag','flag_allplots_checkbox', 'string','Apply to all profile plots', ...
-        'units','normalized','position',[x0_gui+but_width+0.01,y_cur+but_height*.75,but_width,but_height*0.75]);
+    uicontrol('parent',h_ui,'style','checkbox','tag','flag_allplots_checkbox', 'string','Apply to all plots', ...
+        'units','normalized','position',[x0_gui+but_width+0.01,y_cur+but_height*.75,1-but_width-2*x0_gui,but_height*0.75]);
     uicontrol('parent',h_ui,'style','checkbox','tag','flag_bothaxes_checkbox', 'string','Apply to both axes', ...
-        'units','normalized','position',[x0_gui+but_width+0.01,y_cur,but_width,but_height*0.75]);
+        'units','normalized','position',[x0_gui+but_width+0.01,y_cur,1-but_width-2*x0_gui,but_height*0.75]);
     % y_cur=y_cur-0.04;
     % % Swap flags 1 and 4 (commented out because I've never needed it)
     % swap_but = uicontrol('Parent',gui_fig,'Style','pushbutton', 'String', 'Invert 1 to 4 and 4 to 1', ...
@@ -107,10 +131,12 @@ if isempty(findobj('parent',gui_fig,'type','uipanel'))
         'title', 'Axes to flag', 'SelectionChangeFcn', @toggle_select_axes);
     uicontrol(tog_ax_bg,'style','radiobutton','tag','tog_ax_bg_x','string','x','units','normalized','position',[0,0,0.5,1]);
     uicontrol(tog_ax_bg,'style','radiobutton','tag','tog_ax_bg_y','string','y','units','normalized','position',[0.5,0,0.5,1])
-    % y_cur=y_cur-0.04;
-    % % Zoom to the surface layer
-    % zoom_but = uicontrol('Parent',gui_fig,'style','pushbutton','string','Zoom to upper 200m',...
-    %     'units','normalized','position',[x0_gui,y_cur,0.9,0.03],'callback',@zoom_to_surface);
+    % Option to link the axes. This is useful when looking at variables
+    % together, but slows down drawing considerably.
+    y_cur=y_cur-0.04;
+    uicontrol(h_ui,'style','checkbox','tag','link_axes_checkbox','string','Link axis y-extents',...
+        'units','normalized','position',[x0_gui,y_cur,but_width,but_height],'selected','off',...
+        'callback',@toggle_link_axes);
     y_cur=y_cur-0.11;
     % Skip button group
     skip_bg = uibuttongroup('parent',h_ui,'position',[x0_gui,y_cur,but_width*2,0.1],...%0.18,0.1], ...
@@ -138,6 +164,7 @@ else
     % a time
     set(findobj('tag','flag_allplots_checkbox'),'value',0);
     set(findobj('tag','flag_bothaxes_checkbox'),'value',0);
+    set(findobj('tag','link_axes_checkbox'),'value',0);
     set(findobj('tag','tog_ax_bg_x'),'value',1);
     setappdata(gcf,'indxy',1);
 end
@@ -186,13 +213,15 @@ function flag_points(hObject, event, handles)
                     elseif prof_data_qc{ii_plot_fn}(i,indxy)=='4'
                         prof_data_qc{ii_plot_fn}(i,indxy)='3';
                     elseif prof_data_qc{ii_plot_fn}(i,indxy)=='3'
+                        prof_data_qc{ii_plot_fn}(i,indxy)='2';
+                    elseif prof_data_qc{ii_plot_fn}(i,indxy)=='2'
                         prof_data_qc{ii_plot_fn}(i,indxy)='1';
                     end
                 elseif but_ptsel==3
                     prof_data_qc{ii_plot_fn}(i,indxy)='1';
                 end
                 setappdata(gcf,'prof_data_qc',prof_data_qc);
-                update_related_profiles(ii_plot_fn);
+                update_related_profiles(gca);
                 update_qc_flag_curves;
             end
         end
@@ -221,7 +250,7 @@ function flag_points_poly(hObject, event, handles)
             [xlims, fliplr(xlims)], [ylims(1),ylims(1),ylims(2),ylims(2)]);
         prof_data_qc{ii_plot_fn}(ok1,indxy)=char(fla);
         setappdata(gcf,'prof_data_qc',prof_data_qc);
-        update_related_profiles(ii_plot_fn);
+        update_related_profiles(gca);
         update_qc_flag_curves;
     end
 end
@@ -256,7 +285,7 @@ function flag_whole_profile(hObject, event, handles)
                 prof_data_qc = getappdata(gcf,'prof_data_qc');            
                 prof_data_qc{ii_plot_fn(ii_fn)}(:,ii_ax_fn) = new_flag;
                 setappdata(gcf,'prof_data_qc',prof_data_qc);
-                update_related_profiles(ii_plot_fn(ii_fn));
+                update_related_profiles(h_axes(ii_plot_fn(ii_fn)));
             end
         end
         update_qc_flag_curves;
@@ -287,20 +316,37 @@ function toggle_select_axes(hObject, event, handles)
     new_ax = get(event.NewValue,'string');
     indxy=new_ax-'w';
     setappdata(gcf,'indxy',indxy);
-    [xflags,yflags]=deal('');
-    if indxy==1
-        xflags=' - flags from this axis currently shown';
-    else
-        yflags=' - flags from this axis currently shown';
-    end
+%     [xflags,yflags]=deal('');
+%     if indxy==1
+%         xflags=' - flags shown';
+%     else
+%         yflags=' - flags shown';
+%     end
     h_axes = getappdata(gcf,'h_axes');
     for ii_ax=1:length(h_axes)
-        foo = get(get(h_axes(ii_ax),'xlabel'),'string');
-        set(get(h_axes(ii_ax),'xlabel'), 'string', [foo(1:4) xflags]);
-        foo = get(get(h_axes(ii_ax),'ylabel'),'string');
-        set(get(h_axes(ii_ax),'ylabel'), 'string', [foo(1:4) yflags]);
+        if indxy==1, 
+            set(get(h_axes(ii_ax),'xlabel'),'fontweight','bold');
+            set(get(h_axes(ii_ax),'ylabel'),'fontweight','normal');
+        else
+            set(get(h_axes(ii_ax),'xlabel'),'fontweight','normal');
+            set(get(h_axes(ii_ax),'ylabel'),'fontweight','bold');
+        end
+%         foo = get(get(h_axes(ii_ax),'xlabel'),'string');
+%         set(get(h_axes(ii_ax),'xlabel'), 'string', [foo(1:4) xflags]);
+%         foo = get(get(h_axes(ii_ax),'ylabel'),'string');
+%         set(get(h_axes(ii_ax),'ylabel'), 'string', [foo(1:4) yflags]);
     end
     update_qc_flag_curves;
+end
+
+% Toggle axis linking
+function toggle_link_axes(hObject,event,handles)
+    h_axes=getappdata(gcf,'h_axes');
+    if get(findobj('tag','link_axes_checkbox'),'value')==1
+        linkaxes(h_axes(1:end-1),'y');
+    else
+        linkaxes(h_axes(1:end-1),'off');
+    end
 end
 
 % Update the 'but' variable used by the parent routines and resume
@@ -328,21 +374,15 @@ function qc_window_keypress(hObject, event, handles)
     end
 end
 
-% Zoom to the upper 200m
-%     function zoom_to_surface(hObject,event,handles)
-%         % TODO: This should eventually check that it's adjusting only axes
-%         % with pressure on the y-axis, but this is usually the case for all
-%         % for the last (TS) plot
-%         set(h_axes(1:end-1),'ylim',[0,200]);
-%     end
-
 % Update profiles with the same variable as the current axes
-function update_related_profiles(ii_plot_origin)
+function update_related_profiles(h_ax)
+	h_axes = getappdata(gcf,'h_axes');
+    ii_plot_origin = find(h_axes==h_ax);
     indxy = getappdata(gcf,'indxy');
     prof_data_qc=getappdata(gcf,'prof_data_qc');
     plot_labels = getappdata(gcf,'plot_labels');
     var_to_update = deblank(plot_labels{ii_plot_origin}(indxy,:));
-    for ii_plot_fn = 1:length(findobj('parent',gcf,'type','axes'))
+    for ii_plot_fn = 1:length(getappdata(gcf,'h_axes'))
         if ii_plot_fn == ii_plot_origin, continue;
         else
             for ii_ax=1:2
@@ -355,9 +395,6 @@ function update_related_profiles(ii_plot_origin)
                     end
                 elseif strcmp(var_dest,'dens') && ismember(var_to_update,{'pres','temp','psal'})
                     prof_data_qc{ii_plot_fn}(:,strcmp(var_to_update,{'pres','temp','psal'})) = prof_data_qc{ii_plot_origin}(:,indxy);
-%                     if strcmp(var_to_update,'pres')
-%                         prof_data_qc{ii_plot_fn}(:,end) = prof_data_qc{ii_plot_origin}(:,indxy);
-%                     end
                 end
             end
         end
@@ -365,8 +402,7 @@ function update_related_profiles(ii_plot_origin)
     setappdata(gcf,'prof_data_qc',prof_data_qc);
 end
 
-% Function to update the QC flag plots. Again, nested to avoid
-% storing/passing more variables
+% Function to update the QC flag plots
 function update_qc_flag_curves
     indxy = getappdata(gcf,'indxy');
     prof_data_qc = getappdata(gcf,'prof_data_qc');

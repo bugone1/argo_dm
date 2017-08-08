@@ -1,16 +1,33 @@
-function t=read_all_nc(dire,files,t,dokeep)
-%Read all netCDF files within directory "dire" and stores them in structure
-%"t"
-%If a previous version of "t" existed:
-% If dokeep(1)==1, Qc parms from struct t will be kept
-% If dokeep(2)==1, other parms from struct t will be kept
+function t=read_all_nc(dire,files,t,dokeep,is_b_file)
+% READ_ALL_NC Net Argo NetCDF files
+%   DESCRIPTION: Read all netCDF files within directory "dire" and stores
+%       them in structure "t". If a previous version of "t" existed:
+%       If dokeep(1)==1, Qc parms from struct t will be kept
+%       If dokeep(2)==1, other parms from struct t will be kept
+%   USAGE: 
+%       t=read_all_nc(dire,files,t,dokeep)
+%   INPUTS:
+%       dire - Base directory
+%       files - Array of file structures
+%       t - Existing data, as an array of structures identical to that
+%           returned by this routine.
+%       dokeep - 2-element vector indicating whether or not to keep the
+%           data in the input structure t, as in the DESCRIPTION above.
+%       is_b_file - Optional flag, set to 1 to indicate that these are
+%           B-files. Otherwise they are assumed to be core files.
+%   OUTPUTS: Array of structures containing the variables of interest from
+%       the NetCDF file.
 %
 % VERSION HISTORY:
 %   Isabelle Gaboury, 30 May 2017: After discussion with Mathieu Ouellet,
 %       fixed a bug where dokeep was being interpreted incorrectly.
+%   IG, 24 July 2017: Expanded documentation, added is_b_file flag
+
+% Default is core-Argo files
+if nargin < 5, is_b_file=0; end
 
 for i=1:length(files)
-    at(i)=read_nc([dire filesep files(i).name]);
+    at(i)=read_nc([dire filesep files(i).name], is_b_file);
 end
 if ~isempty(t)
     cyc1=cat(1,at.cycle_number);

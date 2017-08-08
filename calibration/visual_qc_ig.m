@@ -14,6 +14,7 @@ function [s,q,h_axes,h_ui]=visual_qc_ig(s,q,h_axes,h_ui)
 %   VERSION HISTORY:
 %       26 May 2017, Isabelle Gaboury: Created, based on the version in
 %           vms_tools dated 09 January 2017.
+%       Jun.-Jul. 2017: Fairly heavy rework of visual QC routines.
 
 % By default, we assume no existing axes or UI elements
 if nargin < 4, h_ui = []; end
@@ -32,7 +33,7 @@ fn=setdiff(fieldnames(s),{'pres','ptmp'});
 
 % If there's a pressure, we can perform QC on this profile. Otherwise
 % nothing will happen.
-if strmatch('temp',fieldnames(s))
+if isfield(s,'temp')
     %remove adjusted fields and fields without a corresponding qc field
     torem=[];
     for i=1:length(fn)
@@ -67,9 +68,10 @@ if strmatch('temp',fieldnames(s))
             i=i+1;
         end
     end
-    
+        
     % Figure out what plots we can create. Typically psal vs. pres, temp
-    % vs. pres, and psal vs. temp
+    % vs. pres, and psal vs. temp. Also look at doxy, but plot these on a
+    % separate row.
     plots = cell(1,length(fn));
     for i=1:length(fn)
         plots{i}=char({fn{i},'pres'}); %TP
@@ -162,8 +164,6 @@ if strmatch('temp',fieldnames(s))
         else
             station_string = '';
         end
-%         display('Profile data:')
-%         prof_data_qc{1}(1:3,:)
         [prof_data_qc,q]=qc_window_ig(prof_data,S_clim,prof_data_qc,plots,[s.longitude s.latitude s.dates],...
             platform_string,station_string);
         % Update the original data structure for return to the calling

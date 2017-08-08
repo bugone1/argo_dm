@@ -1,7 +1,7 @@
 function create_source_files(local_config,lo_system_configuration,floatname)
-% CREATE_SOURCE_FILES - Prepare files for DMQC. Display the float pressure
-%   and bathymetry, display the TS profiles, and create .mat files for
-%   further QC
+% CREATE_SOURCE_FILES Prepare files for OW processing. Display the float 
+%   pressure and bathymetry, display the TS profiles, and create .mat files
+%   for further QC
 %   USAGE: 
 %       create_source_files(local_config,lo_system_configuration,floatname)
 %   INPUTS:
@@ -17,6 +17,10 @@ function create_source_files(local_config,lo_system_configuration,floatname)
 %           for the bathymetry plot, affecting Linux systems.
 %       04 July 2017, IG: Fixed an issue causing QC flags to be associated
 %           with the wrong profiles if profile dates are out of order.
+%       17 July 2017, IG: Excluding bad or possibly bad positions from OW
+%           processing.
+%       25 July 2017, IG: Updated legend call to use the 'location' keyword
+%           for compatibility with R2017a.
 
 dbstop if error
 ITS90toIPTS68=1.00024;
@@ -55,10 +59,8 @@ a(3)=patch(cyc([1 1:end end]),[mb bathy mb],'k');
 plot(cyc,-lastpres,'b','linewidth',2)
 xlabel('Cycle');
 ylabel('-Pressure (db)');
-% IG: Can delete the following (commented) line once we verify that my
-% replacement works on both Linux and Windows
-%legend(a,'Range of Pressures sampled','Surface pres (tech file)','Bathymetry (1�)�',4);
-legend(a,'Range of Pressures sampled','Surface pres (tech file)',['Bathymetry (1' char(176) ')^2'],4);
+legend(a,'Range of Pressures sampled','Surface pres (tech file)',...
+    ['Bathymetry (1' char(176) ')^2'],'location','northeast');
 print('-dpng',[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep 'pres_bath_' floatname '.png']);
 %pause
 close
@@ -66,6 +68,10 @@ close
 %create variables to be saved
 for i=1:lt
     [i lt]
+    if s(i).position_qc>='3'
+        s(i).latitude=nan; 
+        s(i).longitude=nan; 
+    end
     %     plot(s(i).psal,'.b');
     s(i).pres(s(i).pres_qc=='4')=nan;
     s(i).psal(s(i).psal_qc=='4')=nan;

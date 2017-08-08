@@ -1,12 +1,36 @@
 function presMain(local_config,lo_system_configuration,files,floatname)
-%presscorrect.tnpd field :
-%             0 non-TNPD
-%             1 TNPD with serial # < 2324175 before or at the last positive pressure value
-%             2 TNPD with serial # < 2324175 after the last positive pressure value
-%             3 TNPD with serial # >=2324175 or launched in 2007 or after, before or at the last positive pressure value
-%             4 TNPD with serial # >=2324175 or launched in 2007 or after, after the last positive pressure value
+% PRESMAIN DMQC of Argo pressures
+%   DESCRIPTION:
+%       Load the surface pressures from the tech file, clean, despike, fit,
+%       and plot. Depending on the user input, select either the cleaned
+%       data or the fit as a surface pressure to use for adjusting the
+%       float pressures. 
+%   USAGE: 
+%       presMain(local_config,lo_system_configuration,files,floatname)
+%   INPUTS:
+%       local_config - Structure of configuration data
+%       lo_system_configuration - Structure of OW configuration data
+%       files - Array of NetCDF files to process; each element is a
+%           structure, with field "name"
+%       floatname - Name of the float
+%   OUTPUTS:
+%       None, but results (MAT file and PNG) are saved to the directories
+%       specified by the local_config structure. Among the fields saved is
+%       presscorrect.tnpd:
+%           0 non-TNPD
+%           1 TNPD with serial # < 2324175 before or at the last positive pressure value
+%           2 TNPD with serial # < 2324175 after the last positive pressure value
+%           3 TNPD with serial # >=2324175 or launched in 2007 or after, before or at the last positive pressure value
+%           4 TNPD with serial # >=2324175 or launched in 2007 or after, after the last positive pressure value
+%   VERSION HISTORY:
+%       May 2017: Current working version
+%       3 Aug. 2017, Isabelle Gaboury: Added documentation, added some
+%           default values to the prompts.
+
+% Data directory, extended file name
 dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
 fname=[local_config.RAWFLAGSPRES_DIR floatname];
+
 pres3=[];linfit=[];presscorrect.cyc=[];
 %extract metadata info
 pc=netcdf.open([local_config.METAFILES floatname '_meta.nc'],'nowrite');
@@ -42,7 +66,8 @@ if ~isempty(oldf)
     temp=load(fname);
     if isfield(temp,'presscorrect')
         if length(temp.presscorrect.cyc)>=length(ok)
-            yn=lower(input('No new pressure values since last time. Continue anyway ?','s'));
+            yn=lower(input('No new pressure values since last time. Continue anyway ? (default=n)','s'));
+            if isempty(yn), yn='n'; end
         end
     end
     clear temp

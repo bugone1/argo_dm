@@ -23,9 +23,14 @@ function [filestoprocess,floatname,ow]=menudmqc_ig(local_config,config,argu)
 %   VERSION HISTORY:
 %       May-June 2017, Isabelle Gaboury: Created, based on Mathieu Ouellet's
 %           code dated 2 Feb. 2017.
+%       July 2017, IG: Updated to handle b-files; assorted minor changes.
 
 % Setup
 ftpaddress.ifremer='ftp.ifremer.fr';   % FTP address for the climatology
+ftpaddress.current=ftpaddress.ifremer;
+ftppath='/ifremer/argo/dac/meds/';
+user.login='anonymous';
+user.pwd='mathieu.ouellet@dfo-mpo.gc.ca';
 dire=local_config.DATA;
 
 % If argu is provided, make sure the first and third elements are strings,
@@ -80,18 +85,28 @@ switch lower(q(1))
         pathe=[dire findnameofsubdir(q,dirs) filesep];
         %allfilestoprocess=dir([pathe '*' q(2:end) '*.nc']);
         allfilestoprocess=[dir([pathe 'D' q(2:end) '*.nc']);dir([pathe 'R' q(2:end) '*.nc'])];
+        allfilestoprocess_b=[dir([pathe 'BD' q(2:end) '*.nc']);dir([pathe 'BR' q(2:end) '*.nc'])];
         if ~isempty(allfilestoprocess)
             clean(pathe,allfilestoprocess);
-%             allfilestoprocess=dir([pathe '*' q(2:end) '*.nc']);
             allfilestoprocess=[dir([pathe 'D' q(2:end) '*.nc']);dir([pathe 'R' q(2:end) '*.nc'])];
+            filestoprocess=orderfilesbycycle(allfilestoprocess);
             allfilestoprocess=allfilestoprocess(cat(1,allfilestoprocess.bytes)>0);
             undr=find(allfilestoprocess(1).name=='_');
-            floatname=allfilestoprocess(1).name(2:undr-1);
-%             filestoprocess=dir([pathe '*' floatname '*.nc']);
-            filestoprocess=[dir([pathe 'D' q(2:end) '*.nc']);dir([pathe 'R' q(2:end) '*.nc'])];
-            filestoprocess=orderfilesbycycle(filestoprocess);
+            floatname=allfilestoprocess(1).name(2:undr-1);          
         else
             floatname=q(2:end);
+        end
+        if ~isempty(allfilestoprocess_b)
+            clean(pathe,allfilestoprocess,1);
+            allfilestoprocess=[dir([pathe 'BD' q(2:end) '*.nc']);dir([pathe 'BR' q(2:end) '*.nc'])];
+            filestoprocess_b=orderfilesbycycle(allfilestoprocess);
+            names = strvcat(filestoprocess.name);
+            names_b = strvcat(filestoprocess_b.name);
+            if  any(any(names~=names_b(:,2:end)))
+                error('Current version of the code requires that core and b files match exactly');
+            else
+                filestoprocess(:,2)=filestoprocess_b;
+            end
         end
         if largu>2
             qow=argu{3};

@@ -1,5 +1,20 @@
+function writehtml(s,floatNum,pathe,s_b)
+% WRITEHTML Output the Argo DMQC HTML file
+%   USAGE: writehtml(s,floatNum,pathe)
+%   INPUTS:
+%       s - Data structure
+%       floatNum - Float number
+%       pathe - Path to which the HTML file should be written
+%       s_b - B-file data structure (optional)
+%   VERSION HISTORY:
+%       May 2017: Current working version (changes not tracked)
+%       7 Jun. 2017, Isabelle Gaboury: Removed placeholders for plots not
+%           produced by the OW process
+%       8 Aug. 2017, IG: Added options to output DOXY results, fixed HTML
+%           references to raw/adjusted plots, added documentation
 
-function writehtml(s,floatNum,pathe)
+if nargin<4, s_b=[]; end
+
 clear cyc
 fid=fopen([pathe floatNum 'calib.htm'],'w');
 fprintf(fid,'<html><body>')
@@ -15,6 +30,9 @@ fprintf(fid,'Results:<br>');
 fprintf(fid,'<a href="#TS">TS Plots raw/adjusted</a><br>');
 fprintf(fid,'<a href="#TEMP">TEMP raw/adjusted</a><br>');
 fprintf(fid,'<a href="#PSAL">PSAL raw/adjusted</a><br>');
+if ~isempty(s_b) && isfield(s_b,'DOXY')
+    fprintf(fid,'<a href="#DOXY">DOXY raw/adjusted</a><br>');
+end
 fprintf(fid,'------<br>');
 
 fprintf(fid,'<a name="diagP">Pressure Diagnosis Plots</a><br>');
@@ -40,15 +58,27 @@ fprintf(fid,'<a name="err"><br>PSAL_ADJUSTED_ERROR</a><br>');
 fprintf(fid,[linimg([floatNum '_PSAL_err.png']) '<br>']);
 fprintf(fid,'<br>');
 
-
 vars=fieldnames(s(1)); vars=vars(1:3); %remove doxy
+n_core=length(vars);
+if ~isempty(s_b) && isfield(s_b,'DOXY'), vars{n_core+1}='DOXY'; end
+vars_isb = [zeros(1,n_core), ones(1,length(vars)-n_core)];
 for j=1:length(vars)
     varr=vars{j};
-    for i=1:length(s)
-        coeff{i}=s(i).(varr)(end).coefficient';
-        comm{i}=s(i).(varr)(end).comment';
-        equ{i}=s(i).(varr)(end).equation';
-        cyc(i)=s(i).(varr)(end).cyc';
+    clear coeff comm equ cyc;
+    if vars_isb(j)
+        for i=1:length(s_b)
+            coeff{i}=s_b(i).(varr)(end).coefficient';
+            comm{i}=s_b(i).(varr)(end).comment';
+            equ{i}=s_b(i).(varr)(end).equation';
+            cyc(i)=s_b(i).(varr)(end).cyc';
+        end
+    else
+        for i=1:length(s)
+            coeff{i}=s(i).(varr)(end).coefficient';
+            comm{i}=s(i).(varr)(end).comment';
+            equ{i}=s(i).(varr)(end).equation';
+            cyc(i)=s(i).(varr)(end).cyc';
+        end
     end
     ucomm=unique(comm);
     uequ=unique(equ);
@@ -71,7 +101,7 @@ for j=1:length(vars)
         end
     end
     %----
-    fprintf(fid,['----- <br> <a name="#' varr '">']);
+    fprintf(fid,['----- <br> <a name="' varr '">']);
     if ~strcmp(varr,'PRES')
         fprintf(fid,['raw & adjust</a><br>']);
 

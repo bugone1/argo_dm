@@ -1,4 +1,4 @@
-function viewplots(lo_system_configuration,local_config,floatNum)
+function viewplots_ig(lo_system_configuration,local_config,floatNum)
 % VIEWPLOTS Review results of OW calculations on Argo floats, choose
 %   adjustment factors, and apply to the NetCDF files.
 %   USAGE:
@@ -15,8 +15,9 @@ function viewplots(lo_system_configuration,local_config,floatNum)
 %           temp files
 %       17 Jul. 2017, IG: Fixed a broken special character in the comment
 %           for the PSAL calibration factor
-%       3 Aug. 2017, IG: Modify the regular expression passed to
-%           getoldcoeffs to ignore files other than core-Argo files.
+%       3 Aug. 2017, IG: Renamed to viewplots_ig to make use of a fork of
+%           the piaction_psal code. Modified the regular expression passed
+%           to  getoldcoeffs to ignore files other than core-Argo files.
 
 conf.dbname=lo_system_configuration.DBNAME;
 conf.swname=lo_system_configuration.SWNAME;
@@ -43,11 +44,11 @@ min_err=str2num(local_config.MIN_MAP_ERR)*ones(size(pcond_factor));
 % vs. new coefficients, however, and so is not critical.
 oldcoeff=getoldcoeffs([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep 'D' floatNum '*.nc']);
 oldcoeff=[oldcoeff, getoldcoeffs([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep 'R' floatNum '*.nc'])];
-displaygraphs;
+displaygraphs_fun(lo_system_configuration.FLOAT_PLOTS_DIRECTORY,floatNum,-1);
 % The load/save lines for piaction can optionally be used to restore previous results and skip the 
 % call to piaction_psal. The file piaction.mat is not used outside this routine.
 % load piaction CellK slope offset start ende psalflag adjpsalflag
-[CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal(PROFILE_NO,pcond_factor,oldcoeff);
+[CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal_ig(PROFILE_NO,pcond_factor,oldcoeff);
 % save piaction CellK slope offset start ende psalflag adjpsalflag
 
 beg=piaction_pres(lo_system_configuration,floatNum);
@@ -141,7 +142,6 @@ for i=1:length(PROFILE_NO)
     end
     %---------
     flnmp=[floatNum '_' num2str(PROFILE_NO(i),'%03d') '.nc'];
-    output_flnm=['R' flnmp];
     lastnan=find(diff(isnan([PRES(:,i);nan]))>0);
     if ~isempty(lastnan)
         x=1:lastnan(end);
@@ -149,12 +149,18 @@ for i=1:length(PROFILE_NO)
         x=1:length(t(ok).pres);
     end
     %CREATE DTOs
-    ingested_flnm=dir([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep '*' flnmp]);
-    clear flnm
-    flnm.input=[local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep ingested_flnm(1).name];
-    %if all(isnan(PRES(x,i)))
-    %    copyfile(input_flnm,[local_config.OUT 'error\' output_flnm]);
-    %else
+    ingested_flnm=dir([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep '*' flnmp]); 
+    clear flnm flnm_b
+    if length(ingested_flnm)==2
+        if strfind(ingested_flnm(1).name,'B')==1
+            flnm.input=[local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep ingested_flnm(2).name];
+            flnm_b.input=[local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep ingested_flnm(1).name];
+        else error('Possible problem with file names');
+        end
+    else
+        flnm.input=[local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep ingested_flnm(1).name];
+        flnm_b.input=[];
+    end
     %VALUES
     if CellK(i)~=1 && ~isnan(CellK(i))
         tem.PSAL=sw_salt(cal_COND(x,i)*CellK(i)/pcond_factor(i)/sw_c3515,PTMP(x,i),0*SAL(x,i));
@@ -167,7 +173,13 @@ for i=1:length(PROFILE_NO)
     %        %            uc='unchanged';
     %    end
     uc='changed';
-    flnm.output=[local_config.OUT uc filesep output_flnm];
+    % We assume R files here, but this will be fixed up by rewrite_nc
+    flnm.output=[local_config.OUT uc filesep 'R' flnmp];
+    if ~isempty(flnm_b.input)
+        flnm_b.output=[local_config.OUT uc filesep 'BR' flnmp];
+    else
+        flnm_b.output=[];
+    end
     tem.PRES=PRES(x,i);
     %FLAGS
     [qc.PRES.ADJ,qc.PRES.RAW]=deal(char(t(ok).pres_qc(x)));
@@ -202,6 +214,20 @@ for i=1:length(PROFILE_NO)
     end
     err.PSAL=max(err.PSAL,str2num(local_config.MIN_MAP_ERR));
     err.TEMP=.002*ones(length(x),1);
+    % DOXY-related fields. We set the qc flags, but because there is
+    % generally no adjustment available we don't need to set the errors
+    % TODO: Other DOXY fields??
+    % TODO: Will eventully have to deal with adjustments for the sensors
+    % that have them.
+    if isfield(t(ok),'doxy')
+        [qc.DOXY.ADJ,qc.DOXY.RAW]=deal(char(t(ok).doxy_qc(x)));
+    end
+    if isfield(t(ok),'temp_doxy')
+        [qc.TEMP_DOXY.ADJ,qc.TEMP_DOXY.RAW]=deal(char(t(ok).temp_doxy_qc(x)));
+    end
+    if isfield(t(ok),'phase_delay_doxy')
+        [qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
+    end
     flnm.input
 %     if findstr('4901189',flnm.input)
 %         if PROFILE_NO(i)>15
@@ -239,5 +265,8 @@ for i=1:length(PROFILE_NO)
     end
     rawpress=tem.PRES-addcoeff; %raw pressure vector calculated this way for sorting purposes
     rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
+    if ~isempty(flnm_b.input)
+        rewrite_nc(flnm_b,tem,qc,err,CalDate,conf,scical,rawpress);
+    end
 end
 22;

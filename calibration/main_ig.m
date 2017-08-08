@@ -11,7 +11,7 @@ close all;
 ftp_user = 'igabouryi@sshreadwrite';
 
 % Default inputs. See menudmqc_ig.m for options for argu
-if nargin < 1, 
+if nargin < 1 
     region = input('Select region (atlantic/pacific, default is pacific)? ','s');
 end
 region = lower(region);
@@ -76,7 +76,7 @@ while ~isempty(filestoprocess) || ow(1)
         end
     end
     if ow(2)
-        presMain(local_config,lo_system_configuration,filestoprocess,floatnames{i}); %find pressure correction
+        presMain(local_config,lo_system_configuration,filestoprocess(:,1),floatnames{i}); %find pressure correction
         fname = interactive_qc_ig(local_config,filestoprocess); %visual qc
         % An empty value for fname indicates that the user quit the
         % process, and source files should not be created.
@@ -96,7 +96,7 @@ while ~isempty(filestoprocess) || ow(1)
     end
     if ow(4)
         set(0,'defaultfigureWindowStyle','normal')
-        viewplots(lo_system_configuration,local_config,floatnames{i});
+        viewplots_ig(lo_system_configuration,local_config,floatnames{i});
     end
     if ow(5)
         reducehistory(local_config,floatnames{i});

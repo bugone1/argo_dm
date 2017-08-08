@@ -1,4 +1,15 @@
 function oldcoeff=getoldcoeffs(fname)
+% GETOLDCOEFFS Fetch existing calibration coefficients from NetCDF files
+%   USAGE:
+%       oldcoeff=getoldcoeffs(fname)
+%   INPUTS:
+%       fname - File name, can include wildcards
+%   OUTPUTS:
+%       oldcoeff - Vector of calibration factors, one per file found
+%   VERSION HISTORY:
+%       27 Jan. 2015: Current working version (changes not tracked)
+%       3 Aug. 2017, Isabelle Gaboury: Added a clause to handle not finding
+%           any files; in this case oldcoeff is merely empty.
 pos=find(fname==filesep);
 pathe=fname(1:pos(end));
 ingested_flnm=dir(fname);
@@ -75,7 +86,9 @@ for j=1:length(ingested_flnm)
         oldcoeff(j)=str2num(comm((findstr(lower(comm),keyw)+length(keyw):virgule-1)));
     end
 end
-if sum(diff(n_calib)>1)>0
-    warning('Some cycles have been calibrated more often than others');
-    pause
+if ~isempty(oldcoeff)
+    if sum(diff(n_calib)>1)>0
+        warning('Some cycles have been calibrated more often than others');
+        pause
+    end
 end

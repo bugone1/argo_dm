@@ -1,5 +1,5 @@
 function out=nanmean(in,dim)
-% NANMEAN - Take the mean of a vector or matrix, excluding means. For a
+% NANMEAN Take the mean of a vector or matrix, excluding means. For a
 %   vector this returns the scalar mean. For a matrix this returns the mean
 %   along the specified dimension, or along the first dimension if none is
 %   specified.

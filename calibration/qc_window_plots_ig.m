@@ -1,4 +1,4 @@
-function h_ax=qc_window_plots_ig(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr)
+function h_ax=qc_window_plots_ig(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr,h_container)
 % QC_WINDOW_PLOTS - Create subplots for QC purposes
 %   DESCRIPTION:
 %       Create subplots for QC, showing the current QC flags. Note that
@@ -15,11 +15,15 @@ function h_ax=qc_window_plots_ig(axedesxy,clim,qcxy,labs,xyt,crn,pfn,subplot_arr
 %       crn - Platform string
 %       pfn - Station/cycle string
 %       subplot_arr - Array descriptor of the subplot
+%       h_container - Handle to the container to use
 %   OUTPUTS:
 %       h_ax - Handle to the subplot axes
 %   VERSION HISTORY:
 %       25 May 2017, Isabelle Gaboury: Created, based on code in the
 %           vms_tools directory dated 9 January 2017.
+%       Jun.-Jul. 2017, IG: Fairly heavy rework as update the rest of the
+%           visual QC routines.
+%       Aug. 2017 - Added container input
 
 % Setup
 colscheme='bymr';
@@ -31,7 +35,7 @@ end
 crn=strtok(crn,' ');
 
 % Plotting
-h_ax=subplot(subplot_arr(1),subplot_arr(2),subplot_arr(3));
+h_ax=subplot(subplot_arr(1),subplot_arr(2),subplot_arr(3),'parent',h_container);
 hold on;
 xyt=double(xyt);
 set(gcf,'units','normalized')%,'position',[0 0 1 1]);
@@ -46,7 +50,7 @@ if subplot_arr(end) == floor(subplot_arr(2)/2)
             min(xyt(:,1)),max(xyt(:,1)),min(xyt(:,2)),max(xyt(:,2))));
     end
 end
-if strcmp(labs(2,:),'pres')
+if strcmp(labs(2,1:4),'pres')
     rn='reverse';
 else
     rn='normal';
@@ -67,7 +71,7 @@ set(gca,'ylim',yylim);
 
 % Array of QC values
 % To start we assume we're flagging the x-axis
-xlabel([labs(1,:), ' - flags from this axis currently shown']);
+xlabel(strrep(labs(1,:),'_','\_'), 'fontweight','bold');
 ylabel(labs(2,:));
 % For each possible QC flag, plot the points
 h_qc = cell(length(colscheme),2);

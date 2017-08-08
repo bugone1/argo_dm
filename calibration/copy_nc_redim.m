@@ -1,5 +1,5 @@
 function copy_nc_redim(input,output,redimname,num)
-% COPY_NC_REDIM - Copy a NetCDF file, changing a dimension in the process
+% COPY_NC_REDIM Copy a NetCDF file, changing a dimension in the process
 %   USAGE: copy_nc_redim(input,output,redimname,num)
 %   INPUTS:
 %       input - Input NetCDF file name

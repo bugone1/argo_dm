@@ -1,44 +1,59 @@
-function [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal(PROFILE_NO,condslope,oldcoeff)
+function [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal_ig(PROFILE_NO,condslope,oldcoeff)
+% PIACTION_PSAL Select a salinity adjustment based on OW output (Isabelle's
+%   fork)
+%   USAGE: 
+%       [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal(PROFILE_NO,condslope,oldcoeff)
+%   INPUTS:
+%       PROFILE_NO - List of profile numbers
+%       consdslope - pcond_factor from the OW code
+%       oldcoeff - Old conversion coefficient
+%   OUTPUTS:
+%       Still in the process of documenting these...
+%   VERSION HISTORY:
+%       3 Aug. 2017, Isabelle Gaboury: Written, based on piaction_psal.m
+%           dated 25 July 2017
+
+% Initialize flags
 psalflag=ones(size(PROFILE_NO))*'1';
 adjpsalflag=ones(size(PROFILE_NO))*'0';
-q=input('Press q if you don''t want to adjust salinity with GUI','s');
+
+% Give the user the option to set all conversion factors and flags to 1
+q=input('Press q to skip GUI-based salinity adjustment and accept adjustment=1, or any other key to continue','s');
+
+% Interactively select a salinity adjustment
 if isempty(q) || q~='q'
-    condslope(isnan(condslope(:)) | condslope(:)>1.15 | condslope(:)<.85)=nan;
+    
     close all;
-    iter=0;decision=char(PROFILE_NO(:)*0+32);
+    
+    % Check that the slope is between 0.85 and 1.15
+    condslope(isnan(condslope(:)) | condslope(:)>1.15 | condslope(:)<.85)=nan;
+   
+    decision=char(PROFILE_NO(:)*0+32);
     CellK=condslope;
-    ok=1:length(PROFILE_NO);
     nok=isnan(condslope);
     decision(nok)='N';
     profdecided=PROFILE_NO(decision~=32);
-    %    ok=unique([ok(~nok) length(PROFILE_NO)]);
-    ok=1:length(PROFILE_NO);
-    endpoint=[nan nan];
-    while length(profdecided)<length(PROFILE_NO)
-        iter=iter+1;
-        v(iter)=PiAction(PROFILE_NO(ok),condslope(ok),endpoint,oldcoeff(ok));
-        endpoint=[v(end).start v(end).condcalc(ok(1))];
-        sprintf('Fit is from %i to %i with error of %f',[v(iter).start v(iter).end v(iter).err])
+    v = PiAction_ig(PROFILE_NO,condslope,oldcoeff);
+    sprintf('Fit is from %i to %i with maximum error of %f',[min([v.start]) max([v.end]) max([v.err])])
+    if min([v.prof])>min(PROFILE_NO) || max([v.prof])<max(PROFILE_NO), yn='n';
+    else
         yn=input('Accept without modification (Y/[N])?','s');
-        ok=1:v(iter).ok(1)-1;
-        if lower(yn)=='y'
-            [tr,i]=intersect(PROFILE_NO,v(iter).prof);
-            decision(i)='F';
-            profdecided=PROFILE_NO(find(decision~=32));
-        else
-            [acc,i]=askquestion('Enter range of profiles which should accept climatology (-1 for all, 0 for all not yet selected, empty for none)',PROFILE_NO,profdecided);
+    end
+    prof_all=[v.prof];
+    if lower(yn)=='y'
+        [tr,i]=intersect(PROFILE_NO,prof_all);
+        decision(i)='F';
+    else
+        while lower(yn)=='n'
+            [acc,i]=askquestion('Enter range of profiles which should accept climatology (start:end, -1 for all, 0 for all not yet selected, empty for none)',PROFILE_NO,profdecided);
             if ~isempty(i)
                 decision(i(1):i(end))='C';
-                profdecided=PROFILE_NO(find(decision~=32));
-                endpoint=[PROFILE_NO(ok(1)) condslope(ok(1))];
-                ok=ok(1:i(1)-1);
+                profdecided=PROFILE_NO(decision~=32);
             end
-            [nnot,i]=askquestion('Enter range of profiles which should NOT accept climatology (-1 for all, 0 for all not yet selected, empty for none)',PROFILE_NO,profdecided);
+            [nnot,i]=askquestion('Enter range of profiles which should use r=1 (start:end, -1 for all, 0 for all not yet selected, empty for none)',PROFILE_NO,profdecided);
             if ~isempty(i)
                 decision(i(1):i(end))='N';
-                profdecided=PROFILE_NO(find(decision~=32));
-                endpoint=[nan nan];
-                ok=ok(1:i(1)-1);
+                profdecided=PROFILE_NO(decision~=32);
             end
             [nnot,i]=askquestion('Enter range of profiles which should keep last adjustment (-1 for all, 0 for all not yet selected, empty for none)',PROFILE_NO,profdecided);
             if ~isempty(i)
@@ -48,10 +63,12 @@ if isempty(q) || q~='q'
                 end
                 decision(i(1):i(end))='K';
                 profdecided=PROFILE_NO(decision~=32);
-                if ~isempty(ok)
-                    endpoint=[PROFILE_NO(ok(1)) condslope(ok(1))];
-                    ok=ok(1:i(1)-1);
-                end
+            end
+            % Are there any profiles still needing to be decided?
+            if min([v.prof])==min(PROFILE_NO) && max([v.prof])==max(PROFILE_NO)
+                yn='Y';
+            else
+                sprintf('Undecided profiles remain');
             end
         end
     end
@@ -70,6 +87,7 @@ else
     end
     [slope,offset,start,ende]=deal(nan);
 end
+set(findobj('color','g','linestyle','-'),'xdata',PROFILE_NO,'ydata',CellK);
 ok=CellK>1;
 if any(ok)
     [find(ok)' CellK(ok)']
@@ -137,3 +155,6 @@ if ~isempty(ba) && ba>0
     adjpsalflag(PROFILE_NO>=ba & adjpsalflag<'4')='4';
 end
 adjpsalflag=char(adjpsalflag);
+
+end
+

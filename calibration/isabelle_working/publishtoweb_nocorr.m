@@ -2,13 +2,17 @@
 % This version assumes that there is no OW correction; this doesn't affect
 % the output at all, but skips a plotting stage.
 % Isabelle Gaboury, 1 June 2017, based on the main version dated 3 February
-% 2017.
+%   2017.
+% IG, 26 July 2017: Cleaned up and commented
 
 function publishtoweb_nocorr(local_config,lo_system_configuration,floatNum,pub)
+
 close all
 opathe=lo_system_configuration.FLOAT_PLOTS_DIRECTORY;
 pathe=[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep];
 uc='changed';
+
+%Output files
 flnm=dir([local_config.OUT uc filesep '*' floatNum '_*.nc']);
 uflnm=char(flnm.name);
 flnm2=uflnm(:,2:end);
@@ -18,50 +22,19 @@ todel=dup(uflnm(dup,1)=='R');
 for i=1:length(todel)
     delete([local_config.OUT uc filesep flnm(todel(i)).name]);
 end
+
+% Read in the original files
 for i=1:length(flnm);
     flnm(i)
     [s(i),h(i)]=getcomments([local_config.OUT uc filesep flnm(i).name]);
     t(i)=read_nc([local_config.OUT uc filesep flnm(i).name]);
 end
-col='rgbymck';
-sym='o.+udvs';
-texx={'Previous','New'};
-[x,y,z]=getcoeffs(s);
-save foranh x y z
-% The plotting is skipped here, because we don't have the OW procesising
-% output
-% load([lo_system_configuration.FLOAT_CALIB_DIRECTORY filesep 'cal_' floatNum '.mat'],'pcond_factor','PROFILE_NO');
-% for i=1:2
-%     dates=minmax(x(:,i));
-%     if ~all(isnan(dates))
-%         a(i)=plot(z,y(:,i),[col(i) sym(i)]);
-%         legtext{i}=[texx{i} ' ' datestr(dates(1),1) ':' datestr(dates(2),1)];
-%     else
-%         a(i)=0;
-%         legtext{i}=[];
-%     end
-% end
-% a(3)=plot(PROFILE_NO,pcond_factor,'.b');
-% legtext{3}='OW recommendation';
-% ylabel('Multiplicative conductivity coefficient');
-% xlabel('Cycle #');
-% clear j
-% ii=0;
-% for i=1:length(legtext)
-%     if ~isempty(legtext{i})
-%         ii=ii+1;
-%         j(ii)=i;
-%     end
-% end
-% legend(a(j),legtext(j));
-% if ispc
-%     print('-dpng',[pathe floatNum '_PSAL_conductivity_adjustment.png']);
-% end
-% close
 
+% Create what we can of the HTML file
 try
     writehtml(s,floatNum,pathe)
 catch
+    disp('Error writing HTML');
 end
 suff={'','_adjusted'};
 titre={'raw','adjusted'};
@@ -103,14 +76,12 @@ for i=1:2 %raw then adj
     xlim=minmax(X);
     for j=1:2 %sal then temp
         Z=ts(:,j);     %parm value
-        ZZg{i,j}=Z;    %Store value for later plotting
         ok=tsf(:,j)>2; %set all values with flags>2 to nan
         Z(ok)=nan;
         zlim1=minmax(Z);
         contour_plot(X,Y,Z,xlim,ylim,zlim1);
         title([floatNum ' ' vars{j} ' ' titre{i} ' flags 1 & 2']);
-        XXg{i,j}=X;        YYg{i,j}=Y;        
-        Z1=Z;
+        XXg{i,j}=X;        YYg{i,j}=Y;     ZZg{i,j}=ts(:,j);   
         if ~any(isnan(zlim1)), set(gca,'xlim',xlim,'ylim',ylim,'clim',zlim1); end
         print('-dpng',[pathe floatNum '_' vars{j} '_' titre{i}(1) '.png']);
         close
@@ -119,19 +90,12 @@ for i=1:2 %raw then adj
         Z(ok)=nan;
         contour_plot(X,Y,Z,xlim,ylim,minmax([Z(:); zlim1(:)]));
         title([floatNum ' ' vars{j} ' ' titre{i} ' flags 3 & 4']);
-        XXb{i,j}=X;        YYb{i,j}=Y;        ZZb{i,j}=Z;
-        Z2=Z;
         if ~any(isnan(zlim1)), set(gca,'xlim',xlim,'ylim',ylim,'clim',zlim1); end
         print('-dpng',[pathe floatNum '_' vars{j} '_' titre{i}(1) '_3&4.png']);
         close
     end
 end
 
-% for i=1:2 %repopulate ZZg with all values all flags 
-%     for j=1:2 %sal then temp
-%         ZZg(i,j)=ts(i,j);	%parm value
-%     end
-% end
 for j=1:2
     title([floatNum ' ' vars{j} ' ADJ-RAW' ]);
     X=XXg{2,j};
@@ -192,30 +156,17 @@ if pub
     zip(floatNum,[local_config.OUT uc filesep '*' floatNum '_*.nc']);
 end
 
-% The actual FTP stage is currently commented out, as this is not currently
-% working
-% if ~ispc
-%     f=ftp('ftp.meds-sdmm.dfo-mpo.gc.ca','alphapro','aiLahm4u');
-%     binary(f);
-%     cd(f,'/pub/Argo/DM/PICorner')
-%     cd(pathe)
-%     mput(f,['*' floatNum '*.png']);
-%     ascii(f);
-%     mput(f,['*' floatNum '*.htm']);
-%     cd(opathe)
-%     binary(f);
-%     mput(f,['*' floatNum '*.png']);
-%     cd(f,'/pub/Argo/DM');
-%     binary(f);
-%     if pub
-%         cd('../../../calibration')
-%         mput(f,[floatNum '.zip'])
-%     end
-%     close(f)
-% end
-
-% Following temporary lines are just to help the copy
-display('Things needing to be copied...');
-display([pathe '*' floatNum '*.png']);
-display([opathe '*' floatNum '*.png']);
-display(['calibration/' floatNum '.zip']);
+% Create the file containing the FTP commands that can be input to sftp (as
+% with the main version of publishtoweb). The user must carry out the FTP
+% themselves (after checking the files)
+fid=fopen(['sftp_' floatNum '.txt'],'w');
+fprintf(fid,'cd /pub/Argo/DM/PICorner\n');
+fprintf(fid,['put ' pathe '*' floatNum '*.png\n']);
+fprintf(fid,['put ' pathe '*' floatNum '*.htm\n']);
+fprintf(fid,['put ' opathe '*' floatNum '*.png\n']);
+fprintf(fid,'cd /pub/Argo/DM\n');
+if pub
+    fprintf(fid,['put ' opathe '../../../calibration' filesep floatNum '.zip\n']);
+end
+fprintf(fid,'bye');
+fclose(fid);

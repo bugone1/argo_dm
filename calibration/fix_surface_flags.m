@@ -1,7 +1,7 @@
 function fix_surface_flags(floatname, floattype, preserve_existing_flags)
-% FIX_SURFACE_FLAGS - Fix flags for floats with lots of pressures very near
+% FIX_SURFACE_FLAGS Fix flags for floats with lots of pressures very near
 %   the surface
-%   DESCRIPTION - Some Argo floats may have large numbers of points at or
+%   DESCRIPTION Some Argo floats may have large numbers of points at or
 %       near the surface, which may or may be flagged during RT QC. This
 %       routines adjusts flags based on the float_type and Argo QC rules.
 %       Pressures <=0 are set to 3 (might be fixed via the pressure
@@ -14,15 +14,17 @@ function fix_surface_flags(floatname, floattype, preserve_existing_flags)
 %       floatname - Float number, as a string
 %       floattype - Must currently be 'NOVA', and this is the default.
 %       preserve_existing_flags - Set this to 1 to only change flags where
-%           the level will be increased. Should normally be left as 0 (the
-%           default), but can be useful in reprocessing files that have
-%           already undergone visual QC.
+%           the level will be increased; set to 2 to only preserve flags on
+%           T,S, but not P. Should normally be left as 0 (the default), but
+%           can be useful in reprocessing files that have already undergone
+%           visual QC.
 %   OUTPUTS:
 %       None, but the .mat file is updated
 %   VERSION HISTORY:
 %       07 June 2017, Isabelle Gaboury: Created
 %       14 July 2017, IG: floattype parameter updated, flagging rules
 %           updated based on the QC manual.
+%       26 July 2017, IG: Added option for preserve_existing_flags=2
 
 % Default is NOVA floats, no existing flags to preserve
 if nargin < 3, preserve_existing_flags = 0; end
@@ -73,14 +75,16 @@ for ii_prof=1:length(t)
         else
             new_flags = [old_flags(1,1) '3' '3'; '1' '1' '1'];
         end
-        % Also set the pressure to '3' if it's at or less than 0. Note that
-        % the second clause on the IF is temporary, just to avoid undoing
-        % my previous work
-        if t(ii_prof).pres(1) <= 0 && t(ii_prof).pres_qc(1)<'4', 
+        % Also set the pressure to '3' if it's at or less than 0. 
+        if t(ii_prof).pres(1) <= 0
             new_flags(1,1) = '3';
         end
         % Preserve existing flags if requested
-        if preserve_existing_flags, new_flags = char(max(old_flags,new_flags)); end
+        if preserve_existing_flags==1   % Keep the higher flag for all 3 variables
+            new_flags = char(max(old_flags,new_flags)); 
+        elseif preserve_existing_flags==2 % Keep the higher flag for only T,S, new flags for P
+            new_flags(:,2:3) = char(max(old_flags(:,2:3),new_flags(:,2:3))); 
+        end
         % Deal to the orginal structure
         t(ii_prof).pres_qc(1:2) = new_flags(:,1)';
         t(ii_prof).temp_qc(1:2) = new_flags(:,2)';

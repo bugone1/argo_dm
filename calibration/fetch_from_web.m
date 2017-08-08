@@ -7,6 +7,8 @@ function fetch_from_web(dire, floatname)
 %   VERSION HISTORY:
 %       06 June 2017, Isabelle Gaboury: Created, based on menudmqc.m dated
 %           2 Feb. 2017.
+%       24 July 2017, IG: Files that were previously downloaded are now
+%           deleted before fetching the new files.
 
 % FTP configuration
 ftpaddress.ifremer='ftp.ifremer.fr';
@@ -28,24 +30,30 @@ if isempty(strmatch(floatname,allfloats)) %we don't have this float
     mget(f,'*.nc',pathe);
     todown=1;
 else
+    % IG, 24 July 2017: Older version of the code avoids re-fetching files
+    % that have already been downloaded. After discussion with Mathieu,
+    % decided to always fetch the official versions
     sublist=dir(f,'*.nc');
-    locsublist=dir([pathe '*' floatname '*.nc']);
-    a1=lower(char(sublist.name));    %what's on the server
-    a2=lower(char(locsublist.name)); %what's on disk
-    a2=a2(cat(1,locsublist.bytes)>0,:);
-    [tr,ok1]=setdiff(a1(:,2:end),a2(:,2:end),'rows');
-    todown=char(sublist(ok1).name);
-    remnames=char(sublist.name);
-    [tr,ok1,ok2]=intersect(lower(remnames),lower(char(locsublist.name)),'rows');
-    todown2=remnames(ok1(cat(1,sublist(ok1).datenum)>fix(cat(1,locsublist(ok2).datenum))),:);
-    if ~isempty(todown2)
-        yn=input('Do you want to download newer versions of cycle files that already existed ? (1/0)');
-        if yn==1
-            todown=[todown; todown2];
-        end
-    end
+%     locsublist=dir([pathe '*' floatname '*.nc']);
+%     a1=lower(char(sublist.name));    %what's on the server
+%     a2=lower(char(locsublist.name)); %what's on disk
+%     a2=a2(cat(1,locsublist.bytes)>0,:);
+%     [tr,ok1]=setdiff(a1(:,2:end),a2(:,2:end),'rows');
+%     todown=char(sublist(ok1).name);
+%     remnames=char(sublist.name);
+%     [tr,ok1,ok2]=intersect(lower(remnames),lower(char(locsublist.name)),'rows');
+%     todown2=remnames(ok1(cat(1,sublist(ok1).datenum)>fix(cat(1,locsublist(ok2).datenum))),:);
+%     if ~isempty(todown2)
+%         yn=input('Do you want to download newer versions of cycle files that already existed ? (1/0)');
+%         if yn==1
+%             todown=[todown; todown2];
+%         end
+%     end
+    delete([pathe '*' floatname '*.nc']);   % Delete previously-downloaded files
+    todown = char(sublist.name);
+    todown = todown(todown(:,1)~='M',:);    % 'M' files are automatically generated at the GDAC
     for j=1:size(todown,1)
-        display(['downloading' todown(j,:) ' in ' pathe]);
+        display(['downloading ' todown(j,:) ' in ' pathe]);
         mget(f,deblank(todown(j,:)),pathe);
     end
 end

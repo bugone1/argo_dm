@@ -1,5 +1,5 @@
 function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
-% PUBLISHTOWEB - Prepare plots summarizing the result of Argo DMQC,
+% PUBLISHTOWEB Prepare plots summarizing the result of Argo DMQC,
 %   assemble plots and updated NetCDF files, upload to the MEDS FTP site
 % USAGE: 
 %   publishtoweb(local_config,lo_system_configuration,floatNum,pub)
@@ -16,12 +16,14 @@ function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
 %       files
 %   user_id - FTP user ID
 % VERSION HISTORY:
-%   3 February 2017 (and before): Creation and updates, history not tracked
+%   03 Feb. 2017 (and before): Creation and updates, history not tracked
 %       here
-%   20 June 2017, Isabelle Gaboury: Added documentation header; changed the
+%   20 Jun. 2017, Isabelle Gaboury: Added documentation header; changed the
 %       figure export calls slightly so that PNGs are created on both
 %       Windows and Linux systems (assuming the Java desktop is available)
-%   23 June 2017, IG: Modified the FTP option to use FTP
+%   23 Jun. 2017, IG: Modified the FTP option to use FTP
+%   02 Aug. 2017, IG: ZIP files now stored in a "zip" sub-directory
+%   08 Aug. 2017, IG: Added DOXY plots
 
 % Close any existing plots so we can start with a clean slate
 close all
@@ -34,14 +36,22 @@ uflnm=char(flnm.name);
 flnm2=uflnm(:,2:end);
 [ii,jj]=unique(flnm2,'rows');
 dup=setdiff(1:size(uflnm,1),jj);
-todel=dup(uflnm(dup,1)=='R');
+todel=dup(uflnm(dup,1)=='R' | uflnm(dup,2)=='R');
 for i=1:length(todel)
     delete([local_config.OUT uc filesep flnm(todel(i)).name]);
 end
+is_bfile=uflnm(:,1)=='B';
+flnm_b=flnm(is_bfile);
+flnm=flnm(~is_bfile);
 for i=1:length(flnm);
     flnm(i)
     [s(i),h(i)]=getcomments([local_config.OUT uc filesep flnm(i).name]);
     t(i)=read_nc([local_config.OUT uc filesep flnm(i).name]);
+end
+for i=1:length(flnm_b);
+    flnm_b(i)
+    [s_b(i),h_b(i)]=getcomments([local_config.OUT uc filesep flnm_b(i).name]);
+    t_b(i)=read_nc([local_config.OUT uc filesep flnm_b(i).name],1);
 end
 col='rgbymck';
 sym='o.+udvs';
@@ -78,19 +88,27 @@ end
 close
 
 try
-    writehtml(s,floatNum,pathe)
+    writehtml(s,floatNum,pathe,s_b)
 catch
+    warning('Error writing HTML file');
 end
 suff={'','_adjusted'};
 titre={'raw','adjusted'};
 col='bgmr';
 vars={'PSAL','TEMP'};
+if ~isempty(flnm_b) && isfield(t_b,'doxy'), vars{3}='DOXY'; end
 clear XX YY ZZ
 for i=1:2 %raw then adj
     ts=[cat(2,t.(['psal' suff{i}])); cat(2,t.(['temp' suff{i}]))]';
+    if length(vars)==3
+        ts(:,3) = cat(2,t_b.(['doxy' suff{i}]))';
+    end
     ts(ts==99999)=nan;
     tsf=[(cat(2,t.(['psal' suff{i} '_qc']))-'0')' (cat(2,t.(['temp' suff{i} '_qc']))-'0')'];
-    mtsf=max(tsf,[],2);
+    if length(vars)==3
+        tsf(:,3) = (cat(2,t_b.(['doxy' suff{i} '_qc']))-'0')';
+    end
+    mtsf=max(tsf(:,1:2),[],2);
     [leg,nu]=deal(zeros(4,1));
     for j=1:4
         nu(j)=sum(mtsf==j & ~isnan(ts(:,1)) & ~isnan(ts(:,2))); %find how many values associated with each flag
@@ -121,7 +139,7 @@ for i=1:2 %raw then adj
     Y(Y==99999 | abs(Y)>1e38)=nan;
     ylim=minmax(Y);
     xlim=minmax(X);
-    for j=1:2 %sal then temp
+    for j=1:length(vars) %sal then temp
         Z=ts(:,j);	%parm value
         ok=tsf(:,j)>2; %set all values with flags>2 to nan
         Z(ok)=nan;
@@ -147,7 +165,7 @@ for i=1:2 %raw then adj
     end
 end
 
-for j=1:2
+for j=1:length(vars)
     title([floatNum ' ' vars{j} ' ADJ-RAW' ]);
     X=XXg{2,j};
     Y=YYg{2,j};
@@ -211,8 +229,18 @@ if ispc || usejava('desktop')
     print('-dpng',[pathe floatNum '_TEMP_err.png']);
 end
 close
+% if ~isempty(flnm_b) && isfield(t_b,'doxy')
+%     err=cat(2,t_b.doxy_adjusted_error)';err(err==99999)=nan;
+%     contour_plot(X,Y,err,xlim,ylim,minmax(err)+[-.001 .001]);
+%     if ispc || usejava('desktop')
+%         print('-dpng',[pathe floatNum '_DOXY_err.png']);
+%     end
+%     close
+% end
+    
+% ZIP the NetCDF files
 if pub
-    zip(floatNum,[local_config.OUT uc filesep '*' floatNum '_*.nc']);
+    zip(['zip' filesep floatNum],[local_config.OUT uc filesep '*' floatNum '_*.nc']);
 end
 
 % Upload the files to the MEDS FTP server
@@ -263,7 +291,7 @@ fprintf(fid,['put ' pathe '*' floatNum '*.htm\n']);
 fprintf(fid,['put ' opathe '*' floatNum '*.png\n']);
 fprintf(fid,'cd /pub/Argo/DM\n');
 if pub
-    fprintf(fid,['put ' opathe '../../../calibration' filesep floatNum '.zip\n']);
+    fprintf(fid,['put ' opathe '..' filesep '..' filesep '..' filesep 'calibration' filesep 'zip' filesep floatNum '.zip\n']);
 end
 fprintf(fid,'bye');
 fclose(fid);

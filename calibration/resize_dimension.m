@@ -1,9 +1,17 @@
 function resize_dimension(ndimname,ndimleng,fname1)
-%function resize_dimension(ndimname,ndimleng,fname1)
-%Copies a file while editing one dimension
-%Crops all variables in the dimension which is being lowered
-%Program not written for multi dimension or augmenting dimensions but could
-%be modified to do so
+% RESIZE_DIMENSION Copies a file while editing one dimension. Crops all
+%   variables in the dimension which is being lowered. Program not written
+%   for multi dimension or augmenting dimensions but could be modified to
+%   do so.
+%   USAGE: resize_dimension(ndimname,ndimleng,fname1)
+%   INPUTS:
+%       ndimname - Name of the variable to resize
+%       ndimleng - Length to change to
+%       fname1 - Output file name
+%   VERSION HISTORY:
+%       16 September 2016: Current working version
+%       4 Aug. 2017, Isabelle Gaboury: Expanded documentation
+
 ncid_in=netcdf.open(fname1,'NOWRITE');
 fname2=char(round(rand(1,15)*26+65));
 ncid_out=netcdf.create(fname2,'WRITE');
