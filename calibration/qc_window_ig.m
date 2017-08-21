@@ -32,8 +32,9 @@ function [prof_data_qc,but]=qc_window_ig(prof_data,S,prof_data_qc,plot_labels,ti
 %   VERSION HISTORY:
 %       26 May 2017, Isabelle Gaboury: Created, based on code in the
 %           vms_tools directory dated 9 January 2017.
-%       Jun.-Jul. 2017, IG: Fairly heavy rework, customising the overall
+%       Jun.-Aug. 2017, IG: Fairly heavy rework, customising the overall
 %           visual QC process.
+
 
 % Configuration
 ui_position = [0.8 0 0.19 1];
@@ -73,7 +74,11 @@ setappdata(gui_fig,'indxy',1);  % We assume that we're doing QC on the x-variabl
 setappdata(gui_fig,'plot_labels',plot_labels);
 setappdata(gui_fig,'prof_data_qc',prof_data_qc);
 
-h_ui_plots = uipanel('position',[0,0,ui_position(1),1]);
+if isempty(findobj('parent',gui_fig,'type','uipanel','tag','ax_panel'))
+    h_ui_plots = uipanel('tag','ax_panel','position',[0,0,ui_position(1),1]);
+else
+    h_ui_plots = findobj('parent',gui_fig,'type','uipanel','tag','ax_panel');
+end
 ii_plot_core=0;
 ii_plot_doxy=0;
 for ii_plot = 1:n_plots
@@ -137,19 +142,25 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     uicontrol(h_ui,'style','checkbox','tag','link_axes_checkbox','string','Link axis y-extents',...
         'units','normalized','position',[x0_gui,y_cur,but_width,but_height],'selected','off',...
         'callback',@toggle_link_axes);
-    y_cur=y_cur-0.11;
+    y_cur=y_cur-but_height*4;
     % Skip button group
-    skip_bg = uibuttongroup('parent',h_ui,'position',[x0_gui,y_cur,but_width*2,0.1],...%0.18,0.1], ...
+    skip_bg = uibuttongroup('parent',h_ui,'position',[x0_gui,y_cur,but_width*2,but_height*4],...%0.18,0.1], ...
         'title', 'Skip to another profile');
     uicontrol(skip_bg,'Style','pushbutton','String','Next profile', ...
-        'Units','normalized', 'Position',[0,0.5,0.5,0.4], 'tag', 'skip_to_next_button', ...
+        'Units','normalized', 'Position',[0,0.67,0.5,0.28], 'tag', 'skip_to_next_button', ...
         'callback', @update_but_and_resume);
     uicontrol(skip_bg,'Style','pushbutton','tag','skip_to_prev_button','String','Previous profile', ...
-        'Units','normalized', 'Position',[0.5,0.5,0.5,0.4], 'callback', @update_but_and_resume);
+        'Units','normalized', 'Position',[0.5,0.67,0.5,0.28], 'callback', @update_but_and_resume);
     uicontrol(skip_bg,'Style','pushbutton','tag','skip_to_flagged_button','String','Next profile with flag>1', ...
-        'Units','normalized', 'Position',[0,0,0.75,0.4], 'callback', @update_but_and_resume);
+        'Units','normalized', 'Position',[0,0.33,0.75,0.28], 'callback', @update_but_and_resume);
     uicontrol(skip_bg,'Style','pushbutton','tag','skip_button','String','End', 'Units','normalized',...
-        'Position',[0.75,0,0.25,0.4], 'callback', @update_but_and_resume);
+        'Position',[0.75,0.33,0.25,0.28], 'callback', @update_but_and_resume);
+    uicontrol(skip_bg,'style','text','string','Cycle number','units','normalized',...
+        'position',[0,0,0.3,0.28],'horizontalalignment','left');
+    uicontrol(skip_bg,'style','edit','tag','skip_to_cycle_field','units','normalized',...
+        'position',[0.3,0,0.3,0.28]);
+    uicontrol(skip_bg,'style','pushbutton','tag','skip_to_cycle_button','String','Go',...
+        'units','normalized','position',[0.6,0,0.3,0.28],'callback', @update_but_and_resume);
     % Quit visual QC, either saving progress or not
     y_cur=y_cur-0.04;
     uicontrol('parent',h_ui,'tag','quit_button','string','Quit visual QC', ...
@@ -358,6 +369,11 @@ function update_but_and_resume(hObject, event, handles)
         case 'skip_to_prev_button', but=8;  % This is the backspace character
         case 'skip_button', but='q';
         case 'skip_to_flagged_button', but='s';
+        case 'skip_to_cycle_button'
+            foo=get(findobj('tag','skip_to_cycle_field'),'string');
+            if isempty(foo), return; 
+            else but=['s' foo];
+            end;
         case 'quit_button', but='Q';
     end
     setappdata(gcf,'but',but);

@@ -43,7 +43,7 @@ min_err=str2num(local_config.MIN_MAP_ERR)*ones(size(pcond_factor));
 % sometimes R files arrive late). This should only affect the plot of old
 % vs. new coefficients, however, and so is not critical.
 oldcoeff=getoldcoeffs([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep 'D' floatNum '*.nc']);
-oldcoeff=[oldcoeff, getoldcoeffs([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep 'R' floatNum '*.nc'])];
+oldcoeff=[oldcoeff; getoldcoeffs([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep 'R' floatNum '*.nc'])];
 displaygraphs_fun(lo_system_configuration.FLOAT_PLOTS_DIRECTORY,floatNum,-1);
 % The load/save lines for piaction can optionally be used to restore previous results and skip the 
 % call to piaction_psal. The file piaction.mat is not used outside this routine.

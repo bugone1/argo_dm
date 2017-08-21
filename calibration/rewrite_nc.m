@@ -78,6 +78,9 @@ DATE_CAL=CalDate;
 netcdf.putVar(f,netcdf.inqVarID(f,'DATE_UPDATE'),datestr(temptime,'yyyymmddHHMMSS'));
 netcdf.putVar(f,netcdf.inqVarID(f,'DATA_STATE_INDICATOR'),netstr('2C+',4));
 netcdf.putVar(f,netcdf.inqVarID(f,'DATA_MODE'),'D');
+if is_bfile
+    netcdf.putVar(f.netcdf.inqVarID(f,'PARAMETER_DATA_MODE','ADDD'));
+end
 [trash,N_HISTORY]=netcdf.inqDim(f,netcdf.inqDimID(f,'N_HISTORY'));
 [trash,N_CALIB]=netcdf.inqDim(f,netcdf.inqDimID(f,'N_CALIB'));
 [trash,N_LEVELS]=netcdf.inqDim(f,netcdf.inqDimID(f,'N_LEVELS'));
@@ -339,7 +342,11 @@ if ~isempty(fc) %only if visual failed/>0 raw flag(s) were changed
             dj(i_history)=N_HISTORY-1;
             di(i_history)=1;
             di(i_parlen)=4;
-            netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
+            try
+                netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
+            catch
+                disp('');
+            end
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_STEP'),dj,di,netstr('ARGQ',4));
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),dj,di,netstr('CF',4));
             di(i_parlen)=14;

@@ -212,7 +212,14 @@ if ~isempty(todo)
         if any(cyc1(i)==todo)
             % Adjust our bookmark forward or backward. Note that q=8 is the
             % backspace
-            if (q~=8 || i<2) && q~=0
+            if length(q)>1  % This indicates we've requested a specific cycle
+                foo=find(str2double(q(2:end))==cyc1);
+                if isempty(foo)
+                    warning('Invalid cycle requested');
+                else
+                    i=foo;
+                end
+            elseif (q~=8 || i<2) && q~=0
                 i=i+1;
             elseif q~=0 % if user hits backspace
                 i=i-1;
@@ -269,8 +276,16 @@ if ~strcmp(q, 'Q')
     end
 
     %Perform range checks; override visual flags
-    trio={'temp','psal','pres','doxy','temp_doxy'};
-    trio2={'TEMP','SAL','PRES','DOXY','TEMP_DOXY'};
+    trio={'temp','psal','pres'};
+    trio2={'TEMP','SAL','PRES'};
+    if isfield(t,'doxy')
+        trio{end+1}='doxy';
+        trio2{end+1}='DOXY';
+    end
+    if isfield(t,'TEMP_DOXY')
+        trio{end+1}='temp_doxy';
+        trio2{end+1}='TEMP_DOXY';
+    end
     for j=1:length(trio)
         lim.(trio{j})=eval(local_config.(['lim' trio2{j}]));
     end

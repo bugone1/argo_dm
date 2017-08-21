@@ -24,6 +24,8 @@ function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
 %   23 Jun. 2017, IG: Modified the FTP option to use FTP
 %   02 Aug. 2017, IG: ZIP files now stored in a "zip" sub-directory
 %   08 Aug. 2017, IG: Added DOXY plots
+%   10 Aug. 2017, IG: Added a line to the plot of the conductivity
+%       adjustment to improve visibility
 
 % Close any existing plots so we can start with a clean slate
 close all
@@ -48,6 +50,7 @@ for i=1:length(flnm);
     [s(i),h(i)]=getcomments([local_config.OUT uc filesep flnm(i).name]);
     t(i)=read_nc([local_config.OUT uc filesep flnm(i).name]);
 end
+s_b=[];
 for i=1:length(flnm_b);
     flnm_b(i)
     [s_b(i),h_b(i)]=getcomments([local_config.OUT uc filesep flnm_b(i).name]);
@@ -55,6 +58,7 @@ for i=1:length(flnm_b);
 end
 col='rgbymck';
 sym='o.+udvs';
+lin=' -     ';
 texx={'Previous','New'};
 [x,y,z]=getcoeffs(s);
 save foranh x y z
@@ -62,7 +66,7 @@ load([lo_system_configuration.FLOAT_CALIB_DIRECTORY filesep 'cal_' floatNum '.ma
 for i=1:2
     dates=minmax(x(:,i));
     if ~all(isnan(dates))
-        a(i)=plot(z,y(:,i),[col(i) sym(i)]);
+        a(i)=plot(z,y(:,i),[col(i) sym(i) lin(i)]);
         legtext{i}=[texx{i} ' ' datestr(dates(1),1) ':' datestr(dates(2),1)];
     else
         a(i)=0;
