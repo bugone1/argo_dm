@@ -99,6 +99,8 @@ end
 % Store the list of axes for later use. We could count on the fact that the
 % handles are always in order, but this seems safer
 setappdata(gui_fig,'h_axes',h_axes);
+% Start with axes linked
+linkaxes(h_axes(1:end-1),'y');
 
 % Add the GUI elements
 if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
@@ -122,9 +124,11 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     end
     set(tog_flag_bg,'selectedobject','');
     uicontrol('parent',h_ui,'style','checkbox','tag','flag_allplots_checkbox', 'string','Apply to all plots', ...
-        'units','normalized','position',[x0_gui+but_width+0.01,y_cur+but_height*.75,1-but_width-2*x0_gui,but_height*0.75]);
+        'units','normalized','position',[x0_gui+but_width+0.01,y_cur+but_height*.75,1-but_width-2*x0_gui,but_height*0.75],...
+        'callback',@store_check_status);
     uicontrol('parent',h_ui,'style','checkbox','tag','flag_bothaxes_checkbox', 'string','Apply to both axes', ...
-        'units','normalized','position',[x0_gui+but_width+0.01,y_cur,1-but_width-2*x0_gui,but_height*0.75]);
+        'units','normalized','position',[x0_gui+but_width+0.01,y_cur,1-but_width-2*x0_gui,but_height*0.75],...
+        'callback',@store_check_status);
     % y_cur=y_cur-0.04;
     % % Swap flags 1 and 4 (commented out because I've never needed it)
     % swap_but = uicontrol('Parent',gui_fig,'Style','pushbutton', 'String', 'Invert 1 to 4 and 4 to 1', ...
@@ -140,7 +144,7 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     % together, but slows down drawing considerably.
     y_cur=y_cur-0.04;
     uicontrol(h_ui,'style','checkbox','tag','link_axes_checkbox','string','Link axis y-extents',...
-        'units','normalized','position',[x0_gui,y_cur,but_width,but_height],'selected','off',...
+        'units','normalized','position',[x0_gui,y_cur,but_width,but_height],...
         'callback',@toggle_link_axes);
     y_cur=y_cur-but_height*4;
     % Skip button group
@@ -173,9 +177,13 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
 else
     % For now we always start by showing the x-flags, selecting one plot at
     % a time
-    set(findobj('tag','flag_allplots_checkbox'),'value',0);
-    set(findobj('tag','flag_bothaxes_checkbox'),'value',0);
-    set(findobj('tag','link_axes_checkbox'),'value',0);
+    foo = getappdata(gcf,'flag_allplots_checkbox_value');
+    if isempty(foo), foo=0; end
+    set(findobj('tag','flag_allplots_checkbox'),'value',foo);
+    foo = getappdata(gcf,'flag_bothaxes_checkbox_value');
+    if isempty(foo), foo=0; end
+    set(findobj('tag','flag_bothaxes_checkbox'),'value',foo);
+    set(findobj('tag','link_axes_checkbox'),'value',1);
     set(findobj('tag','tog_ax_bg_x'),'value',1);
     setappdata(gcf,'indxy',1);
 end
@@ -454,4 +462,8 @@ function update_qc_flag_curves
     end
 end   
 
+% Store the status of the checkboxes
+function store_check_status(hObject,event,handles)
+    setappdata(gcf,[get(hObject,'tag') '_value'], get(hObject,'value'));
+end
 

@@ -126,6 +126,7 @@ if (~isempty(q) && q=='q') || any(abs(1-CellK)>.0005)
     end
 end
 CellK=round(CellK*1e8)/1e8;
+set(findobj('color','g','linestyle','-'),'xdata',PROFILE_NO,'ydata',CellK);
 psalflag(isnan(CellK))='4';
 ba=input('Enter cycle from which the float should have its raw salinity flagged to 2 (0 if none)');
 if ~isempty(ba) && ba>0

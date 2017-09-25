@@ -120,32 +120,3 @@ xlabel('Cycle number'); ylabel('Error'); title('DOXY errors');
 grid on
 
 % end
-
-function doxy = calc_doxy(pres,temp,psal,temp_doxy,phase_delay_doxy,params)
-
-    % Calculate DOXY in uMol/m^3
-    V = (phase_delay_doxy + params.pcoef1 * pres/1000)/39.457071;
-    Ksv = params.C0 + params.C1*temp_doxy + params.C2 * temp_doxy.^2;
-    ro_water_s = 1013.25 * exp(params.D0 + params.D1 * (100./(temp + 273.15)) ...
-            + params.D2 * log((temp + 273.15)/100) + params.D3 * psal);
-    ro_water_spreset = 1013.25 * exp(params.D0 + params.D1 * (100./(temp + 273.15)) ... 
-            + params.D2 * log((temp + 273.15)/100) + params.D3 * params.psal_preset);
-    A = (1013.25 - ro_water_spreset)./(1013.25 - ro_water_s);
-    Ts = log((298.15-temp)./(273.15+temp));
-    Scorr = A .* exp(psal .*(params.solB0 +params.solB1*Ts + params.solB2* Ts.^2 ... 
-            + params.solB3*Ts.^3) + params.solC0 * psal.^2);
-    Pcorr = 1 + (((params.pcoef2 *temp + params.pcoef3).*pres)/1000);
-    doxy = ((((params.A0 + params.A1*temp_doxy + params.A2 * V.^2)./ ...
-        (params.B0 +params.B1*V)) - 1)./Ksv).*Scorr .*Pcorr * 44.6596;
-    
-    % Convert to uMol/kg
-    % Calculating density of pure water
-    dw = 0.999842594 + 6.793952e-5 *temp - 9.095290e-6*temp.^2 + ...
-        1.001685e-7*temp.^3 - 1.120083e-9*temp.^4 + 6.536332e-12*temp.^5;
-    A = 8.24493e-4 - 4.0899e-6*temp + 7.6438e-8*temp.^2 - ...
-        8.2467e-10*temp.^3 + 5.3875e-12 *temp.^4;
-    B = -5.72466e-6 + 1.0227e-7*temp - 1.6546e-9*temp.^2;
-    C = 4.8314e-7;
-    dsw = dw + A.*psal + B.*psal.^1.5 + C .* psal.^2;
-    doxy = doxy./(dsw*1000)*1000;
-end

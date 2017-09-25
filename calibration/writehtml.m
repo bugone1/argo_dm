@@ -12,6 +12,7 @@ function writehtml(s,floatNum,pathe,s_b)
 %           produced by the OW process
 %       8 Aug. 2017, IG: Added options to output DOXY results, fixed HTML
 %           references to raw/adjusted plots, added documentation
+%       29 Aug. 2017, IG: Added a link to the KML file
 
 if nargin<4, s_b=[]; end
 
@@ -23,6 +24,7 @@ fprintf(fid,['<a1><center>' floatNum '</center><br></a1>']);
 fprintf(fid,['<center>' datestr(now) '</center><br>']);
 fprintf(fid,'------<br>');
 fprintf(fid,'Diagnostic:<br>');
+fprintf(fid,['<a href=' floatNum '.kml>Trajectory (KML)</a><br>']); 
 fprintf(fid,'<a href="#diagP">Pressure Diagnosis Plots<br>');
 fprintf(fid,'<a href="#diagS">Salinity Diagnosis Plots (WJO)</a><br>');
 fprintf(fid,'<a href="#condc">Conductivity Correction Applied</a><br>');
@@ -58,7 +60,7 @@ fprintf(fid,'<a name="err"><br>PSAL_ADJUSTED_ERROR</a><br>');
 fprintf(fid,[linimg([floatNum '_PSAL_err.png']) '<br>']);
 fprintf(fid,'<br>');
 
-vars=fieldnames(s(1)); vars=vars(1:3); %remove doxy
+vars=fieldnames(s(1)); vars=vars(1:3); 
 n_core=length(vars);
 if ~isempty(s_b) && isfield(s_b,'DOXY'), vars{n_core+1}='DOXY'; end
 vars_isb = [zeros(1,n_core), ones(1,length(vars)-n_core)];
@@ -104,39 +106,44 @@ for j=1:length(vars)
     fprintf(fid,['----- <br> <a name="' varr '">']);
     if ~strcmp(varr,'PRES')
         fprintf(fid,['raw & adjust</a><br>']);
-
         fprintf(fid,linimg([floatNum '_' varr '_r.png']));
-        fprintf(fid,[linimg([floatNum '_' varr '_a.png']) '<br>']);
+        if ~strcmp(varr,'DOXY')
+            fprintf(fid,[linimg([floatNum '_' varr '_a.png']) '<br>']);
+        end
         fprintf(fid,linimg([floatNum '_' varr '_r_3&4.png']));
-        fprintf(fid,[linimg([floatNum '_' varr '_a_3&4.png']) '<br>']);
-        fprintf(fid,linimg([floatNum '_' varr '_ADJ-RAW.png']));
+        if ~strcmp(varr,'DOXY')
+            fprintf(fid,[linimg([floatNum '_' varr '_a_3&4.png']) '<br>']);
+            fprintf(fid,linimg([floatNum '_' varr '_ADJ-RAW.png']));
+        end
     end
-    fprintf(fid,[varr ' SCIENTIFIC_CALIBRATION:']);
-    fprintf(fid,'<br><table border=1>');
-    fprintf(fid,'<tr><td>CYCLE(s)</td><td>COMMENT</td><td>EQUATION</td><td>COEFFICIENT</td></tr>\n');
-    for i=1:l
-        cyc=sort(tab(i).cyc);
-        fc=[];
-        fc=[num2str(cyc(1)) ' '];
-        for J=2:length(cyc)-1
-            if (cyc(J+1)-cyc(J))~=1
-                fc=[fc num2str(cyc(J)) ' '];
-            else
-                if (cyc(J)-cyc(J-1))~=1
-                    fc=[fc num2str(cyc(J)) ':'];
+    if ~strcmp(varr,'DOXY')
+        fprintf(fid,[varr ' SCIENTIFIC_CALIBRATION:']);
+        fprintf(fid,'<br><table border=1>');
+        fprintf(fid,'<tr><td>CYCLE(s)</td><td>COMMENT</td><td>EQUATION</td><td>COEFFICIENT</td></tr>\n');
+        for i=1:l
+            cyc=sort(tab(i).cyc);
+            fc=[];
+            fc=[num2str(cyc(1)) ' '];
+            for J=2:length(cyc)-1
+                if (cyc(J+1)-cyc(J))~=1
+                    fc=[fc num2str(cyc(J)) ' '];
                 else
-                    if fc(end)~=':'
-                        fc=[fc ':'];
+                    if (cyc(J)-cyc(J-1))~=1
+                        fc=[fc num2str(cyc(J)) ':'];
+                    else
+                        if fc(end)~=':'
+                            fc=[fc ':'];
+                        end
                     end
                 end
             end
+            if ~isempty(J)
+                fc=[fc num2str(cyc(end))];
+            end
+            fprintf(fid,['<tr><td>' fc '</td><td>' tab(i).comm '</td><td>' tab(i).equ '</td><td>' tab(i).coeff '</td></tr>\n']);
         end
-        if ~isempty(J)
-            fc=[fc num2str(cyc(end))];
-        end
-        fprintf(fid,['<tr><td>' fc '</td><td>' tab(i).comm '</td><td>' tab(i).equ '</td><td>' tab(i).coeff '</td></tr>\n']);
+        fprintf(fid,['</table> \n']);
     end
-    fprintf(fid,['</table> \n']);
     fprintf(fid,['-----<br>']);
 end
 fprintf(fid,'</html></body>')

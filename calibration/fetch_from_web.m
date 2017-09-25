@@ -9,6 +9,7 @@ function fetch_from_web(dire, floatname)
 %           2 Feb. 2017.
 %       24 July 2017, IG: Files that were previously downloaded are now
 %           deleted before fetching the new files.
+%       30 Aug. 2017, IG: Do not fetch M files
 
 % FTP configuration
 ftpaddress.ifremer='ftp.ifremer.fr';
@@ -27,7 +28,9 @@ cd(f,[ftppath floatname '/profiles/']);
 downtechmeta=input('Force download of meta & tech files ? (1/0)');
 if isempty(strmatch(floatname,allfloats)) %we don't have this float
     display(['downloading' floatname ' in ' pathe]);
-    mget(f,'*.nc',pathe);
+    mget(f,'D*.nc',pathe);
+    mget(f,'R*.nc',pathe);
+    mget(f,'B*.nc',pathe);
     todown=1;
 else
     % IG, 24 July 2017: Older version of the code avoids re-fetching files

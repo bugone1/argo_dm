@@ -35,7 +35,6 @@ set(fig_ts,'colormap',jet(lt)); colorbar
 % Set a custom data cursor mode so we can get the profile number
 dcm_obj = datacursormode(fig_ts);
 set(dcm_obj,'UpdateFcn',@profile_ts_datatip)
-    
 end
 
 function txt = profile_ts_datatip(hObject,event)

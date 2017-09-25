@@ -214,19 +214,24 @@ for i=1:length(PROFILE_NO)
     end
     err.PSAL=max(err.PSAL,str2num(local_config.MIN_MAP_ERR));
     err.TEMP=.002*ones(length(x),1);
-    % DOXY-related fields. We set the qc flags, but because there is
-    % generally no adjustment available we don't need to set the errors
-    % TODO: Other DOXY fields??
+    % DOXY-related fields. 
+    % As of 21 Aug., the raw DOXY is calculated using the best available
+    % pressure, temperature, and salinity, and not DOXY adjustment is
+    % applied 
     % TODO: Will eventully have to deal with adjustments for the sensors
-    % that have them.
+    % that have them. 
     if isfield(t(ok),'doxy')
-        [qc.DOXY.ADJ,qc.DOXY.RAW]=deal(char(t(ok).doxy_qc(x)));
+        %[qc.DOXY.ADJ,qc.DOXY.RAW]=deal(char(t(ok).doxy_qc(x)));
+        qc.DOXY.RAW = char(t(ok).doxy_qc(x));
+%         tem.DOXY = calc_doxy(floatNum,tem.PRES',t(i).temp,tem.PSAL',t(i).temp_doxy,t(i).phase_delay_doxy);
     end
     if isfield(t(ok),'temp_doxy')
-        [qc.TEMP_DOXY.ADJ,qc.TEMP_DOXY.RAW]=deal(char(t(ok).temp_doxy_qc(x)));
+        %[qc.TEMP_DOXY.ADJ,qc.TEMP_DOXY.RAW]=deal(char(t(ok).temp_doxy_qc(x)));
+        qc.TEMP_DOXY.RAW = char(t(ok).temp_doxy_qc(x));
     end
     if isfield(t(ok),'phase_delay_doxy')
-        [qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
+        %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
+        qc.PHASE_DELAY_DOXY.RAW = char(t(ok).phase_delay_doxy_qc(x));
     end
     flnm.input
 %     if findstr('4901189',flnm.input)
@@ -264,9 +269,13 @@ for i=1:length(PROFILE_NO)
         qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='4'; %(DMQC-3)
     end
     rawpress=tem.PRES-addcoeff; %raw pressure vector calculated this way for sorting purposes
-    rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
-    if ~isempty(flnm_b.input)
-        rewrite_nc(flnm_b,tem,qc,err,CalDate,conf,scical,rawpress);
+    try
+        rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
+        if ~isempty(flnm_b.input)
+            rewrite_nc(flnm_b,tem,qc,err,CalDate,conf,scical,rawpress);
+        end
+    catch
+        foo=1;
     end
 end
 22;

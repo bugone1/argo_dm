@@ -5,7 +5,7 @@
 %   2017.
 % IG, 26 July 2017: Cleaned up and commented
 
-function publishtoweb_nocorr(local_config,lo_system_configuration,floatNum,pub)
+function publishtoweb_nocorr(local_config,lo_system_configuration,floatNum,pub,user_id)
 
 close all
 opathe=lo_system_configuration.FLOAT_PLOTS_DIRECTORY;
@@ -116,6 +116,7 @@ for i=1:length(t)
 end
 clear a
 a(1)=plot(dpx,dpy);
+hold on;
 plot(dpx,dpy+dpz,'b');
 plot(dpx,dpy-dpz,'b');
 a(2)=plot(dpx,mp,'r');
@@ -153,20 +154,29 @@ contour_plot(X,Y,err,xlim,ylim,minmax(err)+[-.001 .001]);
 print('-dpng',[pathe floatNum '_TEMP_err.png']);
 close
 if pub
-    zip(floatNum,[local_config.OUT uc filesep '*' floatNum '_*.nc']);
+    zip(['zip' filesep floatNum],[local_config.OUT uc filesep '*' floatNum '_*.nc']);
 end
 
 % Create the file containing the FTP commands that can be input to sftp (as
-% with the main version of publishtoweb). The user must carry out the FTP
-% themselves (after checking the files)
+% with the main version of publishtoweb). 
 fid=fopen(['sftp_' floatNum '.txt'],'w');
 fprintf(fid,'cd /pub/Argo/DM/PICorner\n');
 fprintf(fid,['put ' pathe '*' floatNum '*.png\n']);
 fprintf(fid,['put ' pathe '*' floatNum '*.htm\n']);
 fprintf(fid,['put ' opathe '*' floatNum '*.png\n']);
+fprintf(fid,['put ' local_config.BASE filesep 'kml' filesep floatNum '.kml\n']);
 fprintf(fid,'cd /pub/Argo/DM\n');
 if pub
-    fprintf(fid,['put ' opathe '../../../calibration' filesep floatNum '.zip\n']);
+    fprintf(fid,['put ' opathe '..' filesep '..' filesep '..' filesep 'calibration' filesep 'zip' filesep floatNum '.zip\n']);
 end
 fprintf(fid,'bye');
 fclose(fid);
+    
+% Actually upload
+system(['sftp ' user_id '@ftp.meds-sdmm.dfo-mpo.gc.ca < sftp_' floatNum '.txt']);
+
+% Delete the temporary file (temporarily commented out, for troubleshooting
+% purposes)
+% delete(['sftp_' floatNum '.txt']);
+    
+end

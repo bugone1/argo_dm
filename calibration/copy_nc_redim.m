@@ -20,6 +20,8 @@ if ischar(num)
 else make_unlim = 0;
 end
 
+% Deal with input and output files the same
+
 %Creates a new file while increasing the dimension of "redimname" by "num"
 f1=netcdf.open(input,'NOWRITE');
 f2=netcdf.create(output,'CLOBBER');

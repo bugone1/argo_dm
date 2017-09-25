@@ -208,6 +208,12 @@ if ~isempty(todo)
     % Iterate through all available cycles, processing those marked
     % previously as needing to be done (i.e., those greater than the
     % starting cycle that still need QC)
+    % IG testing
+    try
+        foo = i<lf || (i==lf && q==8);
+    catch
+        disp('Problem!!')
+    end
     while i<lf || (i==lf && q==8)
         if any(cyc1(i)==todo)
             % Adjust our bookmark forward or backward. Note that q=8 is the
@@ -282,7 +288,7 @@ if ~strcmp(q, 'Q')
         trio{end+1}='doxy';
         trio2{end+1}='DOXY';
     end
-    if isfield(t,'TEMP_DOXY')
+    if isfield(t,'temp_doxy')
         trio{end+1}='temp_doxy';
         trio2{end+1}='TEMP_DOXY';
     end

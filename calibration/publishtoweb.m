@@ -26,6 +26,7 @@ function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
 %   08 Aug. 2017, IG: Added DOXY plots
 %   10 Aug. 2017, IG: Added a line to the plot of the conductivity
 %       adjustment to improve visibility
+%   29 Aug. 2017, IG: Upload the KML file
 
 % Close any existing plots so we can start with a clean slate
 close all
@@ -33,28 +34,46 @@ close all
 opathe=lo_system_configuration.FLOAT_PLOTS_DIRECTORY;
 pathe=[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep];
 uc='changed';
-flnm=dir([local_config.OUT uc filesep '*' floatNum '_*.nc']);
-uflnm=char(flnm.name);
-flnm2=uflnm(:,2:end);
-[ii,jj]=unique(flnm2,'rows');
-dup=setdiff(1:size(uflnm,1),jj);
-todel=dup(uflnm(dup,1)=='R' | uflnm(dup,2)=='R');
-for i=1:length(todel)
-    delete([local_config.OUT uc filesep flnm(todel(i)).name]);
+flnm=[dir([local_config.OUT uc filesep 'D' floatNum '_*.nc']); dir([local_config.OUT uc filesep 'R' floatNum '_*.nc'])];
+clean([local_config.OUT uc],flnm, 0);
+flnm=[dir([local_config.OUT uc filesep 'D' floatNum '_*.nc']); dir([local_config.OUT uc filesep 'R' floatNum '_*.nc'])];
+flnm_b=[dir([local_config.OUT uc filesep 'BD' floatNum '_*.nc']); dir([local_config.OUT uc filesep 'BR' floatNum '_*.nc'])];
+if ~isempty(flnm_b)
+    clean([local_config.OUT uc],flnm_b, 1);
+    flnm_b=[dir([local_config.OUT uc filesep 'BD' floatNum '_*.nc']); dir([local_config.OUT uc filesep 'BR' floatNum '_*.nc'])];
 end
-is_bfile=uflnm(:,1)=='B';
-flnm_b=flnm(is_bfile);
-flnm=flnm(~is_bfile);
+% uflnm=char(flnm.name);
+% is_bfile=uflnm(:,1)=='B';
+% flnm2=uflnm(~is_bfile,2:end);
+% [ii,jj]=unique(flnm2,'rows');
+% dup=setdiff(find(~is_bfile),jj);
+% todel=dup(uflnm(dup,1)=='R');
+% if any(is_bfile)
+%     flnm2=uflnm(is_bfile,3:end);
+%     [ii,jj]=unique(flnm2,'rows');
+%     dup=setdiff(find(is_bfile),jj);
+%     todel=[todel,dup(uflnm(dup,2)=='R')];
+% end
+% for i=1:length(todel)
+%     delete([local_config.OUT uc filesep flnm(todel(i)).name]);
+% end
+% flnm(todel)=[];
+% uflnm(todel,:)=[];
+% is_bfile(todel)=[];
+% flnm_b=flnm(is_bfile);
+% flnm=flnm(~is_bfile);
 for i=1:length(flnm);
     flnm(i)
     [s(i),h(i)]=getcomments([local_config.OUT uc filesep flnm(i).name]);
     t(i)=read_nc([local_config.OUT uc filesep flnm(i).name]);
 end
-s_b=[];
-for i=1:length(flnm_b);
-    flnm_b(i)
-    [s_b(i),h_b(i)]=getcomments([local_config.OUT uc filesep flnm_b(i).name]);
-    t_b(i)=read_nc([local_config.OUT uc filesep flnm_b(i).name],1);
+if isempty(flnm_b), s_b=[];
+else
+    for i=1:length(flnm_b);
+        flnm_b(i)
+        [s_b(i),h_b(i)]=getcomments([local_config.OUT uc filesep flnm_b(i).name]);
+        t_b(i)=read_nc([local_config.OUT uc filesep flnm_b(i).name],1);
+    end
 end
 col='rgbymck';
 sym='o.+udvs';
@@ -144,6 +163,7 @@ for i=1:2 %raw then adj
     ylim=minmax(Y);
     xlim=minmax(X);
     for j=1:length(vars) %sal then temp
+        if i==2 && strcmp(vars{j},'DOXY'), continue; end
         Z=ts(:,j);	%parm value
         ok=tsf(:,j)>2; %set all values with flags>2 to nan
         Z(ok)=nan;
@@ -170,6 +190,7 @@ for i=1:2 %raw then adj
 end
 
 for j=1:length(vars)
+    if strcmp(vars{j},'DOXY'), continue; end
     title([floatNum ' ' vars{j} ' ADJ-RAW' ]);
     X=XXg{2,j};
     Y=YYg{2,j};
@@ -293,6 +314,7 @@ fprintf(fid,'cd /pub/Argo/DM/PICorner\n');
 fprintf(fid,['put ' pathe '*' floatNum '*.png\n']);
 fprintf(fid,['put ' pathe '*' floatNum '*.htm\n']);
 fprintf(fid,['put ' opathe '*' floatNum '*.png\n']);
+fprintf(fid,['put ' local_config.BASE filesep 'kml' filesep floatNum '.kml\n']);
 fprintf(fid,'cd /pub/Argo/DM\n');
 if pub
     fprintf(fid,['put ' opathe '..' filesep '..' filesep '..' filesep 'calibration' filesep 'zip' filesep floatNum '.zip\n']);
