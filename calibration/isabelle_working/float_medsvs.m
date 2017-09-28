@@ -1,4 +1,4 @@
-function float_medsvs(float_num,medsvs_file,cycle_num)
+function float_medsvs(float_num,medsvs_file,cycle_num, title_string)
 % Compare float profile to other profiles for this float and for
 % neighbouring floats. This assumes we've already made a request on MEDS
 % and fetched the file using Mathieu's getLatestMedsAsciiFile
@@ -6,9 +6,11 @@ function float_medsvs(float_num,medsvs_file,cycle_num)
 % IG, 11 Sep. 2017
 
 % Setup
-data_dir = 'data/4901000';
+data_dir = '/u01/rapps/argo_dm/calibration/data/4901000';
 file_type = 'R';
 reload=1;
+if nargin < 3, cycle_num = []; end
+if nargin<4, title_string = ''; end
 
 addpath('/u01/rapps/argo_dm/calibration');
 
@@ -25,7 +27,10 @@ if reload==1
 end
 if b_files==1 && any([t.cycle_number] ~= [t_b.cycle_number]), error('Cycle numbers don''t match'); end
 lt=length(t);
-ii_prof = find([t.cycle_number]==cycle_num);
+if ~isempty(cycle_num)
+    [foo,ii_prof,foo] = intersect([t.cycle_number],cycle_num);
+else ii_prof = [];
+end
 si = zeros(1,lt);   
 for ii_cyc=1:lt, si(ii_cyc) = length(t(ii_cyc).pres); end
 [PRES,PSAL,TEMP,TEMP_DOXY]=deal(nan(max(si),lt)); %preallocate profile with max depths
@@ -63,37 +68,58 @@ if ~isempty(z) && isfield(o,'temp')
 else foo1=[]
 end
 foo2 = plot(TEMP,PRES,'b'); 
-foo3=plot(t(ii_prof).temp,t(ii_prof).pres,'r'); set(foo3,'linewidth',2);
-xlabel('Temperature (^{\circ}C)'); ylabel('Pressure (dBar)'); grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
-if ~isempty(foo1)
-    legend([foo1(1),foo2(1),foo3],'Historical', ['Float ' float_num], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
-else
-    legend([foo2(1),foo3],['Float ' float_num], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
+foo3=[];
+for ii=1:length(ii_prof)   
+    foo3(ii)=plot(t(ii_prof(ii)).temp,t(ii_prof(ii)).pres,'r'); 
 end
+set(foo3,'linewidth',2);
+xlabel('Temperature (^{\circ}C)'); ylabel('Pressure (dBar)'); grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
+leg_h = [];
+leg_txt = {};
+if ~isempty(foo1)
+    leg_h(1) = foo1(1);
+    leg_txt{1} = 'Historical';
+end
+leg_h(2) = foo2(1);
+leg_txt{2} = ['Float ' float_num];
+if ~isempty(ii_prof)
+    leg_h(3) = foo3(1);
+    if length(ii_prof)==1, leg_txt{3} = ['Profile ' num2str(cycle_num)];
+    else leg_txt{3} = ['Profiles ' num2str(cycle_num(1)) '-' num2str(cycle_num(end))];
+    end
+end
+legend(leg_h, leg_txt, 'location','SouthEast');
+title(title_string)
 subplot(1,2,2); 
 if isfield(o,'psal')
     foo1 = plot(o.psal,z,'c'); hold on; 
 end
 foo2 = plot(PSAL,PRES,'b'); 
-foo3=plot(t(ii_prof).psal,t(ii_prof).pres,'r'); set(foo3,'linewidth',2);
+foo3 = [];
+for ii=1:length(ii_prof)
+    foo3(ii)=plot(t(ii_prof(ii)).psal,t(ii_prof(ii)).pres,'r'); 
+end
+set(foo3,'linewidth',2); 
 xlabel('Salinity (psu)'); ylabel('Pressure (dBar)'); grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
-legend([foo1(1),foo2(1),foo3],'Historical', ['Float ' float_num], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
+legend(leg_h, leg_txt, 'location','SouthEast');
+title(title_string)
 
 % Plots: temp vs. temp_doxy
-figure
-if b_files==1, subplot(1,3,1); end
-foo1=plot(TEMP,PRES,'b');
-foo2=plot(t(ii_prof-1).temp,t(ii_prof-1).pres,'c',t(ii_prof+1).temp,t(ii_prof+1).pres,'c',t(ii_prof).temp,t(ii_prof).pres,'r'); set(foo2,'linewidth',2);
-xlabel('TEMP (^{\circ}C)'); ylabel('PRES (dBar)');
-grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
-legend([foo1(1),foo2(1),foo2(3)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
 if b_files==1
+    figure
+    subplot(1,3,1); 
+    foo1=plot(TEMP,PRES,'b');
+    foo2=plot(t(ii_prof-1).temp,t(ii_prof-1).pres,'c',t(ii_prof+1).temp,t(ii_prof+1).pres,'c',t(ii_prof).temp,t(ii_prof).pres,'r'); set(foo2,'linewidth',2);
+    xlabel('TEMP (^{\circ}C)'); ylabel('PRES (dBar)');
+    grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
+    legend([foo1(1),foo2(1),foo2(3)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
     subplot(1,3,2);
     foo1=plot(TEMP_DOXY,PRES,'b');
     foo2=plot(t_b(ii_prof-1).temp_doxy,t_b(ii_prof-1).pres,'c',t_b(ii_prof+1).temp_doxy,t_b(ii_prof+1).pres,'c',t_b(ii_prof).temp_doxy,t_b(ii_prof).pres,'r'); set(foo2,'linewidth',2);
     xlabel('TEMP\_DOXY (^{\circ}C)'); ylabel('PRES (dBar)');
     grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
     legend([foo1(1),foo2(1),foo2(3)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
+    title(title_string)
     subplot(1,3,3);
     plot(TEMP_DOXY-TEMP,PRES,'b'); 
     hold on; foo = plot(TEMP_DOXY(:,ii_prof)-TEMP(:,ii_prof),PRES(:,ii_prof),'r'); set(foo,'linewidth',2);

@@ -7,6 +7,9 @@
 
 function publishtoweb_nocorr(local_config,lo_system_configuration,floatNum,pub,user_id)
 
+% Make sure the float number is a string
+if ~ischar(floatNum), floatNum=num2str(floatNum); end
+
 close all
 opathe=lo_system_configuration.FLOAT_PLOTS_DIRECTORY;
 pathe=[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep];
@@ -18,7 +21,9 @@ uflnm=char(flnm.name);
 flnm2=uflnm(:,2:end);
 [ii,jj]=unique(flnm2,'rows');
 dup=setdiff(1:size(uflnm,1),jj);
-todel=dup(uflnm(dup,1)=='R');
+if isempty(dup), todel = [];
+else todel=dup(uflnm(dup,1)=='R');
+end
 for i=1:length(todel)
     delete([local_config.OUT uc filesep flnm(todel(i)).name]);
 end
@@ -41,6 +46,7 @@ titre={'raw','adjusted'};
 col='bgmr';
 vars={'PSAL','TEMP'};
 clear XX YY ZZ
+hold on
 for i=1:2 %raw then adj
     ts=[cat(2,t.(['psal' suff{i}])); cat(2,t.(['temp' suff{i}]))]';
     ts(ts==99999)=nan;

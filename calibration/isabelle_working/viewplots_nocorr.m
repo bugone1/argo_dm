@@ -187,5 +187,9 @@ for i=1:length(PROFILE_NO)
 %         qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='4'; %(DMQC-3)
 %     end
     rawpress=tem.PRES-addcoeff; %raw pressure vector calculated this way for sorting purposes
-    rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
+    try
+        rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
+    catch
+        disp('oops')
+    end
 end

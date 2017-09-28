@@ -16,6 +16,8 @@ function [ pa_grid_sal, pa_grid_ptmp, pa_grid_pres, pa_grid_lat, pa_grid_long, p
 % Annie Wong, December 2007.
 %
 % modified from get_region.m, Dec 2006, Breck Owens.
+% 
+% Isabelle Gaboury, 26 Sep. 2017: Added check on the dimensions of bottle data.
 %
 zz = find(isnan(P)==0);
 max_p = max(P(zz))+map_p_delta; % max depth to retrieve historical data is deepest Argo point plus map_p_delta
@@ -36,6 +38,13 @@ for ln_index = 1:length(pa_wmo_numbers)
                 end
             elseif ntyp == 3 % the 3rd column denotes historical data
                 lo_box_data = load( strcat( po_config_data.HISTORICAL_DIRECTORY, po_config_data.HISTORICAL_BOTTLE_PREFIX, snumb));
+                % In some cases the dimensions of the data may not match, causing issues with indexing below 
+                if numel(lo_box_data.lat)==numel(lo_box_data.pres) && size(lo_box_data.lat,2)~=size(lo_box_data.pres,2)
+                    lo_box_data.pres = lo_box_data.pres';
+                    lo_box_data.ptmp = lo_box_data.ptmp';
+                    lo_box_data.sal = lo_box_data.sal';
+                    lo_box_data.temp = lo_box_data.temp';
+                end
             elseif ntyp == 4 % the 4th column denotes Argo data
                 lo_box_data = load( strcat( po_config_data.HISTORICAL_DIRECTORY, po_config_data.HISTORICAL_ARGO_PREFIX, snumb));
                 % exclude Argo float being analysed from the Argo reference data selection,

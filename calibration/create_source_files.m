@@ -21,6 +21,8 @@ function create_source_files(local_config,lo_system_configuration,floatname)
 %           processing.
 %       25 July 2017, IG: Updated legend call to use the 'location' keyword
 %           for compatibility with R2017a.
+%       25 Sep. 2017, IG: Fixed minor bug with correction of negative
+%           longitudes
 
 dbstop if error
 ITS90toIPTS68=1.00024;
@@ -48,7 +50,8 @@ maxp=max(lastpres);minp=min(lastpres);
 load('topo','topo'); %origin is at lon==0 lat==90
 ix=round(cat(1,s(ook(j)).latitude)+91);
 iy=round(cat(1,s(ook(j)).longitude));
-iy(iy<0)=181-iy;
+ok=find(iy<0);
+if ~isempty(ok), iy(ok)=181-iy(ok); end
 
 bathy=diag(topo(ix,iy))';
 clear topo
