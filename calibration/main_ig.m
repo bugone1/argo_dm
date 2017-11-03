@@ -19,6 +19,7 @@ if ~ismember(region,{'atlantic','pacific',''}), error('No parameters exist for t
 elseif strcmp(region,'pacific'), region=''; % This is currently the default case
 elseif ~isempty(region), region = ['_' lower(region)];
 end
+adj_bfile=1;
 
 if nargin < 2, argu = []; end
 
@@ -96,7 +97,7 @@ while ~isempty(filestoprocess) || ow(1)
     end
     if ow(4)
         set(0,'defaultfigureWindowStyle','normal')
-        viewplots_ig(lo_system_configuration,local_config,floatnames{i});
+        viewplots_ig(lo_system_configuration,local_config,floatnames{i},adj_bfile);
     end
     if ow(5)
         reducehistory(local_config,floatnames{i});

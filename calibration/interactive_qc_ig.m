@@ -242,13 +242,18 @@ if ~isempty(todo)
             tic;
             % Launch visual QC for this cycle
             if ~strcmpi(q,'q')
-                [temm,q,h_axes,h_ui]=visual_qc_ig(t(i),q,h_axes,h_ui);
-                % Update the overall structures
-                t(i)=rmfield(temm,setdiff(fieldnames(temm),fieldnames(t)));
-                dura=toc;
-                %if more than 1 second is spent on the screen, flag this profile as having been visually QCed
-                if dura>1
-                    t(i).qc=1;
+                try
+                    [temm,q,h_axes,h_ui]=visual_qc_ig(t(i),q,h_axes,h_ui);
+                    % Update the overall structures
+                    t(i)=rmfield(temm,setdiff(fieldnames(temm),fieldnames(t)));
+                    dura=toc;
+                    %if more than 1 second is spent on the screen, flag this profile as having been visually QCed
+                    if dura>1
+                        t(i).qc=1;
+                    end
+                catch
+                    disp('visual_qc_ig crashed!!! Carrying on, but use caution')
+                    i=i-1;
                 end
             elseif strcmp(q,'Q')
                 % If the user has opted to quit, do not continue onto other

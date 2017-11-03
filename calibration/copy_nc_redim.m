@@ -11,6 +11,8 @@ function copy_nc_redim(input,output,redimname,num)
 %       Before May 2017: Changes not tracked
 %       12 July 2017, Isabelle Gaboury: Added the 'unlimited' option for
 %           num
+%       3 Nov. 2017 IG: Updated code to increment rather than overwrite the
+%           calibration history
 
 % Special case for making a variable unlimited in size
 if ischar(num)
@@ -67,17 +69,18 @@ for i=1:nvars
     if isempty(index)
         netcdf.putVar(f2,varid,netcdf.getVar(f1,varid));
     else
-        clear di dj
+        clear di di_old dj
         for j=1:length(dimids)
+            [tr,di_old(j)]=netcdf.inqDim(f1,dimids(j));
             [tr,di(j)]=netcdf.inqDim(f2,dimids(j));
             dj(j)=1;
         end
-        di(index)=1;
         if any(dimids==i_redim)
-            ende=dj(j)+num;
+            ende=min(di_old(index),di(index));%-num;
         else
             ende=nunlimdimid;
         end
+        di(index)=1;
         for j=1:ende
             dj(index)=j;
             tempo=netcdf.getVar(f1,varid,dj-1,di);

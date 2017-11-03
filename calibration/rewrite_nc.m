@@ -24,10 +24,14 @@ function fname=rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,PRES,adj_bfile)
 %       2 Aug. 2017, IG: Modifications to handle b-files. Added
 %           documentation.
 %       21 Aug. 2017, IG: Allow option to leave b-files as BR
+%       6 Oct. 2017, IG: Added MOLAR_DOXY
+%       3 Nov. 2017, IG: Changed default behaviour with respect to N_CALIB
+%           so that previous calibrations are now stored.
 
 if nargin < 9, adj_bfile = 0; end
+if nargin < 10, inc_ncalib = 1; end
 
-ovarnames={'PRES','TEMP','PSAL','DOXY','TEMP_DOXY','BPHASE_DOXY','PHASE_DELAY_DOXY'};
+ovarnames={'PRES','TEMP','PSAL','DOXY','TEMP_DOXY','BPHASE_DOXY','PHASE_DELAY_DOXY','MOLAR_DOXY'};
 adjornot={'_ADJUSTED',''};
 fe=netcdf.open(flnm.input,'NOWRITE');
 [foo,N_CALIB] = netcdf.inqDim(fe,netcdf.inqDimID(fe,'N_CALIB'));
@@ -42,19 +46,21 @@ else
     is_bfile=0;
     flnm.output(ok(end)+1)='D';
 end
-%copy the netCDF file and redimension N_CALIB; if been calibrated before
 
-dec=0;
-for i=1:size(scc,3)
-    uscc=unique(lower(scc(:,:,i)));
-    if all(uscc=='a' | uscc=='n' | uscc=='/' | uscc==' ')
-        dec=dec+1;
-    end
+% Copy the netCDF file and redimension N_CALIB
+% First we check if the last SCIENTIFIC_CALIB_COMMENT contains only the
+% comment 'n/a', indicating the float hasn't been calibrated before. 
+% TODO: Earlier versions of the code checked all comments and counted up
+% the number of 'n/a' entries, but this could lead to blanking of valid
+% comments. For now I'm assuming there will be no more than one 'n/a'
+% entry, but may need to add code to handle multiple such entries if these
+% regularly occur.
+uscc=unique(lower(scc(:,:,end)));
+if all(uscc=='a' | uscc=='n' | uscc=='/' | uscc==' ')
+    redim_num=0;  % This just blanks the last comment
+else redim_num=1;
 end
-if N_CALIB==dec
-    dec=N_CALIB-1;
-end
-copy_nc_redim(flnm.input,flnm.output,'N_CALIB',-dec);
+copy_nc_redim(flnm.input,flnm.output,'N_CALIB',redim_num);
 
 %open file in write mode
 f=netcdf.open(flnm.output,'WRITE');
@@ -68,6 +74,9 @@ try
     netcdf.renameVar(f,netcdf.inqVarID(f,'OTMP_ADJUSTED_QC'),'TEMP_DOXY_ADJUSTED_QC');
     netcdf.renameVar(f,netcdf.inqVarID(f,'OTMP_ADJUSTED_ERROR'),'TEMP_DOXY_ADJUSTED_ERROR');    
 catch
+    % There doesn't seem to be a netcdf function that will inquire whether
+    % or not the variable exists, so this quiet catch happens when the file
+    % does not contain the variable OTMP
 end
 
 if is_bfile
@@ -90,9 +99,11 @@ else
 end
 if is_bfile
     if adj_bfile==1
-        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),'ADDD');
+        % TODO: We're currently leaving the intermediate DOXY values as
+        % raw, as I don't have an error for them.
+        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),'RDRR');
     else
-        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),'ARRR');
+        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),'RRRR');
     end
 end
 [trash,N_HISTORY]=netcdf.inqDim(f,netcdf.inqDimID(f,'N_HISTORY'));
@@ -220,7 +231,7 @@ for i=1:length(varnames)
         ok=(ok1|ok2|ok3);
         adj.([varname '_QC'])(ok')='4';adj.(varname)(ok)= fv1;adj.([varname '_ERR'])(ok)=fv1;
         netcdf.putVar(f,netcdf.inqVarID(f,[varname '_QC']),raw.([varname '_QC'])); %raw flags
-        if (~is_bfile || adj_bfile)
+        if (~is_bfile || (adj_bfile && strcmp(varname,'DOXY')))  % TODO: Expand to i-variables?
             netcdf.putVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED']),adj.(varname));
             netcdf.putVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED_QC']),adj.([varname '_QC']));     %adj flags
             netcdf.putVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED_ERROR']),adj.([varname '_ERR']));
@@ -254,22 +265,32 @@ if isempty(strtrim(parms(:)))
     netcdf.putVar(f,parameterid,dj,ndi,oparms');
 end
 %then fill next ones
-for j=2:di(i_calib)
-    parms=netcdf.getVar(f,parameterid,dj,ndi);
-    ndj(i_calib)=j-1;
-    netcdf.putVar(f,parameterid,ndj,ndi,parms);
-end
+% IG note: As of 1 Nov., this has been changed, we now just need to fill in
+% the last item
+% for j=2:di(i_calib)
+%     parms=netcdf.getVar(f,parameterid,dj,ndi);
+%     ndj(i_calib)=j-1;
+%     netcdf.putVar(f,parameterid,ndj,ndi,parms);
+% end
+ndj(i_calib)=di(i_calib)-1;
+netcdf.putVar(f,parameterid,ndj,ndi,parms);
 PAR_LEN=size(deblank(parms'),2);
 %Populate SCIENTIFIC_CALIB_* columns for new N_CALIB
 %SCIENTIFIC_CALIB_*
+dj(i_calib)=di(i_calib)-1;
+di(i_calib)=1;
 for i=1:N_PARAM
     dj(i_param)=i-1;
     di(i_parlen)=PAR_LEN;
     di(i_param)=1;
-    parm=deblank(netcdf.getVar(f,parameterid,dj,di)');
+    % Get the parameter name. If N_CALIB>1 then we just need to fetch one
+    % copy of the name
+    parm=netcdf.getVar(f,parameterid,dj,di);
+    if any(char(max(parm,[],3))~=parm(:,:,1)), error('Error reading in the parameters'); end
+    parm=deblank(parm(:,:,1)');  
     if ~strcmp(parm,'OTMP') && ~strcmp(parm,'BPHA') && ~(is_bfile && strcmp(parm,'PRES'))
         %PERC GOOD
-        if is_bfile && ~adj_bfile
+        if is_bfile && (~adj_bfile || ~strcmp(parm,'DOXY'))  % TODO: Reconsider treatment of intermediate variables
             bigname=[parm '_QC'];
         else
             bigname=[parm adjornot{isempty(netcdf.getVar(f,netcdf.inqVarID(f,[parm '_ADJUSTED'])))+1} '_QC'];
@@ -376,11 +397,7 @@ if ~isempty(fc) %only if visual failed/>0 raw flag(s) were changed
             dj(i_history)=N_HISTORY-1;
             di(i_history)=1;
             di(i_parlen)=4;
-            try
-                netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
-            catch
-                disp('');
-            end
+            netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_STEP'),dj,di,netstr('ARGQ',4));
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),dj,di,netstr('CF',4));
             di(i_parlen)=14;

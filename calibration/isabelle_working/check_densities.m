@@ -3,8 +3,12 @@ function check_densities(float_num)
 % Routine assumes the mat file has already been created
 % Isabelle Gaboury, 12 Sep. 2017
 
+% Required paths
+addpath('/u01/rapps/gsw');
+addpath('/u01/rapps/gsw/library');
+
 % Setup
-data_dir = '../data/temppresraw'
+data_dir = '../data/temppresraw';
 
 % Load the data
 load([data_dir filesep float_num '.mat'],'t');
@@ -21,6 +25,10 @@ for ii_prof=1:length(t)
         t(ii_prof).psal_qc(ii_inv) = '4';
         t(ii_prof).temp_qc(ii_inv+1) = '4';
         t(ii_prof).psal_qc(ii_inv+1) = '4';
+        if isfield(t,'doxy_qc')
+            t(ii_prof).doxy_qc(ii_inv) = '4';
+            t(ii_prof).doxy_qc(ii_inv+1) = '4';
+        end
     end
     save([data_dir filesep float_num '.mat'],'t','-append');
 end

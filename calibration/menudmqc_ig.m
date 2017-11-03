@@ -102,7 +102,7 @@ switch lower(q(1))
             filestoprocess_b=orderfilesbycycle(allfilestoprocess);
             names = strvcat(filestoprocess.name);
             names_b = strvcat(filestoprocess_b.name);
-            if  any(any(names~=names_b(:,2:end)))
+            if  any(any(names(:,2:end)~=names_b(:,3:end)))
                 error('Current version of the code requires that core and b files match exactly');
             else
                 filestoprocess(:,2)=filestoprocess_b;

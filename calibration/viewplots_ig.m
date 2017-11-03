@@ -1,4 +1,4 @@
-function viewplots_ig(lo_system_configuration,local_config,floatNum)
+function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile)
 % VIEWPLOTS Review results of OW calculations on Argo floats, choose
 %   adjustment factors, and apply to the NetCDF files.
 %   USAGE:
@@ -18,6 +18,11 @@ function viewplots_ig(lo_system_configuration,local_config,floatNum)
 %       3 Aug. 2017, IG: Renamed to viewplots_ig to make use of a fork of
 %           the piaction_psal code. Modified the regular expression passed
 %           to  getoldcoeffs to ignore files other than core-Argo files.
+%       3 Nov. 2017, IG: Some tweaks to deal with DOXY files with
+%           adjustment
+
+
+if nargin<4, adj_bfile=0; end
 
 conf.dbname=lo_system_configuration.DBNAME;
 conf.swname=lo_system_configuration.SWNAME;
@@ -48,6 +53,7 @@ displaygraphs_fun(lo_system_configuration.FLOAT_PLOTS_DIRECTORY,floatNum,-1);
 % The load/save lines for piaction can optionally be used to restore previous results and skip the 
 % call to piaction_psal. The file piaction.mat is not used outside this routine.
 % load piaction CellK slope offset start ende psalflag adjpsalflag
+% disp('WARNING: Skipping piaction_psal')
 [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal_ig(PROFILE_NO,pcond_factor,oldcoeff);
 % save piaction CellK slope offset start ende psalflag adjpsalflag
 
@@ -72,6 +78,18 @@ end
 ocomment=scical.PSAL.comment;
 anomaliesornot='The float showed no major T/S anomalies thus far.';
 % save dump
+
+% Custom code to add the error for a set of floats where Anh had previously
+% applied a correction. There's also some corresponding code below.
+if strcmp(floatNum,'4900494') && adj_bfile
+    max_doxy = 0;
+    for i=1:length(PROFILE_NO)
+        ok = find(t(i).doxy_qc=='1');
+        max_doxy = max(max_doxy, max(t(i).doxy_qc));
+    end
+    doxy_err = max_doxy*0.01;   % For the method applied, the error is 1% of the DOXY value       
+end
+
 for i=1:length(PROFILE_NO)
     ok=find(cat(1,t.cycle_number)==PROFILE_NO(i));
     if ok>length(presscorrect.tnpd)
@@ -215,15 +233,19 @@ for i=1:length(PROFILE_NO)
     err.PSAL=max(err.PSAL,str2num(local_config.MIN_MAP_ERR));
     err.TEMP=.002*ones(length(x),1);
     % DOXY-related fields. 
-    % As of 21 Aug., the raw DOXY is calculated using the best available
-    % pressure, temperature, and salinity, and not DOXY adjustment is
-    % applied 
-    % TODO: Will eventully have to deal with adjustments for the sensors
-    % that have them. 
     if isfield(t(ok),'doxy')
         %[qc.DOXY.ADJ,qc.DOXY.RAW]=deal(char(t(ok).doxy_qc(x)));
         qc.DOXY.RAW = char(t(ok).doxy_qc(x));
 %         tem.DOXY = calc_doxy(floatNum,tem.PRES',t(i).temp,tem.PSAL',t(i).temp_doxy,t(i).phase_delay_doxy);
+    end
+    % TODO: Currently only adjusting DOXY, add similar lines below if ever
+    % these might be adjusted.
+    if isfield(t(ok),'doxy_adjusted') && any(t(ok).doxy_adjusted<10000)
+        qc.DOXY.ADJ = char(t(ok).doxy_qc(x));
+        if strcmp(floatNum,'4900494') && adj_bfile
+            tem.DOXY = t(ok).doxy_adjusted(x);
+            err.DOXY = doxy_err*ones(length(x),1);
+        end
     end
     if isfield(t(ok),'temp_doxy')
         %[qc.TEMP_DOXY.ADJ,qc.TEMP_DOXY.RAW]=deal(char(t(ok).temp_doxy_qc(x)));
@@ -232,6 +254,10 @@ for i=1:length(PROFILE_NO)
     if isfield(t(ok),'phase_delay_doxy')
         %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
         qc.PHASE_DELAY_DOXY.RAW = char(t(ok).phase_delay_doxy_qc(x));
+    end
+    if isfield(t(ok),'molar_doxy')
+        %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
+        qc.MOLAR_DOXY.RAW = char(t(ok).molar_doxy_qc(x));
     end
     flnm.input
 %     if findstr('4901189',flnm.input)
@@ -260,22 +286,17 @@ for i=1:length(PROFILE_NO)
 %         qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='2';
 %     end
 %     % IG temp - end
-    if any(qc.PSAL.RAW~='1') && adjpsalflag(i)=='2'
-        stop=1;
-    end
+%     if any(qc.PSAL.RAW~='1') && adjpsalflag(i)=='2'
+%         stop=1;
+%     end
     qc.PSAL.RAW(qc.PSAL.RAW<psalflag(i))=psalflag(i);
     qc.PSAL.ADJ(qc.PSAL.ADJ<=adjpsalflag(i))=adjpsalflag(i);
     if adjpsalflag(i)=='0'
         qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='4'; %(DMQC-3)
     end
     rawpress=tem.PRES-addcoeff; %raw pressure vector calculated this way for sorting purposes
-    try
-        rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
-        if ~isempty(flnm_b.input)
-            rewrite_nc(flnm_b,tem,qc,err,CalDate,conf,scical,rawpress);
-        end
-    catch
-        foo=1;
+    rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
+    if ~isempty(flnm_b.input)
+        rewrite_nc(flnm_b,tem,qc,err,CalDate,conf,scical,rawpress,adj_bfile);
     end
 end
-22;

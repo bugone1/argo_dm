@@ -240,8 +240,8 @@ function flag_points(hObject, event, handles)
                     prof_data_qc{ii_plot_fn}(i,indxy)='1';
                 end
                 setappdata(gcf,'prof_data_qc',prof_data_qc);
-                update_related_profiles(gca);
-                update_qc_flag_curves;
+                prof_data_qc=update_related_profiles(gca);
+                update_qc_flag_curves(prof_data_qc);
             end
         end
     end
@@ -399,7 +399,7 @@ function qc_window_keypress(hObject, event, handles)
 end
 
 % Update profiles with the same variable as the current axes
-function update_related_profiles(h_ax)
+function prof_data_qc=update_related_profiles(h_ax)
 	h_axes = getappdata(gcf,'h_axes');
     ii_plot_origin = find(h_axes==h_ax);
     indxy = getappdata(gcf,'indxy');
@@ -424,12 +424,15 @@ function update_related_profiles(h_ax)
         end
     end
     setappdata(gcf,'prof_data_qc',prof_data_qc);
+    if nargout < 1, clear prof_data_qc; end
 end
 
 % Function to update the QC flag plots
-function update_qc_flag_curves
+function update_qc_flag_curves(prof_data_qc)
+    % Sometimes the application data aren't updated as fast as we'd like,
+    % and it's more convenient to get the QC flags via arguments
+    if nargin < 1, prof_data_qc = getappdata(gcf,'prof_data_qc'); end
     indxy = getappdata(gcf,'indxy');
-    prof_data_qc = getappdata(gcf,'prof_data_qc');
     plot_labels = getappdata(gcf,'plot_labels');
     h_axes = getappdata(gcf,'h_axes');
     for ii_fn=1:length(h_axes)
