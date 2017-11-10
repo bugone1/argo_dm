@@ -26,6 +26,13 @@ function presMain(local_config,lo_system_configuration,files,floatname)
 %       May 2017: Current working version
 %       3 Aug. 2017, Isabelle Gaboury: Added documentation, added some
 %           default values to the prompts.
+%       6 Nov. 2017, IG: Updating the TNPD criteria based on version 3.0 of
+%           the DMQC manual. Some of the sub-criteria still need to be
+%           updated, however.
+%       7 Nov. 2017, IG: Fixed a bug relating to how dates are filled in
+%           for missing cycles for APEX floats. Updated call to
+%           presPerformqc to reflect this script having recently been made
+%           a function.
 
 % Data directory, extended file name
 dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
@@ -106,7 +113,7 @@ if yn(1)=='y'
                 else
                     j_temp = find(cyc_all(oktime(j:end))==cyc_all(ok(j)),1,'first');
                     if ~isempty(j_temp)
-                        sdn(j)=datenum(values(oktime(j_temp),:),'yyyymmdd');
+                        sdn(j)=datenum(values(oktime(j+j_temp-1),:),'yyyymmdd');
                     else
                         sdn(j)=sdn(j-1)+(cyc(j)-cyc(j-1))*med_cyc_dur;
                     end
@@ -127,9 +134,24 @@ if yn(1)=='y'
         [sdn,j]=sort(sdn);
         pres=pres(j);
         cyc=cyc(j);
-        presPerformqc;
+        pres3=presPerformqc(pres,offset,scalefactor);
         if tnpd
-            tnpd=(sum(pres3==0 | isnan(pres3))/length(pres3))>=.8; %it is a tnpd!
+            % Old criterion, stored here for reference
+            %tnpd=(sum(pres3==0 | isnan(pres3))/length(pres3))>=.8; %it is a tnpd!
+            % Criteria based on version 3.0 of the QC manual
+            if sdn(end)-sdn(1) < 365/2
+                % TODO: For lack of a better idea, I've applied a modified
+                % version of the old criterion for these floats, but if
+                % ever this comes up I should look at this more closely
+                % (likely with Mathieu's help)
+                print('WARNING: TNPD float with less than 6 months of data')
+                tnpd=(pres3(end)==0 || isnan(pres3)) && (sum(pres3==0 | isnan(pres3))/length(pres3))>=.8;
+            else
+                % According to version 3.0 of the QC manual, only data
+                % sections longer than 6 months and that are not followd by
+                % a section with positive values are considered TNPD. 
+                tnpd = sdn(end)-sdn(find(pres3>0 &  ~isnan(pres3),1,'last')) >= (365/2);
+            end
         end
         linfit=polyfit(sdn,pres3,1);
         cyc(end+1)=cyc(end)+1; %extrapolate to "next" profile
@@ -148,6 +170,9 @@ if yn(1)=='y'
     presscorrect.orig_pres=pres;
     presscorrect.tnpd=zeros(size(presscorrect.pres))+tnpd;
     if tnpd
+        % TODO: This section still needs to be compared against the current
+        % version of the DMQC manual
+        disp('WARNING: Check that TNPD criteria are current')
         factor=(str2num(ser(1,:))>=2324175 | yearlaunch>=2007)*2;
         if isempty(factor)
             factor=0;

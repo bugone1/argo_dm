@@ -1,6 +1,19 @@
-%callled by presMain.m
-%remove >1000 spikes and replace them with mean
-%(1). Subtract 5-dbar from the values in PRES_SurfaceOffsetTruncatedPlus5dbar _dBAR.
+function pres3=presPerformqc(pres,offset,scalefactor)
+% PRESPERFORMQC Perform pressure QC
+%   DESCRIPTION: Function called by presMain.m. Remove >1000 spikes and
+%       replace them with mean (1). Subtract 5-dbar from the values in 
+%       PRES_SurfaceOffsetTruncatedPlus5dbar _dBAR. 
+%   USAGE: pres3=presPerformqc(pres,offset,scalefactor)
+%   INPUTS:
+%       pres - raw pressure
+%       offset - offset
+%       scalefactor - scale factor
+%   OUTPUTS:
+%       pres3 - QC'd pressure
+%   VERSION HISTORY:
+%       29 Jun. 2011: Current working version version, author unknown
+%       08 Nov. 2017, Isabelle Gaboury: Added documentation
+
 pres1=(pres-offset)/scalefactor; %hpa to kpa
 
 %ok=abs(pres1)>=1000;
@@ -27,3 +40,4 @@ pres3=fpres+ano; %fpres+pres2-fpres
 % print('-dpng',[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep 'pres_' floatname '.png']);
 % 
 % close all
+end

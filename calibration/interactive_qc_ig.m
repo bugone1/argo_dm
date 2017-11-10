@@ -20,6 +20,7 @@ function fname=interactive_qc_ig(local_config,files)
 %       26 May 2017, Isabelle Gaboury: Created, based on original version
 %           dated 13 September 2016.
 %       July, 2017, IG: KML files now being stored in the kml directory.
+%       8 Nov. 2017, IG: Fixed a bug in how QC flags are adjusted 
 
 ITS90toIPTS68=1.00024;
 
@@ -304,7 +305,7 @@ if ~strcmp(q, 'Q')
         for j=1:length(trio)
             flag.(trio{j})=t(i).(trio{j})>lim.(trio{j})(2) | t(i).(trio{j})<lim.(trio{j})(1) | isnan(t(i).(trio{j}));
         end
-        tempOrPres=flag.temp | flag.pres & t(i).temp_qc<'3';
+        tempOrPres=(flag.temp | flag.pres) & t(i).temp_qc<'3';
         t(i).psal_qc((flag.psal | tempOrPres) & t(i).psal_qc<'3')='3';
         [t(i).temp_qc(tempOrPres),t(i).ptmp_qc(tempOrPres)]=deal('3');
         t(i).pres_qc(flag.pres & t(i).pres_qc<'3')='3';

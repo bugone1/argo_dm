@@ -1,4 +1,4 @@
-function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC)
+function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC,qc_good_only)
 % PLOT_FLOAT_TS Plot TS for all float profiles
 %   USAGE:
 %       plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC)
@@ -14,14 +14,26 @@ function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC)
 %   VERSION HISTORY:
 %       02 Aug. 2017, Isabelle Gaboury: Created, based on
 %           interactive_qc_ig.m
+%       10 Nov. 2017, IG: Added the qc_good_only functionality
+
+if nargin<6, qc_good_only=0; end
+
+% Figure out which positions are good
+ok=(SAL_QC>'1' | TEMP_QC>'1');
+[foo,prof_qc]=find(ok);
+if qc_good_only
+    PSAL(ok)=NaN;
+    PTMP(ok)=NaN;
+end
 
 % Prepare the figure
 fig_ts = figure('units','normalized','position',[0.25 0.25 0.25 0.5]);
 lt=length(PROFILE_NO);
 set(gca,'colororder',jet(lt));
-ok=(SAL_QC>'1' | TEMP_QC>'1');
-[foo,prof_qc]=find(ok);
-h=plot(PSAL, PTMP, '.', PSAL(ok), PTMP(ok), 'o');
+h=plot(PSAL, PTMP, '.');
+if ~qc_good_only
+    hold on; h(end+1) = plot(PSAL(ok), PTMP(ok), 'o');
+end
 for ii=1:length(h)-1
     set(h(ii),'userdata',PROFILE_NO(ii));
 end

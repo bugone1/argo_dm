@@ -50,7 +50,7 @@ for i=1:lt
 end
 
 % Load and pre-process the medsvs results
-if reload==1
+if reload==1 && ~isempty(medsvs_file)
     [stat,prf]=agg_ocproc(strtok(medsvs_file,'.'));
     [crn,foo]=get_crnumber(stat);
     if size(unique(crn,'rows'),1) > 1
@@ -73,6 +73,9 @@ if reload==1
     elseif isfield(o,'deph')
         z=[];
     end
+elseif isempty(medsvs_file)
+    o=struct();
+    z=[];
 end
     
 % Plots: comparison with historical
@@ -103,7 +106,8 @@ if ~isempty(ii_prof)
     else leg_txt{3} = ['Profiles ' num2str(cycle_num(1)) '-' num2str(cycle_num(end))];
     end
 end
-legend(leg_h, leg_txt, 'location','SouthEast');
+foo=leg_h>0;
+legend(leg_h(foo), leg_txt(foo), 'location','SouthEast');
 title(title_string)
 subplot(1,2,2); 
 foo2 = plot(PSAL,PRES,'b'); 
@@ -117,7 +121,8 @@ for ii=1:length(ii_prof)
 end
 set(foo3,'linewidth',2); 
 xlabel('Salinity (psu)'); ylabel('Pressure (dBar)'); grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
-legend(leg_h, leg_txt, 'location','SouthEast');
+foo=leg_h>0;
+legend(leg_h(foo), leg_txt(foo), 'location','SouthEast');
 title(title_string)
 
 % Plots: temp vs. temp_doxy

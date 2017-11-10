@@ -1,7 +1,9 @@
-function check_densities(float_num)
+function check_densities(float_num, report_only)
 % CHECK_DENSITIES Quick check for density inversions
 % Routine assumes the mat file has already been created
 % Isabelle Gaboury, 12 Sep. 2017
+
+if nargin < 2, report_only=0; end
 
 % Required paths
 addpath('/u01/rapps/gsw');
@@ -21,14 +23,21 @@ for ii_prof=1:length(t)
     dens_ct_diff = diff(dens_ct);
     ii_inv = find(dens_ct_diff<=-0.03);
     if ~isempty(ii_inv)
-        t(ii_prof).temp_qc(ii_inv) = '4';
-        t(ii_prof).psal_qc(ii_inv) = '4';
-        t(ii_prof).temp_qc(ii_inv+1) = '4';
-        t(ii_prof).psal_qc(ii_inv+1) = '4';
-        if isfield(t,'doxy_qc')
-            t(ii_prof).doxy_qc(ii_inv) = '4';
-            t(ii_prof).doxy_qc(ii_inv+1) = '4';
+        if report_only==1 && any(t(ii_prof).pres_qc(ii_inv)=='1' & t(ii_prof).temp_qc(ii_inv)=='1' & t(ii_prof).psal_qc(ii_inv)=='1') ...
+                && any(t(ii_prof).pres_qc(ii_inv+1)=='1' & t(ii_prof).temp_qc(ii_inv+1)=='1' & t(ii_prof).psal_qc(ii_inv+1)=='1')
+            disp(['Found unflagged inversion for cycle ' num2str(t(ii_prof).cycle_number) ', z=' num2str(t(ii_prof).pres(ii_inv))]);
+        else
+            t(ii_prof).temp_qc(ii_inv) = '4';
+            t(ii_prof).psal_qc(ii_inv) = '4';
+            t(ii_prof).temp_qc(ii_inv+1) = '4';
+            t(ii_prof).psal_qc(ii_inv+1) = '4';
+            if isfield(t,'doxy_qc')
+                t(ii_prof).doxy_qc(ii_inv) = '4';
+                t(ii_prof).doxy_qc(ii_inv+1) = '4';
+            end
         end
     end
-    save([data_dir filesep float_num '.mat'],'t','-append');
+    if report_only==0
+        save([data_dir filesep float_num '.mat'],'t','-append');
+    end
 end

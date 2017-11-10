@@ -89,81 +89,81 @@ end
 for i=1:n_seq
     calindex = find(calseries==unique_cal(i));
     k = length(calindex);
-        % choose 10 float theta levels to use in the piecewise linear fit --------
-        unique_SAL = SAL(:, calindex);
-        unique_PTMP = PTMP(:, calindex);
-        unique_PRES = PRES(:, calindex);
-        unique_la_ptmp = la_ptmp(:, calindex);
-        unique_mapped_sal = mapped_sal(:, calindex);
-        unique_mapsalerrors = mapsalerrors(:, calindex);
-        [ten_SAL,ten_PTMP,ten_PRES,ten_mapped_sal,ten_mapsalerrors]=deal(NaN.*ones(10,k));
-        [Theta, P, index, var_s_th, th] =...
-         find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
-        pp=isnan(index);
-        if ~all(pp(:)) % only proceed when there are valid levels ----
-            for ipr=1:k
-                jj=~isnan(index(:,ipr)); ljj=sum(jj);
-                ten_SAL(1:ljj,ipr) = unique_SAL( index(jj,ipr), ipr);
-                ten_PTMP(1:ljj,ipr) = unique_PTMP( index(jj,ipr), ipr);
-                ten_PRES(1:ljj,ipr) = unique_PRES( index(jj,ipr), ipr);
-                ten_mapped_sal(1:ljj,ipr) = unique_mapped_sal( index(jj,ipr), ipr);
-                ten_mapsalerrors(1:ljj,ipr) = unique_mapsalerrors( index(jj,ipr), ipr);
-            end
-            % calculate potential conductivities and errors for mapped values and float values
-            % calculate pcond error by perturbing salinity ... to avoid problems caused by non-linearity of the Equation of State ---
-            ICOND = sw_c3515*sw_cndr( ten_SAL, ten_PTMP, 0);
-            mapped_cond = sw_c3515*sw_cndr( ten_mapped_sal, ten_PTMP, 0);
-            mapped_cond1 = sw_c3515*sw_cndr( ten_mapped_sal+ten_mapsalerrors/100, ten_PTMP, 0);
-            mapconderrors = 100*abs(mapped_cond-mapped_cond1);
-            x = x_in(:,calindex); % independent variable for piecewise fit (Profile Number)
-            y = mapped_cond./ICOND; % dependent variable for fit (conductivity ratio)
-            err = mapconderrors./ICOND; % error estimate for dependent variable (in ratio form)
-            % calculate off-diagonal terms for error estimate --------
-            covariance = build_ptmp_cov(ten_PTMP); % build the data covariance matrix
-            % for debugging purposes to speed up calculations, use next line for first time calculation
-            % and then comment out the call to build_ptmp_cov and load the covariance matrix
-            %###    eval(['save ' strcat( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, po_system_configuration.FLOAT_CALSERIES_PREFIX , pn_float_name, 'cov.mat') ' covariance']);
-            %###    eval(['load ' strcat( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, po_system_configuration.FLOAT_CALSERIES_PREFIX , pn_float_name, 'cov.mat') ' covariance']);
-            % for debugging
-            % use covariance to estimate off diagonal error terms
-            % i.e. have weighting matrix include off diagonal terms -----
-            % if no breaks points are set
-            if isempty(breaks)
+    % choose 10 float theta levels to use in the piecewise linear fit --------
+    unique_SAL = SAL(:, calindex);
+    unique_PTMP = PTMP(:, calindex);
+    unique_PRES = PRES(:, calindex);
+    unique_la_ptmp = la_ptmp(:, calindex);
+    unique_mapped_sal = mapped_sal(:, calindex);
+    unique_mapsalerrors = mapsalerrors(:, calindex);
+    [ten_SAL,ten_PTMP,ten_PRES,ten_mapped_sal,ten_mapsalerrors]=deal(NaN.*ones(10,k));
+    [Theta, P, index, var_s_th, th] =...
+     find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+    pp=isnan(index);
+    if ~all(pp(:)) % only proceed when there are valid levels ----
+        for ipr=1:k
+            jj=~isnan(index(:,ipr)); ljj=sum(jj);
+            ten_SAL(1:ljj,ipr) = unique_SAL( index(jj,ipr), ipr);
+            ten_PTMP(1:ljj,ipr) = unique_PTMP( index(jj,ipr), ipr);
+            ten_PRES(1:ljj,ipr) = unique_PRES( index(jj,ipr), ipr);
+            ten_mapped_sal(1:ljj,ipr) = unique_mapped_sal( index(jj,ipr), ipr);
+            ten_mapsalerrors(1:ljj,ipr) = unique_mapsalerrors( index(jj,ipr), ipr);
+        end
+        % calculate potential conductivities and errors for mapped values and float values
+        % calculate pcond error by perturbing salinity ... to avoid problems caused by non-linearity of the Equation of State ---
+        ICOND = sw_c3515*sw_cndr( ten_SAL, ten_PTMP, 0);
+        mapped_cond = sw_c3515*sw_cndr( ten_mapped_sal, ten_PTMP, 0);
+        mapped_cond1 = sw_c3515*sw_cndr( ten_mapped_sal+ten_mapsalerrors/100, ten_PTMP, 0);
+        mapconderrors = 100*abs(mapped_cond-mapped_cond1);
+        x = x_in(:,calindex); % independent variable for piecewise fit (Profile Number)
+        y = mapped_cond./ICOND; % dependent variable for fit (conductivity ratio)
+        err = mapconderrors./ICOND; % error estimate for dependent variable (in ratio form)
+        % calculate off-diagonal terms for error estimate --------
+        covariance = build_ptmp_cov(ten_PTMP); % build the data covariance matrix
+        % for debugging purposes to speed up calculations, use next line for first time calculation
+        % and then comment out the call to build_ptmp_cov and load the covariance matrix
+        %###    eval(['save ' strcat( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, po_system_configuration.FLOAT_CALSERIES_PREFIX , pn_float_name, 'cov.mat') ' covariance']);
+        %###    eval(['load ' strcat( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, po_system_configuration.FLOAT_CALSERIES_PREFIX , pn_float_name, 'cov.mat') ' covariance']);
+        % for debugging
+        % use covariance to estimate off diagonal error terms
+        % i.e. have weighting matrix include off diagonal terms -----
+        % if no breaks points are set
+        if isempty(breaks)
+            [xfit(calindex), pcond_factor(calindex), pcond_factor_err(calindex), time_deriv(calindex), ...
+             time_deriv_err(calindex), sta_mean(calindex), sta_rms(calindex), NDF, fitcoef, fitbreaks] = ...
+              fit_cond(x, y, err, covariance, 'max_no_breaks', max_breaks(i));
+        else
+            breaks_in = breaks(i,:);
+            breaks_in = breaks_in(find(isfinite(breaks_in)));
+            if isempty(max_breaks(i))
                 [xfit(calindex), pcond_factor(calindex), pcond_factor_err(calindex), time_deriv(calindex), ...
                  time_deriv_err(calindex), sta_mean(calindex), sta_rms(calindex), NDF, fitcoef, fitbreaks] = ...
-                  fit_cond(x, y, err, covariance, 'max_no_breaks', max_breaks(i));
+                  fit_cond(x, y, err, covariance, 'breaks', breaks_in);
             else
-                breaks_in = breaks(i,:);
-                breaks_in = breaks_in(find(isfinite(breaks_in)));
-                if isempty(max_breaks(i))
-                    [xfit(calindex), pcond_factor(calindex), pcond_factor_err(calindex), time_deriv(calindex), ...
-                     time_deriv_err(calindex), sta_mean(calindex), sta_rms(calindex), NDF, fitcoef, fitbreaks] = ...
-                      fit_cond(x, y, err, covariance, 'breaks', breaks_in);
-                else
-                    [xfit(calindex), pcond_factor(calindex), pcond_factor_err(calindex), time_deriv(calindex), ...
-                     time_deriv_err(calindex), sta_mean(calindex), sta_rms(calindex), NDF, fitcoef, fitbreaks] = ...
-                      fit_cond(x, y, err, covariance, 'breaks', breaks_in, 'max_no_breaks', max_breaks(i));
-                end
+                [xfit(calindex), pcond_factor(calindex), pcond_factor_err(calindex), time_deriv(calindex), ...
+                 time_deriv_err(calindex), sta_mean(calindex), sta_rms(calindex), NDF, fitcoef, fitbreaks] = ...
+                  fit_cond(x, y, err, covariance, 'breaks', breaks_in, 'max_no_breaks', max_breaks(i));
             end
-           % apply calibrations to float data ------------------------
-            if ~isempty(pcond_factor(calindex))
-                unique_COND = sw_c3515*sw_cndr( unique_SAL, unique_PTMP, 0);
-                cal_COND(:,calindex) = (ones(m,1)*pcond_factor(calindex)).*unique_COND;
-                cal_SAL(:,calindex) = sw_salt( cal_COND(:,calindex)/sw_c3515, unique_PTMP, 0);
-                % estimate the error in salinity ---------------------------------
-                cal_COND_err(:,calindex) = ( ones(m,1)*pcond_factor_err(calindex) ).*unique_COND;
-                sta_COND_err(:,calindex) = ( ones(m,1)*sta_rms(calindex) ).*unique_COND;
-                [cal_SAL1(:,calindex),sta_SAL1(:,calindex)]=deal(sw_salt( (cal_COND(:,calindex)+cal_COND_err(:,calindex))/sw_c3515,unique_PTMP,0));
-                [cal_SAL_err(:,calindex),sta_SAL_err(:,calindex)]=deal(abs(cal_SAL(:,calindex)-cal_SAL1(:,calindex)));
-                % estimate the error in salinity for station by station fit ----
-                sta_COND(:,calindex) = ( ones(m,1)*sta_mean(calindex) ).*unique_COND;
-                sta_SAL(:,calindex) = sw_salt( sta_COND(:,calindex)/sw_c3515, unique_PTMP, 0);
-                fcoef(i,1:length(fitcoef)) = fitcoef;
-                if ~isempty(fitbreaks)
-                    fbreaks(i,1:length(fitbreaks)) = fitbreaks;
-                end
-           end
-        end %if there are valid levels
+        end
+       % apply calibrations to float data ------------------------
+        if ~isempty(pcond_factor(calindex))
+            unique_COND = sw_c3515*sw_cndr( unique_SAL, unique_PTMP, 0);
+            cal_COND(:,calindex) = (ones(m,1)*pcond_factor(calindex)).*unique_COND;
+            cal_SAL(:,calindex) = sw_salt( cal_COND(:,calindex)/sw_c3515, unique_PTMP, 0);
+            % estimate the error in salinity ---------------------------------
+            cal_COND_err(:,calindex) = ( ones(m,1)*pcond_factor_err(calindex) ).*unique_COND;
+            sta_COND_err(:,calindex) = ( ones(m,1)*sta_rms(calindex) ).*unique_COND;
+            [cal_SAL1(:,calindex),sta_SAL1(:,calindex)]=deal(sw_salt( (cal_COND(:,calindex)+cal_COND_err(:,calindex))/sw_c3515,unique_PTMP,0));
+            [cal_SAL_err(:,calindex),sta_SAL_err(:,calindex)]=deal(abs(cal_SAL(:,calindex)-cal_SAL1(:,calindex)));
+            % estimate the error in salinity for station by station fit ----
+            sta_COND(:,calindex) = ( ones(m,1)*sta_mean(calindex) ).*unique_COND;
+            sta_SAL(:,calindex) = sw_salt( sta_COND(:,calindex)/sw_c3515, unique_PTMP, 0);
+            fcoef(i,1:length(fitcoef)) = fitcoef;
+            if ~isempty(fitbreaks)
+                fbreaks(i,1:length(fitbreaks)) = fitbreaks;
+            end
+       end
+    end %if there are valid levels
 end %for each unique_cal
 % save calibration data --------------------------------
 ls_float_calib_filename = strcat( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, po_system_configuration.FLOAT_CALIB_PREFIX, pn_float_name, po_system_configuration.FLOAT_CALIB_POSTFIX ) ;
