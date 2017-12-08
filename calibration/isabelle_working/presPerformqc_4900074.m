@@ -1,4 +1,4 @@
-function pres3=presPerformqc(pres,offset,scalefactor,apex)
+function pres3=presPerformqc_4900074(pres,offset,scalefactor,apex)
 % PRESPERFORMQC Perform pressure QC
 %   DESCRIPTION: Function called by presMain.m. Remove >1000 spikes and
 %       replace them with mean (1). Subtract 5-dbar from the values in 
@@ -24,7 +24,9 @@ pres1=(pres-offset)/scalefactor; %hpa to kpa
 
 % As per version 3.0 of the Argo QC manual, remove erroneous outliers
 if apex==1
-    is_good = pres1<20 & pres1>-20;
+    % IG: Custom lines for float 4900074
+    is_good = pres1<6 & pres1>-6;
+    %is_good = pres1<20 & pres1>-20;
     ii_bad = find(~is_good);
     ii_cur_good = find(is_good,1,'first');
     for ii=1:length(ii_bad)
@@ -40,13 +42,14 @@ end
 %(2). Despike the SP time series to 1-dbar.
 %This is most effectively done by first removing the more conspicuous
 %spikes that are bigger than 4.9-dbar (as in the real-time procedure)
-pres2=presDespikargo(pres1,4.9,1000);
+pres3=presDespikargo_ig(pres1,4.9,1000);
 
-%then the more subtle spikes that are between 1- to 5-dbar by comparing the
-%SP values with those derived from a 5-point (50 days) median filter.
-n=5;fpres=filter(ones(n,1),n,pres2);
-ano=presDespikargo(pres2-fpres,1,1000);
-pres3=fpres+ano; %fpres+pres2-fpres
+% Skip the second despiking; it just causes problems for this float.
+% %then the more subtle spikes that are between 1- to 5-dbar by comparing the
+% %SP values with those derived from a 5-point (50 days) median filter.
+% n=5;fpres=filter(ones(n,1),n,pres2);
+% ano=presDespikargo_ig(pres2-fpres,1,1000);
+% pres3=fpres+ano; %fpres+pres2-fpres
 
 % a(1)=plot(sdn-sdn(1),pres1,'.r');
 % a(2)=plot(sdn-sdn(1),pres3,'bo')

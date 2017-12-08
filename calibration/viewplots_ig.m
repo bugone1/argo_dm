@@ -20,7 +20,8 @@ function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile)
 %           to  getoldcoeffs to ignore files other than core-Argo files.
 %       3 Nov. 2017, IG: Some tweaks to deal with DOXY files with
 %           adjustment
-
+%       28 Nov. 2017: Updates to how TNPD flags are handled to reflect
+%           version 3.0 of the DMQC manual.
 
 if nargin<4, adj_bfile=0; end
 
@@ -130,6 +131,9 @@ for i=1:length(PROFILE_NO)
             scical.PRES.comment=['PRES_ADJUSTED is calculated following the 3.2 procedure in the Argo Quality Control Manual version 3.0. A pressure drift of ' sprintf('%4.2f ',presscorrect.slope) presscorrect.slope_units ' was detected.' presscorrect.comment];
         end
     end
+    % The surface pressure is recorded at the end of the ascent, and is
+    % stored with the next cycle in the trajectory file. Hence we use the
+    % surface pressure from the next cycle. 
     ok2=find(cat(1,presscorrect.cyc)==PROFILE_NO(i)+1);
     if presscorrect.cyc(end)<PROFILE_NO(i)+1
         ok2=length(presscorrect.cyc);
@@ -207,7 +211,10 @@ for i=1:length(PROFILE_NO)
         qc.PRES.ADJ(qc.PRES.ADJ<'2')='2';
     end
     qc.PRES.ADJ(tem.PRES(:)<0 & qc.PRES.ADJ(:)<'3')='3'; %negative adjusted value ?! flag pressure to '3';
-    if presscorrect.tnpd(ok)>0 &&  presscorrect.tnpd(ok)<=4 %if this is a TNPD without T/S symptoms
+    % As of version 3.0 of the manual, we only flag the data as bad once
+    % the data become TNPD (i.e., once the values go to zero and stay at
+    % zero).
+    if presscorrect.tnpd(ok)==2 ||  presscorrect.tnpd(ok)==4 %if this is a TNPD without T/S symptoms
         qc.PRES.ADJ(qc.PRES.ADJ<'2')='2';
         qc.TEMP.ADJ(qc.TEMP.ADJ<'2')='2';
         qc.PSAL.ADJ(qc.PSAL.ADJ<'2')='2';

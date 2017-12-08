@@ -227,65 +227,25 @@ switch lower(q(1))
         update_ref_dbase;
         display('Edit climatology information in config file');
         edit(config.CONFIGURATION_FILE);
-    case '6'
-        f=ftp(ftpaddress.current,user.login,user.pwd);
-        list=dir(f,ftppath);
-        isdir=cat(1,list.isdir);
-        list=list(isdir);
-        [numr,numd,dat,pre_adj]=deal(zeros(size(list)));
-        pre_adj=logical(pre_adj);
-        i=1;
-        for i=i:length(list)
-            list(i).name
-            rd=dir(f,[ftppath list(i).name '/profiles']);
-            if ~isempty(rd)
-                rd=rd(~cat(1,rd.isdir));
-                rrd=lower(char(rd.name));
-                ok=rrd(:,1)=='r' | rrd(:,1)=='d';
-                rd=char(rd(ok).name);
-                numr(i)=sum(rd(:,1)=='R' | rd(:,1)=='r');
-                numd(i)=sum(rd(:,1)=='D' | rd(:,1)=='d');
-                if numr(i)>0 && numd(i)==0
-                    cd(f,[ftppath list(i).name '/profiles/']);
-                    mget(f,rd(1,:));
-                    rd(1,:)
-                    nc=netcdf.open(rd(1,:),'nowrite');
-                    howold=now-netcdf.getVar(nc,netcdf.inqVarID(nc,'JULD'))-datenum(1950,1,0); %how old is the first profile
-                    netcdf.close(nc);
-                    if howold<(365.25/2)
-                        numr(i)=0;
-                    end
-                    howold
-                elseif numd(i)>0
-                    cd(f,[ftppath list(i).name '/profiles/']);
-                    mget(f,rd(numd(i),:));
-                    rd(numd(i),:)
-                    nc=netcdf.open(rd(numd(i),:),'nowrite');
-                    steps=netcdf.getVar(nc,netcdf.inqVarID(nc,'HISTORY_STEP'));steps=squeeze(steps(:,end,:))';
-                    ok=strmatch('ARSQ',steps);
-                    tdat=netcdf.getVar(nc,netcdf.inqVarID(nc,'HISTORY_DATE'));tdat=squeeze(tdat(:,end,:))';dat(i)=datenum(tdat(ok(end),:),'yyyymmddHHMMSS');
-                    sce=netcdf.getVar(nc,netcdf.inqVarID(nc,'SCIENTIFIC_CALIB_EQUATION'));pre_adj(i)=~isempty(findstr('procedure 3.2',strtrim(sce(:)')));
-                    if ~pre_adj(i)
-                        tdat
-                        pause
-                    end
-                    netcdf.close(nc);
-                end
-            end
-            [numr(i) numd(i) pre_adj(i)]
-        end
-        gh=1;
-        [k,i]=sort(numr,'descend');
+    case '6'  % Calculate statistics
+        [list,numr,numd,numbr,numbd,dat,pre_adj]=calculate_server_stats(ftpaddress.current,user.login,user.pwd,ftppath);
+        [k,i]=sort({list.name});
         list=list(i);
+        dat=dat(i);
         numr=numr(i);
         numd=numd(i);
+        numbr=numbr(i);
+        numbd=numbd(i);
+        pre_adj=pre_adj(i);
+        save stats list numr numd numbr numbd dat pre_adj
+        dlmwrite('stats.txt',[str2num(vertcat(list.name)), pre_adj, numr, numd, numbr, numbd],'precision','%d');
         sprintf('%f of eligible profiles have been DMQCed at least once',100*sum(numd)./sum(numd+numr))
         sprintf('%f of eligible floats have been DMQCed at least once with sal',100*sum(numd>0)./sum(numd>0 | numr>0))
         sprintf('%f of eligible floats have been DMQCed at least once with both sal and pres',100*sum(numd(pre_adj)>0)./sum(numd>0 | numr>0))
         sprintf('~ %i profiles DMQCed since last year',sum(numd(dat>(now-365.25))))
-        char(list.name)
-        save stats list numr numd dat pre_adj 
-        floatname=input('Float number ? ','s');
+        sprintf('%f of eligible DOXY profiles have been DMQCed at least once',100*sum(numbd)./sum(numbd+numbr))
+%         floatname=input('Float number ? ','s');
+        ow = zeros(1,6);
     case '7'
         f=ftp(ftpaddress.current,user.login,user.pwd);
         list=dir(f,ftppath);

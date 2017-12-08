@@ -81,6 +81,9 @@ for i=1:lt
     s(i).temp(s(i).temp_qc=='4')=nan;
     if ~isempty(presscorrect.pres)
         s(i).cndc=sw_cndr(s(i).psal,s(i).temp*ITS90toIPTS68,s(i).pres);
+        % The surface pressure is recorded at the end of the ascent, and is
+        % stored with the next cycle in the trajectory file. Hence we use
+        % the surface pressure from the next cycle.
         ok=find(s(i).cycle_number+1==presscorrect.cyc);
         if s(i).cycle_number>presscorrect.cyc(end)
             ok=length(presscorrect.cyc);

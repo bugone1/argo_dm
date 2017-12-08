@@ -1,40 +1,9 @@
-function presMain(local_config,lo_system_configuration,files,floatname)
-% PRESMAIN DMQC of Argo pressures
-%   DESCRIPTION:
-%       Load the surface pressures from the tech file, clean, despike, fit,
-%       and plot. Depending on the user input, select either the cleaned
-%       data or the fit as a surface pressure to use for adjusting the
-%       float pressures. 
-%   USAGE: 
-%       presMain(local_config,lo_system_configuration,files,floatname)
-%   INPUTS:
-%       local_config - Structure of configuration data
-%       lo_system_configuration - Structure of OW configuration data
-%       files - Array of NetCDF files to process; each element is a
-%           structure, with field "name"
-%       floatname - Name of the float
-%   OUTPUTS:
-%       None, but results (MAT file and PNG) are saved to the directories
-%       specified by the local_config structure. Among the fields saved is
-%       presscorrect.tnpd:
-%           0 non-TNPD
-%           1 TNPD with serial # < 2324175 before or at the last positive pressure value
-%           2 TNPD with serial # < 2324175 after the last positive pressure value
-%           3 TNPD with serial # >=2324175 or launched in 2007 or after, before or at the last positive pressure value
-%           4 TNPD with serial # >=2324175 or launched in 2007 or after, after the last positive pressure value
+function presMain_4900074(local_config,lo_system_configuration,files,floatname)
+% PRESMAIN_4900074 Modified version of presMain to deal with a problematic 
+%   Apex float
 %   VERSION HISTORY:
-%       May 2017: Current working version
-%       3 Aug. 2017, Isabelle Gaboury: Added documentation, added some
-%           default values to the prompts.
-%       6 Nov. 2017, IG: Updating the TNPD criteria based on version 3.0 of
-%           the DMQC manual. Some of the sub-criteria still need to be
-%           updated, however.
-%       7 Nov. 2017, IG: Fixed a bug relating to how dates are filled in
-%           for missing cycles for APEX floats. Updated call to
-%           presPerformqc to reflect this script having recently been made
-%           a function.
-%       28 Nov. 2017, IG: Finished (I think) updating the TNPD criteria
-%           based on version 3.0 of the DMQC manual. 
+%       Isabelle Gaboury, 24 Nov. 2017, from the current version of
+%           presMain
 
 % Data directory, extended file name
 dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
@@ -136,30 +105,23 @@ if yn(1)=='y'
         [sdn,j]=sort(sdn);
         pres=pres(j);
         cyc=cyc(j);
-        pres3=presPerformqc(pres,offset,scalefactor,apex);
-        if tnpd  % At this stage, TNPD just means the truncated offset
+        pres3=presPerformqc_4900074(pres,offset,scalefactor,apex);
+        if tnpd
             % Old criterion, stored here for reference
             %tnpd=(sum(pres3==0 | isnan(pres3))/length(pres3))>=.8; %it is a tnpd!
             % Criteria based on version 3.0 of the QC manual
             if sdn(end)-sdn(1) < 365/2
-                % These data may need to be re-evaluated at the PI's
-                % discretion
+                % TODO: For lack of a better idea, I've applied a modified
+                % version of the old criterion for these floats, but if
+                % ever this comes up I should look at this more closely
+                % (likely with Mathieu's help)
                 print('WARNING: TNPD float with less than 6 months of data')
-                tnpd = 0;
-                %tnpd=(pres3(end)==0 || isnan(pres3)) && (sum(pres3==0 | isnan(pres3))/length(pres3))>=.8;
+                tnpd=(pres3(end)==0 || isnan(pres3)) && (sum(pres3==0 | isnan(pres3))/length(pres3))>=.8;
             else
                 % According to version 3.0 of the QC manual, only data
                 % sections longer than 6 months and that are not followd by
                 % a section with positive values are considered TNPD. 
-                if pres3(end)==0 || isnan(pres3(end))
-                    if sdn(end)-sdn(find(pres3>0 &  ~isnan(pres3),1,'last')) >= (365/2)
-                        tnpd=1;
-                    else
-                        % Again, the PI may wish to reevaluate
-                        print('WARNING: TNPD float with a final zero-adjustment period <6mo in length');
-                        tnpd = 0;
-                    end
-                end
+                tnpd = sdn(end)-sdn(find(pres3>0 &  ~isnan(pres3),1,'last')) >= (365/2);
             end
         end
         linfit=polyfit(sdn,pres3,1);
@@ -179,6 +141,9 @@ if yn(1)=='y'
     presscorrect.orig_pres=pres;
     presscorrect.tnpd=zeros(size(presscorrect.pres))+tnpd;
     if tnpd
+        % TODO: This section still needs to be compared against the current
+        % version of the DMQC manual
+        disp('WARNING: Check that TNPD criteria are current')
         factor=(str2num(ser(1,:))>=2324175 | yearlaunch>=2007)*2;
         if isempty(factor)
             factor=0;
