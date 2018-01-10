@@ -1,5 +1,18 @@
-function plot_float_tsprof(float_num, qc_good_only)
+function plot_float_tsprof(float_num, qc_good_only, highlight_cycle)
+% PLOT_FLOAT_TSPROF Plot float temperature and salinity profiles as a
+%   function of the cycle number. Data are read from the .mat file for the
+%   float.
+%   USAGE: plot_float_tsprof(float_num, qc_good_only, highlight_cycle)
+%   INPUTS:
+%       float_num - float number
+%   OPTIONAL INPUTS:
+%       qc_good_only - set to 1 to hide points with QC flags other than '1'
+%       highlight_cycle - optional cycle to highlight
+%   VERSION HISTORY:
+%       Isabelle Gaboury, January 2018: Written
 
+% Default values
+if nargin < 3, highlight_cycle=[]; end
 if nargin<2, qc_good_only=0; end
 ITS90toIPTS68=1.00024;
 
@@ -38,6 +51,11 @@ h1=plot(TEMP, PRES,'- .');
 if ~qc_good_only
     hold on; plot(TEMP(bad_temp),PRES(bad_temp),'ko');
 end
+if ~isempty(highlight_cycle)
+    ii_hl = find(PROFILE_NO==highlight_cycle);
+    if isempty(ii_hl), highlight_cycle=[]; end
+    hold on; plot(TEMP(:,ii_hl),PRES(:,ii_hl),'wo');
+end
 xlabel('temp'); ylabel('pres'); grid on;
 set(gca,'ydir','rev');
 colorbar;
@@ -46,6 +64,9 @@ set(gca,'colororder',jet(lt));
 h2=plot(PSAL,PRES,'- .');
 if ~qc_good_only
     hold on; plot(PSAL(bad_psal),PRES(bad_psal),'ko');
+end
+if ~isempty(highlight_cycle)
+    hold on; plot(PSAL(:,ii_hl),PRES(:,ii_hl),'wo');
 end
 xlabel('psal'); ylabel('pres'); grid on;
 set(gca,'ydir','rev');
@@ -62,7 +83,7 @@ set(dcm_obj,'UpdateFcn',@profile_ts_datatip)
 
 % Also plot the TS curves
 PTMP = sw_ptmp(PSAL,TEMP*ITS90toIPTS68,PRES,0);
-plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,PSAL_QC,qc_good_only);
+plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,PSAL_QC,qc_good_only,highlight_cycle);
 
 end
 

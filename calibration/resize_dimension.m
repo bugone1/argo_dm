@@ -72,5 +72,5 @@ for j=1:nvars
 end
 netcdf.close(ncid_in);
 netcdf.close(ncid_out);
-copyfile(fname2,fname1);
+copyfile(fname2,fname1,'f');
 delete(fname2);

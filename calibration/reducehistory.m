@@ -1,8 +1,12 @@
 function reducehistory(local_config,floatname)
+if ~isempty(local_config)
 pathe=[local_config.OUT 'changed' filesep ];
 if ~iscell(floatname)
     fl{1}=floatname;
     floatname=fl;
+end
+else
+    pathe='';
 end
 for j=1:length(floatname)
     d=dir([pathe '*' floatname{j} '*.nc']);
@@ -75,7 +79,8 @@ for k=1:length(uparm) %create parm specific table
             stable(jj,kk+2)=i;
         end
     end
-    for i=size(table,2):-1:4 %remove successive identical cfs
+    %remove successive identical cfs
+    for i=size(table,2):-1:3  %loop on date
         for j=1:size(table,1)
             if table(j,i)==table(j,i-1)
                 [table(j,i),stable(j,i)]=deal(0);
@@ -151,7 +156,7 @@ end
 end
 
 function put_rows(fname,vnames,typ,a)
-copyfile(fname,[fname '.old']);
+copyfile(fname,[fname '.old'],'f');
 resize_dimension('N_HISTORY',length(a),fname);
 nc=netcdf.open(fname,'WRITE');
 for j=1:length(vnames)

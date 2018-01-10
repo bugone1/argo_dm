@@ -113,6 +113,8 @@ nowe=now;temptime=nowe+(heuredete(nowe)/24);
 DATE_CAL=CalDate;
 % PAR_LEN=4+12*double(str2num(netcdf.getVar(f,netcdf.inqVarID(f,'FORMAT_VERSION'))')==2.2);
 netcdf.putVar(f,netcdf.inqVarID(f,'DATE_UPDATE'),datestr(temptime,'yyyymmddHHMMSS'));
+% Get the list of station parameters (used in a couple of places below)
+oparms=netcdf.getVar(f,netcdf.inqVarID(f,'STATION_PARAMETERS'))';
 if ~qc_flags_only
 	if ~is_bfile || adj_bfile
 	    netcdf.putVar(f,netcdf.inqVarID(f,'DATA_STATE_INDICATOR'),netstr('2C+',4));
@@ -126,7 +128,10 @@ if ~qc_flags_only
 	    if adj_bfile==1
 	        % TODO: We're currently leaving the intermediate DOXY values as
 	        % raw, as I don't have an error for them.
-	        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),'RDRR');
+            temp_str = 'RRRR';
+            ii_doxy=strmatch('DOXY',oparms(:,1:4));
+            if ~isempty(ii_doxy), temp_str(ii_doxy)='D'; end
+	        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),temp_str);
 	    else
 	        netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),'RRRR');
 	    end
@@ -223,7 +228,10 @@ for i=1:length(varnames) %keep same fields unless they are provided in the struc
                 if ~isempty(ii_temp)
                     ii_temp_2 = find(adj.([varname '_ERR'])~=fv1,1,'first');
                     if isempty(ii_temp_2)
-                        error('Not sure what to use as an error')
+                        %TODO: I previously had this as an error, but I
+                        %don't think it needs to be (at least not for R
+                        %files?)
+                        warning('No valid err values found')
                     else
                         adj.([varname '_ERR'])(ii_temp) = adj.([varname '_ERR'])(ii_temp_2);
                     end
@@ -289,7 +297,6 @@ end
 dj=di*0;
 ndi=di;ndj=dj;
 %first make sure first iteration is filled
-oparms=netcdf.getVar(f,netcdf.inqVarID(f,'STATION_PARAMETERS'))';
 ndi(i_calib)=1;
 parms=netcdf.getVar(f,parameterid,dj,ndi);
 if ~qc_flags_only && isempty(strtrim(parms(:)))

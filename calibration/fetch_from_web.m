@@ -10,6 +10,7 @@ function fetch_from_web(dire, floatname)
 %       24 July 2017, IG: Files that were previously downloaded are now
 %           deleted before fetching the new files.
 %       30 Aug. 2017, IG: Do not fetch M files
+%       5 Jan. 2018, IG: Download traj files
 
 % FTP configuration
 ftpaddress.ifremer='ftp.ifremer.fr';
@@ -25,7 +26,7 @@ subdir=findnameofsubdir(floatname,listdirs(dire));
 pathe=[dire subdir filesep];
 allfloats=uniquefloatsindir(pathe);
 cd(f,[ftppath floatname '/profiles/']);
-downtechmeta=input('Force download of meta & tech files ? (1/0)');
+downtechmeta=input('Force download of meta, tech, and traj files ? (1/0)');
 if isempty(strmatch(floatname,allfloats)) %we don't have this float
     display(['downloading' floatname ' in ' pathe]);
     mget(f,'D*.nc',pathe);
@@ -67,6 +68,11 @@ if ~isempty(todown) || downtechmeta
     display(['downloading' floatname ' in metafiles']);
     cd(f,[ftppath floatname '/']);
     mget(f,[floatname '_meta.nc'],[dire 'metafiles']);
+    display(['downloading' floatname ' in trajfiles']);
+    cd(f,[ftppath floatname '/']);
+    mget(f,[floatname '_Rtraj.nc'],[dire 'trajfiles']);
+    % TODO: Do we ever see Dtraj files??
+    mget(f,[floatname '_Dtraj.nc'],[dire 'trajfiles']);
 end
 close(f)
 

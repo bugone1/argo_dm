@@ -56,7 +56,7 @@ displaygraphs_fun(lo_system_configuration.FLOAT_PLOTS_DIRECTORY,floatNum,-1);
 % load piaction CellK slope offset start ende psalflag adjpsalflag
 % disp('WARNING: Skipping piaction_psal')
 [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal_ig(PROFILE_NO,pcond_factor,oldcoeff);
-% save piaction CellK slope offset start ende psalflag adjpsalflag
+save piaction CellK slope offset start ende psalflag adjpsalflag
 
 beg=piaction_pres(lo_system_configuration,floatNum);
 presscorrect.tnpd(presscorrect.cyc>beg)=5;

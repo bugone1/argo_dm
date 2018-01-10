@@ -12,6 +12,7 @@ function summarize_qc_flags(float_directory, float_name, is_mat)
 %   VERSION HISTORY:
 %       June 2017, Isabelle Gaboury: Created
 %       21 Aug. 2017, IG: Expanded to include DOXY flags
+%       4 Jan. 2018, IG: Fixed bug with reading of B files
 
 if nargin < 3, is_mat = 0; end
 
@@ -23,7 +24,7 @@ else  % In this case we assume NetCDF
     file_names=[dir([float_directory filesep 'D*' float_name '*.nc']); dir([float_directory filesep 'R*' float_name '*.nc'])];
     t=read_all_nc(float_directory,file_names,[],[0 0]);
     file_names_b=[dir([float_directory filesep 'BD*' float_name '*.nc']); dir([float_directory filesep 'BR*' float_name '*.nc'])];
-    t_b=read_all_nc(float_directory,file_names,[],[0 0],1);
+    t_b=read_all_nc(float_directory,file_names_b,[],[0 0],1);
     if ~isempty(t_b)
         bfields=fieldnames(t_b);
         for ii=1:length(t)

@@ -1,4 +1,4 @@
-function float_medsvs(float_num,medsvs_file,cycle_num, title_string)
+function float_medsvs(float_num,medsvs_file,cycle_num, title_string, show_bad_points)
 % FLOAT_MEDSVS Compare float data to historical data from medsvs
 %   DESCRIPTION: Compare float profile to other profiles for this float and
 %       for neighbouring floats. This assumes we've already made a request
@@ -12,10 +12,13 @@ function float_medsvs(float_num,medsvs_file,cycle_num, title_string)
 %   OPTIONAL INPUTS:
 %       cycle_num - Cycle number to highlight in the plots
 %       title_string - Title for the plots
+%       show_bad_points - Set to 1 to show points that failed QC (default is to
+%           hide these)
 %   VERSION HISTORY:
 %       Created 11 Sep. 2017, Isabelle Gaboury
 %       IG, 10 Oct. 2017 - Improved handling of data directory and mixes of
 %           R and D files; removed some leftover lines of code
+%       IG, 21 Dec. 2017 - Added show_bad_points flag
 
 % Setup
 addpath('/u01/rapps/argo_dm/calibration');
@@ -24,6 +27,7 @@ addpath('/u01/rapps/seawater');
 reload=1;
 if nargin < 3, cycle_num = []; end
 if nargin<4, title_string = ''; end
+if nargin<5, show_bad_points=0; end
 ITS90toIPTS68=1.00024;
 
 % Figure out the data directory
@@ -56,14 +60,16 @@ si = zeros(1,lt);
 for ii_cyc=1:lt, si(ii_cyc) = length(t(ii_cyc).pres); end
 [PRES,PSAL,TEMP,TEMP_DOXY,PTEMP]=deal(nan(max(si),lt)); %preallocate profile with max depths
 for i=1:lt
-    ok = find(t(i).pres_qc<='2');
+    if show_bad_points==1, ok=1:length(t(i).pres);
+    else ok = find(t(i).pres_qc<='2');
+    end
     PRES(ok,i)=t(i).pres(ok);
-    ok = find(t(i).psal_qc<='2');
+    if show_bad_points==0, ok = find(t(i).psal_qc<='2'); end
     PSAL(ok,i)=t(i).psal(ok);
-    ok = find(t(i).temp_qc<='2');
+    if show_bad_points==0, ok = find(t(i).temp_qc<='2'); end
     TEMP(ok,i)=t(i).temp(ok);
     if b_files==1
-        ok = find(t(i).temp_doxy_qc<='2');
+        if show_bad_points==0, ok = find(t_b(i).temp_doxy_qc<='2'); end
         TEMP_DOXY(ok,i)=t_b(i).temp_doxy(ok); 
     end
 end
@@ -103,14 +109,20 @@ end
 
 % Hide MEDSVS points that failed QC
 if ~isempty(medsvs_file)
-    z(o.deph_qc>='2')=NaN;
+    if show_bad_points==0
+        if isfield(o,'deph')
+            z(o.deph_qc>='2')=NaN;
+        elseif isfield(o,'pres')
+            z(o.pres_qc>='2')=NaN;
+        end
+    end
     if isfield(o,'temp')
         o_temp=o.temp;
-        o_temp(o.temp_qc>='2')=NaN;
+        if show_bad_points==0, o_temp(o.temp_qc>='2')=NaN; end
     end
     if isfield(o,'psal')
         o_psal=o.psal;
-        o_psal(o.psal_qc>='2')=NaN;
+        if show_bad_points==0, o_psal(o.psal_qc>='2')=NaN; end
     end
 end  
 

@@ -19,7 +19,10 @@ if ~ismember(region,{'atlantic','pacific',''}), error('No parameters exist for t
 elseif strcmp(region,'pacific'), region=''; % This is currently the default case
 elseif ~isempty(region), region = ['_' lower(region)];
 end
-adj_bfile=1;
+
+% Whether or not to create BD files. This should normally be left as "0"
+% unless we have adjusted values for the oxygen
+adj_bfile=0;
 
 if nargin < 2, argu = []; end
 

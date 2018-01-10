@@ -1,4 +1,4 @@
-function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC,qc_good_only)
+function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC,qc_good_only,highlight_cycle)
 % PLOT_FLOAT_TS Plot TS for all float profiles
 %   USAGE:
 %       plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC)
@@ -9,13 +9,18 @@ function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC,qc_good_only)
 %       PSAL - Matrix of salinity, same dimensions as PTMP
 %       TEMP_QC - Matrix of temperature QC flags, same dimensions as PTMP
 %       SAL_QC - Matrix of salinity QC flags, same dimensions as PSAL
+%   OPTIONAL INPUTS:
+%       qc_good_only - Set to 1 to only show points with good QC flags
+%       highlight_cycle - Optional cycle to highlight
 %   OUTPUTS:
 %       fig_ts - Figure handle
 %   VERSION HISTORY:
 %       02 Aug. 2017, Isabelle Gaboury: Created, based on
 %           interactive_qc_ig.m
 %       10 Nov. 2017, IG: Added the qc_good_only functionality
+%       4 Jan. 2017, IG: Added the highlight_cycle functionality
 
+if nargin < 7, highlight_cycle=[]; end
 if nargin<6, qc_good_only=0; end
 
 % Figure out which positions are good
@@ -33,6 +38,12 @@ set(gca,'colororder',jet(lt));
 h=plot(PSAL, PTMP, '.');
 if ~qc_good_only
     hold on; h(end+1) = plot(PSAL(ok), PTMP(ok), 'o');
+end
+if ~isempty(highlight_cycle)
+    ii_hl = find(PROFILE_NO==highlight_cycle);
+    if ~isempty(ii_hl)
+        hold on; plot(PSAL(:,ii_hl),PTMP(:,ii_hl),'wo');
+    end
 end
 for ii=1:length(h)-1
     set(h(ii),'userdata',PROFILE_NO(ii));

@@ -27,6 +27,7 @@ ITS90toIPTS68=1.00024;
 floatname=files(1).name(2:8);
 fname=[local_config.RAWFLAGSPRES_DIR floatname]; %presscorrect file
 dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
+dir_traj = [local_config.DATA 'trajfiles'];
 clean(dire,files(:,1));
 if size(files,2)>1, clean(dire,files(:,2),1); end
 
@@ -107,36 +108,14 @@ t=remove_redundant_struct(t,'cycle_number'); %this also sorts the structure by c
 cyc1=(cat(1,t.cycle_number));
 lf=length(t);
 
-% Plot the float positions, dates. Load the coast data, deal with discontinuities
-% and wrap-around, display.
-fig_traj = figure('units','normalized','position',[0.7 0.25 0.25 0.5]);
-subplot(2,1,1);
-dates_temp = [t.dates];
-cycles_temp = [t.cycle_number];
-lon_temp = [t.longitude];
-lat_temp = [t.latitude];
-plot(lon_temp,lat_temp,'k');
-scatter3(lon_temp,lat_temp,[t.cycle_number],30,[t.cycle_number],'filled');
-hold on;
-ok = [t.position_qc] > '1';
-if ~isempty(ok), plot(lon_temp(ok),lat_temp(ok),'ko','markersize',7); end
-xlabel('Longitude');
-ylabel('Latitude');
-grid on;
-foo=colorbar;
-set(get(foo,'xlabel'),'string','Cycle #');
-subplot(2,1,2);
-scatter(dates_temp,cycles_temp,30,cycles_temp,'filled');
-foo=find([t.juld_qc]>'1');
-if ~isempty(foo)
-    hold on;
-    plot(dates_temp(foo),cycles_temp(foo),'o');
+% Load the trajectory file (IG: Currently under construction)
+for ii=1:length(files)
+    if ~strcmp(files(2).name(2:8),files(1).name(2:8)), error('Inconsistent file name'); end
 end
-xlabel('Date'); ylabel('Cycle number');
-grid on;
-foo=colorbar;
-set(get(foo,'xlabel'),'string','Cycle #');
-datetick('x','dd mmm yyyy')
+t_traj=read_traj_nc([dir_traj filesep files(1).name(2:8) '_Rtraj.nc']);
+
+% Plot the dates and trajectory
+fig_traj=plot_time_and_traj(t,t_traj);
 
 %write KML file for Google Earth
 writekml(['kml' filesep floatname '.kml'],[cat(1,t.longitude) cat(1,t.latitude)],cat(1,t.cycle_number));
