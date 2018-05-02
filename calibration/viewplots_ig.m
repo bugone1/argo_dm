@@ -22,6 +22,13 @@ function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile)
 %           adjustment
 %       28 Nov. 2017: Updates to how TNPD flags are handled to reflect
 %           version 3.0 of the DMQC manual.
+%       31 Jan. 2018: Added option to define a custom error for the
+%           adjusted salinity
+%       12 Feb. 2018: Fixed a bug in the indexing of the pressure
+%           corrections
+%       08 Mar. 2018: Added a special case for the comment for float
+%           4900503
+%       05 Apr. 2018: Expanded the applicability of custom comments
 
 if nargin<4, adj_bfile=0; end
 
@@ -33,7 +40,7 @@ conf.m2=sprintf('%i/%i',[lo_system_configuration.MAPSCALE_LATITUDE_LARGE lo_syst
 %READ OLD COEFFICIENTS------
 %---------------
 load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'calseries_' floatNum '.mat'],'calib_profile_no');
-load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'cal_' floatNum '.mat'],'cal_COND','cal_SAL','cal_COND_err','cal_SAL_err','pcond_factor','pcond_factor_err');
+load([lo_system_configuration.FLOAT_CALIB_DIRECTORY 'cal_' floatNum '.mat'],'cal_COND','cal_SAL','cal_SAL_err','pcond_factor','pcond_factor_err');
 load([local_config.RAWFLAGSPRES_DIR floatNum],'presscorrect','t');
 load([lo_system_configuration.FLOAT_SOURCE_DIRECTORY floatNum '.mat'],'PRES','TEMP','SAL','PTMP','PROFILE_NO',...
     'DATES','LAT','LONG');
@@ -64,8 +71,16 @@ try
     CellK(CellK>40*100*min_err)=nan;
 catch
 end
-if all(CellK==1)
-    scical.PSAL.comment='No conductivity adjustment was judged needed because no significant sensor drift was detected.';
+% TODO: Still working on generalizing these cases
+custom_comment_start_index=-1;
+if all(CellK==1) || all(adjpsalflag>='1')
+    ba=input('Provide custom comment (comment, or blank to skip)?','s')
+    if ~strcmpi(ba,'')
+        scical.PSAL.comment=ba;
+        custom_comment_start_index = input('Starting index for custom comment?')
+    else
+        scical.PSAL.comment='No conductivity adjustment was judged needed because no significant sensor drift was detected.';
+    end
 elseif any(CellK(~isnan(CellK))~=1)    
     if max(abs(diff(CellK)))>=.001
         sucyc=sprintf('%i',cat(1,t(1+find((abs(diff(CellK)))>.001,1)).cycle_number));
@@ -91,55 +106,68 @@ if strcmp(floatNum,'4900494') && adj_bfile
     doxy_err = max_doxy*0.01;   % For the method applied, the error is 1% of the DOXY value       
 end
 
+% Custom error for profiles with adjusted salinity flagged as bad
+% TODO: Do we want to automate the selection of this value, and/or provide
+% similar options for the other variables?
+ok=find(adjpsalflag>'2');
+if ~isempty(ok)
+    ba=input('Custom error for adjusted salinity profiles flagged as bad (value, HO for half the offset, or blank if none)? ','s');
+    if ~isempty(ba)
+        if strcmp(ba,'HO')
+            temp_err = repmat(abs(rond((cal_SAL(1,ok)-SAL(1,ok))/2,3)),size(cal_SAL_err,1),1);
+            cal_SAL_err(:,ok) = max(cal_SAL_err(:,ok), temp_err);
+        else
+            cal_SAL_err(:,ok) = max(cal_SAL_err(:,ok),str2double(ba));
+        end
+    end
+end
+
 for i=1:length(PROFILE_NO)
-    ok=find(cat(1,t.cycle_number)==PROFILE_NO(i));
-    if ok>length(presscorrect.tnpd)
-        ok=length(presscorrect.tnpd);
+    ok_t=find(cat(1,t.cycle_number)==PROFILE_NO(i));
+    % The surface pressure is recorded at the end of the ascent, and is
+    % stored with the next cycle in the trajectory file. Hence we use the
+    % surface pressure from the next cycle. 
+    ok_p=find(cat(1,presscorrect.cyc)==PROFILE_NO(i)+1);
+    if presscorrect.cyc(end)<PROFILE_NO(i)+1
+        ok_p=length(presscorrect.cyc);
     end
     if i>length(CellK)
         CellK(i)=CellK(i-1);
         pcond_factor(i)=pcond_factor(i-1);
         pcond_factor_err(i)=pcond_factor_err(i-1);
     end
-    if ~isnan(CellK(i)) && (CellK(i)>.99 && CellK(i)<1.01) && all(t(ok).psal_qc=='1') && all(t(ok).temp_qc=='1') && psalflag(i)=='1'
+    if ~isnan(CellK(i)) && (CellK(i)>.99 && CellK(i)<1.01) && all(t(ok_t).psal_qc=='1') && all(t(ok_t).temp_qc=='1') && psalflag(i)=='1'
     else
         anomaliesornot='';
     end
     %PRESSURE
-    if presscorrect.tnpd(ok)==1
+    if presscorrect.tnpd(ok_p)==1
         scical.PRES.comment=['TNPD: APEX float that truncated negative pressure drift. ' anomaliesornot ' At least one positive surface pressure value was reported after this profile was sampled.'];
-    elseif presscorrect.tnpd(ok)==2
+    elseif presscorrect.tnpd(ok_p)==2
         scical.PRES.comment=['TNPD: APEX float that truncated negative pressure drift. ' anomaliesornot ' No positive surface pressure value were reported after this profile was sampled.'];
-    elseif presscorrect.tnpd(ok)==3
+    elseif presscorrect.tnpd(ok_p)==3
         oo=['TNPD: APEX float that truncated negative pressure drift. ' anomaliesornot ' At least one positive surface pressure value was reported after this profile was sampled.'];
         scical.PRES.comment=[oo 'This float has a 30%% probability to have microleak problems.'];
         if length(scical.PRES.comment)>256
             scical.PRES.comment=oo;
         end
-    elseif presscorrect.tnpd(ok)==4
+    elseif presscorrect.tnpd(ok_p)==4
         oo=['TNPD: APEX float that truncated negative pressure drift. ' anomaliesornot ' No positive surface pressure value were reported after this profile was sampled.'];
         scical.PRES.comment=[oo ' This float has a 30%% probability to have microleak problems.'];
         if length(scical.PRES.comment)>256
             scical.PRES.comment=oo;
         end
-    elseif presscorrect.tnpd(ok)==5
+    elseif presscorrect.tnpd(ok_p)==5
         scical.PRES.comment='TNPD: APEX float that truncated negative pressure drift. The float showed severe T/S anomalies and has possibly a microleak problem.';
-    elseif presscorrect.tnpd(ok)==0
+    elseif presscorrect.tnpd(ok_p)==0
         if abs(presscorrect.slope)<0.1
             scical.PRES.comment=['PRES_ADJUSTED is calculated following the 3.2 procedure in the Argo Quality Control Manual version 3.0. No significant pressure drift was detected.' presscorrect.comment];
         else
             scical.PRES.comment=['PRES_ADJUSTED is calculated following the 3.2 procedure in the Argo Quality Control Manual version 3.0. A pressure drift of ' sprintf('%4.2f ',presscorrect.slope) presscorrect.slope_units ' was detected.' presscorrect.comment];
         end
     end
-    % The surface pressure is recorded at the end of the ascent, and is
-    % stored with the next cycle in the trajectory file. Hence we use the
-    % surface pressure from the next cycle. 
-    ok2=find(cat(1,presscorrect.cyc)==PROFILE_NO(i)+1);
-    if presscorrect.cyc(end)<PROFILE_NO(i)+1
-        ok2=length(presscorrect.cyc);
-    end
     scical.PRES.equation='PRES_ADJUSTED=PRES + coefficient (see procedure 3.2 in Argo DMQC manual v3.0)';
-    addcoeff=round(-presscorrect.pres(ok2)*1e3)/1e3;
+    addcoeff=round(-presscorrect.pres(ok_p)*1e3)/1e3;
     if isempty(addcoeff) || isnan(addcoeff)
         addcoeff=0;
     end
@@ -153,7 +181,12 @@ for i=1:length(PROFILE_NO)
             scical.PSAL.comment=[ocomment ' The DMQC software initially suggested r=' num2str(pcond_factor(i),7) ' for this cycle.'];
         end
     elseif CellK(i)==1
-        scical.PSAL.comment='No adjustment is needed on this parameter because no significant sensor drift has been detected.';
+        if custom_comment_start_index>=0 && PROFILE_NO(i)>=custom_comment_start_index
+            scical.PSAL.comment = ocomment;
+        else
+            scical.PSAL.comment='No adjustment is needed on this parameter because no significant sensor drift has been detected.';
+        end
+        
     elseif isnan(CellK(i))
         scical.PSAL.comment='No adjustment was performed on this parameter because it seemed beyond correction by actual methods.';
     end
@@ -168,7 +201,7 @@ for i=1:length(PROFILE_NO)
     if ~isempty(lastnan)
         x=1:lastnan(end);
     else
-        x=1:length(t(ok).pres);
+        x=1:length(t(ok_t).pres);
     end
     %CREATE DTOs
     ingested_flnm=dir([local_config.DATA findnameofsubdir(floatNum,listdirs(local_config.DATA)) filesep '*' flnmp]); 
@@ -204,21 +237,21 @@ for i=1:length(PROFILE_NO)
     end
     tem.PRES=PRES(x,i);
     %FLAGS
-    [qc.PRES.ADJ,qc.PRES.RAW]=deal(char(t(ok).pres_qc(x)));
-    [qc.TEMP.ADJ,qc.TEMP.RAW]=deal(char(t(ok).temp_qc(x)));
-    [qc.PSAL.ADJ,qc.PSAL.RAW]=deal(char(t(ok).psal_qc(x)));
-    if (abs(presscorrect.pres(ok))>=5) %significant pressure adjustment, flag pressure to '2'
+    [qc.PRES.ADJ,qc.PRES.RAW]=deal(char(t(ok_t).pres_qc(x)));
+    [qc.TEMP.ADJ,qc.TEMP.RAW]=deal(char(t(ok_t).temp_qc(x)));
+    [qc.PSAL.ADJ,qc.PSAL.RAW]=deal(char(t(ok_t).psal_qc(x)));
+    if (abs(presscorrect.pres(ok_p))>=5) %significant pressure adjustment, flag pressure to '2'
         qc.PRES.ADJ(qc.PRES.ADJ<'2')='2';
     end
     qc.PRES.ADJ(tem.PRES(:)<0 & qc.PRES.ADJ(:)<'3')='3'; %negative adjusted value ?! flag pressure to '3';
     % As of version 3.0 of the manual, we only flag the data as bad once
     % the data become TNPD (i.e., once the values go to zero and stay at
     % zero).
-    if presscorrect.tnpd(ok)==2 ||  presscorrect.tnpd(ok)==4 %if this is a TNPD without T/S symptoms
+    if presscorrect.tnpd(ok_p)==2 ||  presscorrect.tnpd(ok_p)==4 %if this is a TNPD without T/S symptoms
         qc.PRES.ADJ(qc.PRES.ADJ<'2')='2';
         qc.TEMP.ADJ(qc.TEMP.ADJ<'2')='2';
         qc.PSAL.ADJ(qc.PSAL.ADJ<'2')='2';
-    elseif presscorrect.tnpd(ok)==5 %this is a TNPD with severe symptoms
+    elseif presscorrect.tnpd(ok_p)==5 %this is a TNPD with severe symptoms
         qc.PRES.ADJ(qc.PRES.ADJ<'4')='4';
         qc.TEMP.ADJ(qc.TEMP.ADJ<'4')='4';
         qc.PSAL.ADJ(qc.PSAL.ADJ<'4')='4';
@@ -229,7 +262,7 @@ for i=1:length(PROFILE_NO)
     end
     %ERROR
     err.PRES=2.4*ones(length(x),1);
-    if presscorrect.tnpd(ok)==4 || presscorrect.tnpd(ok)==3
+    if presscorrect.tnpd(ok_p)==4 || presscorrect.tnpd(ok_p)==3
         err.PRES(:)=20; %following DMQC 4, changed feb2010 email list
     end
     try
@@ -240,31 +273,31 @@ for i=1:length(PROFILE_NO)
     err.PSAL=max(err.PSAL,str2num(local_config.MIN_MAP_ERR));
     err.TEMP=.002*ones(length(x),1);
     % DOXY-related fields. 
-    if isfield(t(ok),'doxy')
-        %[qc.DOXY.ADJ,qc.DOXY.RAW]=deal(char(t(ok).doxy_qc(x)));
-        qc.DOXY.RAW = char(t(ok).doxy_qc(x));
+    if isfield(t(ok_t),'doxy')
+        %[qc.DOXY.ADJ,qc.DOXY.RAW]=deal(char(t(ok_t).doxy_qc(x)));
+        qc.DOXY.RAW = char(t(ok_t).doxy_qc(x));
 %         tem.DOXY = calc_doxy(floatNum,tem.PRES',t(i).temp,tem.PSAL',t(i).temp_doxy,t(i).phase_delay_doxy);
     end
     % TODO: Currently only adjusting DOXY, add similar lines below if ever
     % these might be adjusted.
-    if isfield(t(ok),'doxy_adjusted') && any(t(ok).doxy_adjusted<10000)
-        qc.DOXY.ADJ = char(t(ok).doxy_qc(x));
+    if isfield(t(ok_t),'doxy_adjusted') && any(t(ok_t).doxy_adjusted<10000)
+        qc.DOXY.ADJ = char(t(ok_t).doxy_qc(x));
         if strcmp(floatNum,'4900494') && adj_bfile
-            tem.DOXY = t(ok).doxy_adjusted(x);
+            tem.DOXY = t(ok_t).doxy_adjusted(x);
             err.DOXY = doxy_err*ones(length(x),1);
         end
     end
-    if isfield(t(ok),'temp_doxy')
-        %[qc.TEMP_DOXY.ADJ,qc.TEMP_DOXY.RAW]=deal(char(t(ok).temp_doxy_qc(x)));
-        qc.TEMP_DOXY.RAW = char(t(ok).temp_doxy_qc(x));
+    if isfield(t(ok_t),'temp_doxy')
+        %[qc.TEMP_DOXY.ADJ,qc.TEMP_DOXY.RAW]=deal(char(t(ok_t).temp_doxy_qc(x)));
+        qc.TEMP_DOXY.RAW = char(t(ok_t).temp_doxy_qc(x));
     end
-    if isfield(t(ok),'phase_delay_doxy')
-        %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
-        qc.PHASE_DELAY_DOXY.RAW = char(t(ok).phase_delay_doxy_qc(x));
+    if isfield(t(ok_t),'phase_delay_doxy')
+        %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok_t).phase_delay_doxy_qc(x)));
+        qc.PHASE_DELAY_DOXY.RAW = char(t(ok_t).phase_delay_doxy_qc(x));
     end
-    if isfield(t(ok),'molar_doxy')
-        %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok).phase_delay_doxy_qc(x)));
-        qc.MOLAR_DOXY.RAW = char(t(ok).molar_doxy_qc(x));
+    if isfield(t(ok_t),'molar_doxy')
+        %[qc.PHASE_DELAY_DOXY.ADJ,qc.PHASE_DELAY_DOXY.RAW]=deal(char(t(ok_t).phase_delay_doxy_qc(x)));
+        qc.MOLAR_DOXY.RAW = char(t(ok_t).molar_doxy_qc(x));
     end
     flnm.input
 %     if findstr('4901189',flnm.input)

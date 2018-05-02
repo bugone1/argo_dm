@@ -12,6 +12,10 @@ function [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal_ig(P
 %   VERSION HISTORY:
 %       3 Aug. 2017, Isabelle Gaboury: Written, based on piaction_psal.m
 %           dated 25 July 2017
+%       5 Apr. 2018, IG: Modified some prompts to take empty for "none"
+%           rather than zero.
+%       24 Apr. 2018, IG: Added an option to keep the current adjustment
+%           for some portions of the curve when modifying
 
 % Initialize flags
 psalflag=ones(size(PROFILE_NO))*'1';
@@ -68,7 +72,7 @@ if isempty(q) || q~='q'
             if min([v.prof])==min(PROFILE_NO) && max([v.prof])==max(PROFILE_NO)
                 yn='Y';
             else
-                sprintf('Undecided profiles remain');
+                yn=input('Keep current adjustment for remaining profiles (y/[n])?','s');
             end
         end
     end
@@ -128,31 +132,31 @@ end
 CellK=round(CellK*1e8)/1e8;
 set(findobj('color','g','linestyle','-'),'xdata',PROFILE_NO,'ydata',CellK);
 psalflag(isnan(CellK))='4';
-ba=input('Enter cycle from which the float should have its raw salinity flagged to 2 (0 if none)');
-if ~isempty(ba) && ba>0
+ba=input('Enter cycle from which the float should have its raw salinity flagged to 2 (empty if none)');
+if ~isempty(ba) && ~isempty(ba)
     psalflag(PROFILE_NO>=ba & psalflag<'2')='2';
 end
 psalflag=char(psalflag);
-ba=input('Enter cycle from which the float should have its raw salinity flagged to 3 (0 if none)');
-if ~isempty(ba) && ba>0
+ba=input('Enter cycle from which the float should have its raw salinity flagged to 3 (empty if none)');
+if ~isempty(ba) && ~isempty(ba)
     psalflag(PROFILE_NO>=ba & psalflag<'3')='3';
 end
 psalflag=char(psalflag);
 %adjpsalflag=psalflag;
-ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 1 (0 if none)');
-if ~isempty(ba) && ba>0
+ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 1 (empty if none)');
+if ~isempty(ba) && ~isempty(ba)
     adjpsalflag(PROFILE_NO>=ba & adjpsalflag<'1')='1';
 end
-ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 2 (0 if none)');
-if ~isempty(ba) && ba>0
+ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 2 (empty if none)');
+if ~isempty(ba) && ~isempty(ba)
     adjpsalflag(PROFILE_NO>=ba & adjpsalflag<'2')='2';
 end
-ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 3 (0 if none)');
-if ~isempty(ba) && ba>0
+ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 3 (empty if none)');
+if ~isempty(ba) && ~isempty(ba)
     adjpsalflag(PROFILE_NO>=ba & adjpsalflag<'3')='3';
 end
-ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 4 (0 if none)');
-if ~isempty(ba) && ba>0
+ba=input('Enter cycle from which the float should have its ADJ salinity flagged to 4 (empty if none)');
+if ~isempty(ba) && ~isempty(ba)
     adjpsalflag(PROFILE_NO>=ba & adjpsalflag<'4')='4';
 end
 adjpsalflag=char(adjpsalflag);

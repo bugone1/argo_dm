@@ -27,6 +27,8 @@ function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
 %   10 Aug. 2017, IG: Added a line to the plot of the conductivity
 %       adjustment to improve visibility
 %   29 Aug. 2017, IG: Upload the KML file
+%   25 Jan. 2018, IG: Fixed a minor bug in plotting data where all samples
+%       have bad QC flags
 
 % Close any existing plots so we can start with a clean slate
 close all
@@ -171,7 +173,8 @@ for i=1:2 %raw then adj
         contour_plot(X,Y,Z,xlim,ylim,zlim1);
         title([floatNum ' ' vars{j} ' ' titre{i} ' flags 1 & 2']);
         XXg{i,j}=X;        YYg{i,j}=Y;        ZZg{i,j}=ts(:,j);
-        set(gca,'xlim',xlim,'ylim',ylim,'clim',zlim1);
+        set(gca,'xlim',xlim,'ylim',ylim);
+        if any(~isnan(zlim1)), set(gca,'clim',zlim1); end
         if ispc || usejava('desktop')
             print('-dpng',[pathe floatNum '_' vars{j} '_' titre{i}(1) '.png']);
         end
@@ -181,7 +184,8 @@ for i=1:2 %raw then adj
         Z(ok)=nan;
         contour_plot(X,Y,Z,xlim,ylim,minmax([Z(:); zlim1(:)]));
         title([floatNum ' ' vars{j} ' ' titre{i} ' flags 3 & 4']);
-        set(gca,'xlim',xlim,'ylim',ylim,'clim',zlim1);
+        set(gca,'xlim',xlim,'ylim',ylim);
+        if any(~isnan(zlim1)), set(gca,'clim',zlim1); end
         if ispc || usejava('desktop')
             print('-dpng',[pathe floatNum '_' vars{j} '_' titre{i}(1) '_3&4.png']);
         end

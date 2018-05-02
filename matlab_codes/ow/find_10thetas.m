@@ -109,7 +109,10 @@ if(minTheta<maxTheta) % no levels when no valid theta range --
         if ~isempty(ii)
         for k=1:length(Preslevels)
             if Preslevels(k)<max(PRES(ii,g)) && Preslevels(k)>min(PRES(ii,g))
-                interp_t(k,g) = interp1(PRES(ii,g),PTMP(ii,g),Preslevels(k),'linear');
+                try interp_t(k,g) = interp1(PRES(ii,g),PTMP(ii,g),Preslevels(k),'linear');
+                catch
+                    disp('oops')
+                end
             end
         end
         end

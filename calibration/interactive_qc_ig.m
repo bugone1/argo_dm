@@ -93,7 +93,8 @@ if any(dokeep==0)
             for ii=1:length(t)
                 for ii_field=1:length(bfields)
                     if ismember(bfields{ii_field},cfields) && any(t_b(ii).(bfields{ii_field})~=t(ii).(bfields{ii_field}))
-                        error(['Mismatch for ii=',num2str(ii),',field ',bfields{ii_field}]);
+                        warning(['Mismatch for ii=',num2str(ii),',field ',bfields{ii_field}]);
+                        keyboard
                     else
                         t(ii).(bfields{ii_field}) = t_b(ii).(bfields{ii_field});
                     end

@@ -19,6 +19,9 @@ function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC,qc_good_only,h
 %           interactive_qc_ig.m
 %       10 Nov. 2017, IG: Added the qc_good_only functionality
 %       4 Jan. 2017, IG: Added the highlight_cycle functionality
+%       22 Jan. 2017, IG: Fixed a small bug with plotting points with bad
+%           QC flags.
+%       1 May 2018, IG: Highlight cycle can now be a vector
 
 if nargin < 7, highlight_cycle=[]; end
 if nargin<6, qc_good_only=0; end
@@ -36,11 +39,11 @@ fig_ts = figure('units','normalized','position',[0.25 0.25 0.25 0.5]);
 lt=length(PROFILE_NO);
 set(gca,'colororder',jet(lt));
 h=plot(PSAL, PTMP, '.');
-if ~qc_good_only
+if ~qc_good_only && any(any(ok))
     hold on; h(end+1) = plot(PSAL(ok), PTMP(ok), 'o');
 end
 if ~isempty(highlight_cycle)
-    ii_hl = find(PROFILE_NO==highlight_cycle);
+    [foo1,ii_hl,foo2]=intersect(PROFILE_NO,highlight_cycle);
     if ~isempty(ii_hl)
         hold on; plot(PSAL(:,ii_hl),PTMP(:,ii_hl),'wo');
     end

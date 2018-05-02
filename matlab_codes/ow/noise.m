@@ -17,6 +17,11 @@ function [noisevariance]=noise(a,xlat,xlong)
 % noise = measured value - true value.
 % 2*noisevariance = variance between casts. Here, the variance is
 % based on closest casts.
+%
+% VERSION HISTORY:
+%   May 2017: Current working version
+%   Isabelle Gaboury, 7 March 2018: Added code to deal with the (rare) case
+%       where only colocated profiles are provided
 
 [m,n]=size(a);
 diff=NaN*ones(m,n);
@@ -26,8 +31,19 @@ for i=1:n
 	xlong0=xlong(i)*ones(n,1);
 	r=(xlat0-xlat).^2+ (xlong0-xlong).^2;
 	index=r > 0;
-	tmp=min(r(index));
-	j=find(r==tmp,1);
+    % IG, 7 March 2018: Deal with the case where there are only two
+    % profiles, with the same lat/long (occurred in the 2017 climatology)
+    if any(index)
+        tmp=min(r(index));
+        j=find(r==tmp,1);
+    elseif i<n
+        j=i+1;
+    elseif i>1
+        j=i-1;
+    else
+        error('Unable to calculate the noise')
+    end
+        
 	diff(:,i)=a(:,i)-a(:,j);
 end
 for i=1:m

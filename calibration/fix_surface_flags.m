@@ -25,6 +25,7 @@ function fix_surface_flags(floatname, floattype, preserve_existing_flags)
 %       14 July 2017, IG: floattype parameter updated, flagging rules
 %           updated based on the QC manual.
 %       26 July 2017, IG: Added option for preserve_existing_flags=2
+%       3 Apr. 2018, IG: Added handling for single-element pressure vectors
 
 % Default is NOVA floats, no existing flags to preserve
 if nargin < 3, preserve_existing_flags = 0; end
@@ -59,36 +60,52 @@ end
 % zero can have the flag "downgraded" from 4 to 3.
 for ii_prof=1:length(t)
     if t(ii_prof).pres(1) <= p_co
-        % Get the current flags
-        old_flags = [t(ii_prof).pres_qc(1) t(ii_prof).temp_qc(1) t(ii_prof).psal_qc(1); ...
-            t(ii_prof).pres_qc(2) t(ii_prof).temp_qc(2) t(ii_prof).psal_qc(2)];
-        new_flags = old_flags;
-        if strcmp(t(ii_prof).psal_qc(1),'4') && strcmp(t(ii_prof).temp_qc(1),'4')
-            % Calculate the potential densities
-            [sal_abs, foo] = gsw_SA_from_SP(t(ii_prof).psal(1:2),t(ii_prof).pres(1:2),...
-                t(ii_prof).longitude,t(ii_prof).latitude);
-            temp_cons = gsw_CT_from_t(sal_abs,t(ii_prof).temp(1:2),t(ii_prof).pres(1:2));
-            dens_ct = gsw_rho_CT(sal_abs,temp_cons,mean(t(ii_prof).pres(1:2)));
-            if dens_ct(1)-dens_ct(2) < 0.03
-                new_flags = [old_flags(1,1) '3' '3'; '1' '1' '1'];
+        if length(t(ii_prof).pres)==1 
+            if t(ii_prof).pres(1) <=0 && (t(ii_prof).pres_qc(1)<'4' || preserve_existing_flags==0)
+                t(ii_prof).pres_qc(1) = '3'; 
+            end
+            if t(ii_prof).temp_qc(1) < '4' || preserve_existing_flags==0
+                t(ii_prof).temp_qc(1) = '3';
+            end
+            if t(ii_prof).psal_qc(1) < '4' || preserve_existing_flags==0
+                t(ii_prof).psal_qc(1) = '3';
             end
         else
-            new_flags = [old_flags(1,1) '3' '3'; '1' '1' '1'];
+            % Get the current flags
+            try
+                old_flags = [t(ii_prof).pres_qc(1) t(ii_prof).temp_qc(1) t(ii_prof).psal_qc(1); ...
+                    t(ii_prof).pres_qc(2) t(ii_prof).temp_qc(2) t(ii_prof).psal_qc(2)];
+            catch
+                keyboard
+            end
+            new_flags = old_flags;
+            if strcmp(t(ii_prof).psal_qc(1),'4') && strcmp(t(ii_prof).temp_qc(1),'4')
+                % Calculate the potential densities
+                [sal_abs, foo] = gsw_SA_from_SP(t(ii_prof).psal(1:2),t(ii_prof).pres(1:2),...
+                    t(ii_prof).longitude,t(ii_prof).latitude);
+                temp_cons = gsw_CT_from_t(sal_abs,t(ii_prof).temp(1:2),t(ii_prof).pres(1:2));
+                dens_ct = gsw_rho_CT(sal_abs,temp_cons,mean(t(ii_prof).pres(1:2)));
+                if dens_ct(1)-dens_ct(2) < 0.03
+                    new_flags = [old_flags(1,1) '3' '3'; '1' '1' '1'];
+                end
+            else
+                new_flags = [old_flags(1,1) '3' '3'; '1' '1' '1'];
+            end
+            % Also set the pressure to '3' if it's at or less than 0. 
+            if t(ii_prof).pres(1) <= 0
+                new_flags(1,1) = '3';
+            end
+            % Preserve existing flags if requested
+            if preserve_existing_flags==1   % Keep the higher flag for all 3 variables
+                new_flags = char(max(old_flags,new_flags)); 
+            elseif preserve_existing_flags==2 % Keep the higher flag for only T,S, new flags for P
+                new_flags(:,2:3) = char(max(old_flags(:,2:3),new_flags(:,2:3))); 
+            end
+            % Deal to the orginal structure
+            t(ii_prof).pres_qc(1:2) = new_flags(:,1)';
+            t(ii_prof).temp_qc(1:2) = new_flags(:,2)';
+            t(ii_prof).psal_qc(1:2) = new_flags(:,3)';
         end
-        % Also set the pressure to '3' if it's at or less than 0. 
-        if t(ii_prof).pres(1) <= 0
-            new_flags(1,1) = '3';
-        end
-        % Preserve existing flags if requested
-        if preserve_existing_flags==1   % Keep the higher flag for all 3 variables
-            new_flags = char(max(old_flags,new_flags)); 
-        elseif preserve_existing_flags==2 % Keep the higher flag for only T,S, new flags for P
-            new_flags(:,2:3) = char(max(old_flags(:,2:3),new_flags(:,2:3))); 
-        end
-        % Deal to the orginal structure
-        t(ii_prof).pres_qc(1:2) = new_flags(:,1)';
-        t(ii_prof).temp_qc(1:2) = new_flags(:,2)';
-        t(ii_prof).psal_qc(1:2) = new_flags(:,3)';
     end
 end
 

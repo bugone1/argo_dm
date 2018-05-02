@@ -18,7 +18,7 @@ if nargin < 2, t_traj = {}; end
 
 % Plot the float positions, dates. Load the coast data, deal with discontinuities
 % and wrap-around, display.
-fig_traj = figure('units','normalized','position',[0.7 0.25 0.25 0.5]);
+fig_traj = figure('units','normalized','position',[0.05 0.25 0.25 0.5]);
 subplot(2,1,1);
 dates_temp = [t.dates];
 cycles_temp = [t.cycle_number];
@@ -34,7 +34,11 @@ if ~isempty(t_traj)
         ok = find(t_traj.cycle_number==t(ii).cycle_number & t_traj.position_accuracy~=' ');
         if length(ok)>=1
             % TODO: Finish testing this
-            if length(ok)>1, error('Check that we''re dealing correctly with >1 position accuracy'); end
+            if length(ok)>1
+                warning('Got >1 possible position match')
+                foo = abs(t_traj.dates(ok)-t(ii).dates);
+                ok = ok(find(foo==min(foo),1,'first'));
+            end
             position_accuracy(ii) = t_traj.position_accuracy(ok);
         end
     end

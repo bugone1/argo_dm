@@ -35,6 +35,9 @@ function presMain(local_config,lo_system_configuration,files,floatname)
 %           a function.
 %       28 Nov. 2017, IG: Finished (I think) updating the TNPD criteria
 %           based on version 3.0 of the DMQC manual. 
+%       31 Jan. 2018, IG: Further tweak to the TNPD criteria.
+%       9 Apr. 2018, IG: Fixed minor bug with how a warning was being
+%           displayed.
 
 % Data directory, extended file name
 dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
@@ -144,10 +147,10 @@ if yn(1)=='y'
             if sdn(end)-sdn(1) < 365/2
                 % These data may need to be re-evaluated at the PI's
                 % discretion
-                print('WARNING: TNPD float with less than 6 months of data')
+                warning('TNPD float with less than 6 months of data')
                 tnpd = 0;
                 %tnpd=(pres3(end)==0 || isnan(pres3)) && (sum(pres3==0 | isnan(pres3))/length(pres3))>=.8;
-            else
+            elseif any(pres3<=0 | isnan(pres3))
                 % According to version 3.0 of the QC manual, only data
                 % sections longer than 6 months and that are not followd by
                 % a section with positive values are considered TNPD. 
@@ -159,7 +162,12 @@ if yn(1)=='y'
                         print('WARNING: TNPD float with a final zero-adjustment period <6mo in length');
                         tnpd = 0;
                     end
+                else tnpd=0;
                 end
+            else
+                % If all pressure adjustments are positive then the float
+                % is not considered TNPD
+                tnpd=0;
             end
         end
         linfit=polyfit(sdn,pres3,1);

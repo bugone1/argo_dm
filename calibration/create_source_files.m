@@ -23,6 +23,10 @@ function create_source_files(local_config,lo_system_configuration,floatname)
 %           for compatibility with R2017a.
 %       25 Sep. 2017, IG: Fixed minor bug with correction of negative
 %           longitudes
+%       17 Apr. 2018, IG: Changed the definition of the DATES output to be
+%           consistent with the OW code; verified that this does not affect
+%           any other existing codes.
+%       23 Apr. 2018: Fixed issue with fetching of bathymetry
 
 dbstop if error
 ITS90toIPTS68=1.00024;
@@ -47,9 +51,9 @@ end
 firstpres=firstpres(j);
 lastpres=lastpres(j);
 maxp=max(lastpres);minp=min(lastpres);
-load('topo','topo'); %origin is at lon==0 lat==90
-ix=round(cat(1,s(ook(j)).latitude)+91);
-iy=round(cat(1,s(ook(j)).longitude));
+load('topo','topo'); %origin is at lon==0 lat==-90
+ix=round(cat(1,s(ook(j)).latitude)+90);
+iy=round(cat(1,s(ook(j)).longitude)+1);
 ok=find(iy<0);
 if ~isempty(ok), iy(ok)=181-iy(ok); end
 
@@ -144,6 +148,10 @@ for i=1:length(t)
     t(i).pres_qc=s(j_dates(i)).pres_qc;
 end
 save([local_config.RAWFLAGSPRES_DIR floatname],'t','-append') %save flags
+
+% Convert the DATES to fractional year (as per the OW definition) rather than a datenum
+DATES_VEC = datevec(DATES);
+DATES = (DATES_VEC(:,1) + cal2dec(DATES_VEC(:,2),DATES_VEC(:,3),DATES_VEC(:,4),DATES_VEC(:,5)+DATES_VEC(:,6)/60)./365)';
 
 LAT=cat(1,s.latitude)';
 LONG=cat(1,s.longitude)';

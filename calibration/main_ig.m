@@ -29,6 +29,7 @@ if nargin < 2, argu = []; end
 % Make sure the Seawater and VMS tools toolboxes are on the path
 if ~ispc
     addpath('/u01/rapps/argo_dm/calibration');
+    addpath('/u01/rapps/argo_dm/matlab_codes/ow');
     addpath('/u01/rapps/seawater');
     addpath('/u01/rapps/vms_tools');
     addpath('/u01/rapps/m_map');
@@ -36,6 +37,7 @@ if ~ispc
     addpath('/u01/rapps/gsw/library');
 else
     addpath('w:\argo_dm\calibration');
+    addpath('W:\argo_dm\matlab_codes\ow');
     addpath('w:\seawater');
     addpath('w:\vms_tools');
     addpath('w:\m_map');

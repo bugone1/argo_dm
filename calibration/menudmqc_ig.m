@@ -207,7 +207,7 @@ switch lower(q(1))
                     display(['Downloading ' inst{i} ' dbase: ' ret(ok).name 32 num2str(ret(ok).bytes/1012/1012) ' Mb']);
                     mget(f,ret(ok).name,config.HISTORICAL_DIRECTORY);
                     display('Unzipping..')
-                    target=[config.HISTORICAL_DIRECTORY filesep 'historical_' config.(['HISTORICAL_' inst{i} '_PREFIX'])];
+                    target=[config.HISTORICAL_DIRECTORY fileparts(config.(['HISTORICAL_' inst{i} '_PREFIX']))];
                     gunzip([config.HISTORICAL_DIRECTORY filesep ret(ok).name],target);
                     display(['New ' inst{i} ' climatology downloaded and un-gunzipped']);
                     tountar=dir([target filesep '*.tar']);
@@ -227,6 +227,7 @@ switch lower(q(1))
         update_ref_dbase;
         display('Edit climatology information in config file');
         edit(config.CONFIGURATION_FILE);
+        filestoprocess=[];
     case '6'  % Calculate statistics
         [list,numr,numd,numbr,numbd,dat,pre_adj]=calculate_server_stats(ftpaddress.current,user.login,user.pwd,ftppath);
         [k,i]=sort({list.name});

@@ -10,6 +10,8 @@ function s=read_traj_nc(profile_name)
 %   VERSION HISTORY:
 %       Isabelle Gaboury, 4 Jan. 2018: Written, but may still need some
 %           testing
+%       IG, 10 Apr. 2018: Tried to fix reading of QC flags, might not be
+%           right yet.
 
 %TODO: I'm still figuring out which of these I need...
 vars = {'REFERENCE_DATE_TIME','JULD','JULD_STATUS','JULD_QC','JULD_ADJUSTED','JULD_ADJUSTED_QC',...
@@ -46,7 +48,12 @@ end
 s.dates=netcdf.getVar(f,netcdf.inqVarID(f,'JULD'))+datenum(s.reference_date_time,'yyyymmddHHMM');
 [trash,N_HISTORY]=netcdf.inqDim(f,netcdf.inqDimID(f,'N_HISTORY'));
 history_action=squeeze((netcdf.getVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),ones(1,2)-1,[4 N_HISTORY])))';
-history_qctest=squeeze((netcdf.getVar(f,netcdf.inqVarID(f,'HISTORY_QCTEST'),ones(1,2)-1,[10 N_HISTORY])))';
+if str2double(netcdf.getVar(f,netcdf.inqVarID(f,'FORMAT_VERSION'))') > 3
+    history_qctest=squeeze((netcdf.getVar(f,netcdf.inqVarID(f,'HISTORY_QCTEST'),ones(1,2)-1,[10 N_HISTORY])))';
+else
+    [trash,N_HISTORY2]=netcdf.inqDim(f,netcdf.inqDimID(f,'N_HISTORY2'));
+    history_qctest=squeeze((netcdf.getVar(f,netcdf.inqVarID(f,'HISTORY_QCTEST'),ones(1,3)-1,[10 N_HISTORY2 N_HISTORY])))';
+end
 
 % Replace fill values in the latitude and longitude with NaNs
 fv = netcdf.getAtt(f,netcdf.inqVarID(f,'LONGITUDE'),'_FillValue');
@@ -67,5 +74,8 @@ if length(tests) < 22
 end
 
 tests=tests(:,end-1:-1:1); %remove bit 0 and invert bytes
-s.qc=tests(:,17)=='1';  % TODO: I'm not entirely sure this is correct
-
+% TODO: I'm not entirely sure this is correct. It has failed on some
+% floats...
+if size(tests,2)>=17, s.qc=tests(:,17)=='1';  
+else s.qc = tests(:,end)=='1';  % TODO: This is where I'm kind of guessing...
+end 

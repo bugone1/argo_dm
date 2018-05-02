@@ -265,7 +265,6 @@ switch lower(q(1))
                     sce=netcdf.getVar(nc,netcdf.inqVarID(nc,'SCIENTIFIC_CALIB_EQUATION'));pre_adj(i)=~isempty(findstr('procedure 3.2',strtrim(sce(:)')));
                     if ~pre_adj(i)
                         tdat
-                        pause
                     end
                     netcdf.close(nc);
                 end
@@ -279,7 +278,7 @@ switch lower(q(1))
         numd=numd(i);
         sprintf('%f of eligible profiles have been DMQCed at least once',100*sum(numd)./sum(numd+numr))
         sprintf('%f of eligible floats have been DMQCed at least once with sal',100*sum(numd>0)./sum(numd>0 | numr>0))
-        sprintf('%f of eligible floats have been DMQCed at least once with both sal and pres',100*sum(numd(pre_adj)>0)./sum(numd>0 | numr>0))
+        sprintf('%f of eligible floats have been DMQCed at least once with both sal and pres',100*sum(pre_adj)./sum(numd>0 | numr>0))
         sprintf('~ %i profiles DMQCed since last year',sum(numd(dat>(now-365.25))))
         char(list.name)
         save stats list numr numd dat pre_adj 

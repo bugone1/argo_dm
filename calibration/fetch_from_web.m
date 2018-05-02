@@ -72,7 +72,7 @@ if ~isempty(todown) || downtechmeta
     cd(f,[ftppath floatname '/']);
     mget(f,[floatname '_Rtraj.nc'],[dire 'trajfiles']);
     % TODO: Do we ever see Dtraj files??
-    mget(f,[floatname '_Dtraj.nc'],[dire 'trajfiles']);
+    %mget(f,[floatname '_Dtraj.nc'],[dire 'trajfiles']);
 end
 close(f)
 

@@ -30,6 +30,9 @@ function fname=rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,PRES,adj_bfile,qc_
 %       3 Nov. 2017, IG: Changed default behaviour with respect to N_CALIB
 %           so that previous calibrations are now stored.
 %       6 Nov. 2017, IG: Added option to only update QC flags.
+%       25 Apr. 2018, IG: Added a temporary "if" clause to try and sort out
+%           issues arising when sorting the pressures; when encountering
+%           the case that was causing issues the code goes to the keyboard.
 
 if nargin<10, qc_flags_only=0; end
 if nargin < 9, adj_bfile = 0; end
@@ -250,17 +253,27 @@ end
 %corresponding flags to fillvalues are 4. Then that all flags of 4 have
 %corresponding fillvalues  !!
 %go from raw/adj objects to NetCDF file
-
 %Re-sort according to RAW pres %nov 11
 [tr,i,j]=intersect(rond(str2num(num2str(PRES)),2),rond(str2num(num2str(raw.PRES)),2));
 ok1=setdiff(1:length(raw.PRES),j);
 ok2=setdiff(1:length(adj.PRES),i);
-fn=fieldnames(adj);
-for k=1:length(fn)
-    clear t
-    t(ok1)=adj.(fn{k})(ok2);
-    t(j)=adj.(fn{k})(i);
-    adj.(fn{k})=t;
+if ~isempty(ok1) && ~isempty(ok2) && any(ok1~=ok2) && all(raw.PRES(ok1)==raw.PRES(ok2))
+    % IG, 25 Apr. 2018: This came up when dealing with duplicate pressures
+    % where the deeper pressur was marked as bad (as recommended in the QC
+    % manual); the normal adjustment below was inverting the flags. For
+    % float 4900528 it seemed to be enough to just skip the "else" clause
+    % below, but should continue to keep an eye on these cases. If this
+    % doesn't come up again then this if statement can be removed.
+    disp('Seem to have duplicate pressures, currently need to deal with this manually')
+    keyboard
+else
+    fn=fieldnames(adj);
+    for k=1:length(fn)
+        clear t
+        t(ok1)=adj.(fn{k})(ok2);    % Elements of adj.PRES that are not in raw.PRES
+        t(j)=adj.(fn{k})(i);        % Elements in common, ordered by raw.PRES
+        adj.(fn{k})=t;
+    end
 end
 for i=1:length(varnames)
     varname=varnames{i};

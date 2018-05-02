@@ -14,6 +14,9 @@ function update_qc_flags(float_num, skip_tnpd_adj)
 %   VERSION HISTORY:
 %       6 November 2017, Isabelle Gaboury: Created, based loosely on a
 %           previously-modified version of viewplots.
+%       13 Apr. 2018, IG: Added ability to fill adjusted values previously
+%           set to the fill value when upgrading QC flags; added history
+%           reduction.
 
 if nargin<2, skip_tnpd_adj=0; end
 
@@ -83,6 +86,27 @@ for ii_prof=1:length(t)
             end
         end
         
+        % If we've changed a flag from '3' or '4' to '1', we need to reset
+        % the adjusted values
+        tem={};
+        for temp_var = {'pres','temp','psal'}
+            ii_improved = t(ii_prof).([temp_var{1},'_qc'])=='1' & t_old.([temp_var{1},'_qc'])=='4';
+            if any(ii_improved)
+                if all(ii_improved)
+                    error('Unable to fill in the adjusted values')
+                else
+                    temp_offsets = t_old.temp_adjusted(~ii_improved)-t_old.temp(~ii_improved);
+                    if min(temp_offsets)~=max(temp_offsets)
+                        error('Unable to fill in the adjusted values')
+                    else
+                        tem.(upper(temp_var{1})) = t(ii_prof).([temp_var{1},'_adjusted']);
+                        tem.(upper(temp_var{1}))(ii_improved) = ...
+                            t(ii_prof).(temp_var{1})(ii_improved) + median(temp_offsets);
+                    end
+                end
+            end
+        end
+        
         % Apply TNPD-related flags
         if ~skip_tnpd_adj
             if presscorrect.tnpd(ii_prof)>0 &&  presscorrect.tnpd(ii_prof)<=4 %if this is a TNPD without T/S symptoms
@@ -101,9 +125,11 @@ for ii_prof=1:length(t)
             end
         end
         
-        rewrite_nc(flnm,[],qc,[],temptime_str,[],[],[],0,1);
+        rewrite_nc(flnm,tem,qc,[],temptime_str,[],[],[],0,1);
+        reducehistory_i(flnm.output)
         if ~isempty(flnm_b.input)
-            rewrite_nc(flnm_b,[],qc,[],temptime_str,[],[],[],0,1);
+            rewrite_nc(flnm_b,tem,qc,[],temptime_str,[],[],[],0,1);
+            reducehistory_i(flnm_b.output)
         end
     end
  
