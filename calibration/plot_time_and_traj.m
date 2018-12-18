@@ -26,6 +26,7 @@ lon_temp = [t.longitude];
 lat_temp = [t.latitude];
 hp=plot(lon_temp,lat_temp,'k');
 position_accuracy = repmat(' ',1,length(t));
+position_qc_traj = repmat(' ',1,length(t));
 if ~isempty(t_traj)
     ok = ~isnan(t_traj.longitude);
     hold on; ht=plot(t_traj.longitude(ok), t_traj.latitude(ok), 'color', [0.5 0.5 0.5]); 
@@ -40,6 +41,7 @@ if ~isempty(t_traj)
                 ok = ok(find(foo==min(foo),1,'first'));
             end
             position_accuracy(ii) = t_traj.position_accuracy(ok);
+            position_qc_traj(ii) = t_traj.position_qc(ok);
         end
     end
 end

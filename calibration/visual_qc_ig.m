@@ -15,6 +15,8 @@ function [s,q,h_axes,h_ui]=visual_qc_ig(s,q,h_axes,h_ui)
 %       26 May 2017, Isabelle Gaboury: Created, based on the version in
 %           vms_tools dated 09 January 2017.
 %       Jun.-Jul. 2017: Fairly heavy rework of visual QC routines.
+%       9 Oct. 2018: Added case to handle climatology T,S profiles of
+%           differring lengths.
 
 % By default, we assume no existing axes or UI elements
 if nargin < 4, h_ui = []; end
@@ -143,7 +145,11 @@ if isfield(s,'temp')
                 foo = getClimGTSPP(s.longitude,s.latitude,datestr(s.dates,'mm'),plots{ii_plot}(1,:));
                 S_clim{ii_plot}.temp = foo.temp;
                 foo = getClimGTSPP(s.longitude,s.latitude,datestr(s.dates,'mm'),plots{ii_plot}(2,:));
-                S_clim{ii_plot}.pres = foo.temp;
+                if length(S_clim{ii_plot}.temp)==length(foo.temp)
+                    S_clim{ii_plot}.pres = foo.temp;
+                else
+                    S_clim{ii_plot}=[];
+                end
             else
                 S_clim{ii_plot}=[];
             end

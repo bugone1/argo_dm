@@ -16,23 +16,24 @@ if nargin < 1
 end
 region = lower(region);
 if ~ismember(region,{'atlantic','pacific',''}), error('No parameters exist for this region'); 
-elseif strcmp(region,'pacific'), region=''; % This is currently the default case
+%elseif strcmp(region,'pacific'), region=''; % This is currently the default case
 elseif ~isempty(region), region = ['_' lower(region)];
 end
+ow_version=2;
 
-% Whether or not to create BD files. This should normally be left as "0"
-% unless we have adjusted values for the oxygen
-adj_bfile=0;
-
-if nargin < 2, argu = []; end
+if nargin < 1, argu = []; end
 
 % Make sure the Seawater and VMS tools toolboxes are on the path
 if ~ispc
     addpath('/u01/rapps/argo_dm/calibration');
-    addpath('/u01/rapps/argo_dm/matlab_codes/ow');
+    if ow_version==2, addpath('/u01/rapps/argo_dm/matlab_codes/ow_v2_x');
+    else addpath('/u01/rapps/argo_dm/matlab_codes/ow_v1_1');
+    end
     addpath('/u01/rapps/seawater');
     addpath('/u01/rapps/vms_tools');
-    addpath('/u01/rapps/m_map');
+    if ow_version==2, addpath('/u01/rapps/m_map_1_4');
+    else addpath('/u01/rapps/m_map_1_3');
+    end
     addpath('/u01/rapps/gsw/');
     addpath('/u01/rapps/gsw/library');
 else
@@ -55,11 +56,15 @@ foo2 = get(0,'MonitorPositions');
 set(0,'DefaultFigurePosition',[foo2(3)*0.25, foo1(2:4)]);
 
 % Tidy up variables from previous session, load Owen & Wong configuration
-local_config=load_configuration('local_OW.txt');
+if ow_version==2, local_config=load_configuration('local_OW_v2.txt');
+else local_config=load_configuration('local_OW_v1_1.txt');
+end
 if ispc
     local_config=xp1152pc(local_config);
 end
-lo_system_configuration=load_configuration([local_config.BASE 'config_ow' region '.txt']);
+if ow_version==2, lo_system_configuration=load_configuration([local_config.BASE 'config_ow' region '_v2.txt']);
+else lo_system_configuration=load_configuration([local_config.BASE 'config_ow' region '_v1_1.txt']);
+end
 if ispc
     lo_system_configuration=xp1152pc(lo_system_configuration);    
 end
@@ -82,7 +87,7 @@ while ~isempty(filestoprocess) || ow(1)
         end
     end
     if ow(2)
-        presMain(local_config,lo_system_configuration,filestoprocess(:,1),floatnames{i}); %find pressure correction
+        presMain_ig(local_config,lo_system_configuration,filestoprocess(:,1),floatnames{i}); %find pressure correction
         fname = interactive_qc_ig(local_config,filestoprocess); %visual qc
         % An empty value for fname indicates that the user quit the
         % process, and source files should not be created.
@@ -102,7 +107,7 @@ while ~isempty(filestoprocess) || ow(1)
     end
     if ow(4)
         set(0,'defaultfigureWindowStyle','normal')
-        viewplots_ig(lo_system_configuration,local_config,floatnames{i},adj_bfile);
+        viewplots_ig(lo_system_configuration,local_config,floatnames{i});
     end
     if ow(5)
         reducehistory(local_config,floatnames{i});

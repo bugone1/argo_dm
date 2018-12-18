@@ -229,7 +229,11 @@ switch lower(q(1))
         edit(config.CONFIGURATION_FILE);
         filestoprocess=[];
     case '6'  % Calculate statistics
-        [list,numr,numd,numbr,numbd,dat,pre_adj]=calculate_server_stats(ftpaddress.current,user.login,user.pwd,ftppath);
+        % IG TEMP LINE
+        %floats_to_exclude={'4901789','4902426','4902427','4902428','4902430','4902431','4902432','4902433'};
+        floats_to_exclude={};
+        [list,numr,numd,numbr,numbd,dat,pre_adj,doxy_visqc,dat_deploy,dat_lastd]=calculate_server_stats(ftpaddress.current,...
+            user.login,user.pwd,ftppath,[local_config.DATA,filesep,'temp'],365.25/2,floats_to_exclude,1);
         [k,i]=sort({list.name});
         list=list(i);
         dat=dat(i);
@@ -238,12 +242,14 @@ switch lower(q(1))
         numbr=numbr(i);
         numbd=numbd(i);
         pre_adj=pre_adj(i);
-        save stats list numr numd numbr numbd dat pre_adj
+        save stats list numr numd numbr numbd dat pre_adj doxy_visqc dat_deploy dat_lastd
         dlmwrite('stats.txt',[str2num(vertcat(list.name)), pre_adj, numr, numd, numbr, numbd],'precision','%d');
         sprintf('%f of eligible profiles have been DMQCed at least once',100*sum(numd)./sum(numd+numr))
         sprintf('%f of eligible floats have been DMQCed at least once with sal',100*sum(numd>0)./sum(numd>0 | numr>0))
         sprintf('%f of eligible floats have been DMQCed at least once with both sal and pres',100*sum(numd(pre_adj)>0)./sum(numd>0 | numr>0))
         sprintf('~ %i profiles DMQCed since last year',sum(numd(dat>(now-365.25))))
+        % FIXME: I don't think this is correct yet...
+        % sprintf('%f of eligible DOXY profiles have been visually QCd at least once',100*sum(max([numbd numd.*doxy_visqc],[],2))./sum(numbr+numbd));
         sprintf('%f of eligible DOXY profiles have been DMQCed at least once',100*sum(numbd)./sum(numbd+numbr))
 %         floatname=input('Float number ? ','s');
         ow = zeros(1,6);

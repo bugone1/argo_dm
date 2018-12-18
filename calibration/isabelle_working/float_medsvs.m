@@ -1,4 +1,4 @@
-function float_medsvs(float_num,medsvs_file,cycle_num, title_string, show_bad_points)
+function float_medsvs(float_num,medsvs_file,cycle_num, title_string, show_bad_points, float_from_mat)
 % FLOAT_MEDSVS Compare float data to historical data from medsvs
 %   DESCRIPTION: Compare float profile to other profiles for this float and
 %       for neighbouring floats. This assumes we've already made a request
@@ -19,12 +19,13 @@ function float_medsvs(float_num,medsvs_file,cycle_num, title_string, show_bad_po
 %       IG, 10 Oct. 2017 - Improved handling of data directory and mixes of
 %           R and D files; removed some leftover lines of code
 %       IG, 21 Dec. 2017 - Added show_bad_points flag
+%       IG, 12 Jul. 2018 - Added option to calculate pressure from depth, 
+%           fixed bug with loading of temp_doxy
 
 % Setup
 addpath('/u01/rapps/argo_dm/calibration');
 addpath('/u01/rapps/vms_tools');
 addpath('/u01/rapps/seawater');
-reload=1;
 if nargin < 3, cycle_num = []; end
 if nargin<4, title_string = ''; end
 if nargin<5, show_bad_points=0; end
@@ -32,9 +33,23 @@ ITS90toIPTS68=1.00024;
 
 % Figure out the data directory
 data_dir = ['/u01/rapps/argo_dm/calibration/data/' float_num(1:4) '000/'];
+data_dir_mat = '/u01/rapps/argo_dm/data/temppresraw/';
 
 % Load the profile data, get the profile index
-if reload==1
+if float_from_mat==1
+    load([data_dir_mat float_num],'t');
+    if isfield(t,'temp_doxy')
+        b_files=1;
+        clear t_b
+        for ii=1:length(t)
+            t_b(ii) = struct('cycle_number',t(ii).cycle_number,'pres',t(ii).pres,'temp_doxy', ...
+                t(ii).temp_doxy,'temp_doxy_qc',t(ii).temp_doxy_qc);
+        end
+    else
+        t_b=[];
+        b_files=0;
+    end
+else
     temp_files = [dir([data_dir 'D' float_num '*.nc']); dir([data_dir 'R' float_num '*.nc'])];
     t=read_all_nc(data_dir,temp_files,[],[0,0],0); 
     [foo, ii] = sort([t.cycle_number]);
@@ -75,7 +90,7 @@ for i=1:lt
 end
 
 % Load and pre-process the medsvs results
-if reload==1 && ~isempty(medsvs_file)
+if ~isempty(medsvs_file)
     if isempty(findstr(lower(medsvs_file),'.mat')) && ~isempty(findstr(lower(medsvs_file),'.dat'))
         [stat,prf]=read_medsascii2ocproc(medsvs_file);
     end
@@ -93,6 +108,11 @@ if reload==1 && ~isempty(medsvs_file)
         end
     end
     prf = prf(tokeep,:);
+    lat = zeros(1,length(tokeep))*NaN;
+    for ii=1:length(tokeep)
+        lat(ii)=stat(tokeep(ii)).FXD.LATITUDE;
+    end
+        
     o=alignocprocprof(prf);
     % TODO: Eventually use gsw to compute pressure from depth
     if isfield(o,'pres')
@@ -100,7 +120,8 @@ if reload==1 && ~isempty(medsvs_file)
         ok = isnan(o.pres);
         if ~isempty(ok) && isfield(o,'deph'), z(ok)=o.deph(ok); end
     else
-        z=[];
+        % Get the latitudes
+        z=-1*gsw_p_from_z(o.deph,lat);
     end
 elseif isempty(medsvs_file)
     o=struct();
@@ -136,7 +157,7 @@ foo2 = plot(TEMP,PRES,'c');
 hold on;
 if ~isempty(z) && isfield(o,'temp')
     foo1 = plot(o_temp,z,'b');
-else foo1=[]
+else foo1=[];
 end
 foo3=[];
 for ii=1:length(ii_prof)   
@@ -215,17 +236,27 @@ if b_files==1
     subplot(1,3,1); 
     foo1=plot(TEMP,PRES,'b');
     hold on;
-    foo2=plot(t(ii_prof-1).temp,t(ii_prof-1).pres,'c',t(ii_prof+1).temp,t(ii_prof+1).pres,'c',t(ii_prof).temp,t(ii_prof).pres,'r'); set(foo2,'linewidth',2);
+    foo2=plot(t(ii_prof-1).temp,t(ii_prof-1).pres,'c');
+    hold on; 
+    if ii_prof<length(t)
+        foo2(end+1)=plot(t(ii_prof+1).temp,t(ii_prof+1).pres,'c');
+    end
+    foo2(end+1)=plot(t(ii_prof).temp,t(ii_prof).pres,'r'); set(foo2,'linewidth',2);
     xlabel('TEMP (^{\circ}C)'); ylabel('PRES (dBar)');
     grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
-    legend([foo1(1),foo2(1),foo2(3)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
+    legend([foo1(1),foo2(1),foo2(end)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
     subplot(1,3,2);
     foo1=plot(TEMP_DOXY,PRES,'b');
     hold on;
-    foo2=plot(t_b(ii_prof-1).temp_doxy,t_b(ii_prof-1).pres,'c',t_b(ii_prof+1).temp_doxy,t_b(ii_prof+1).pres,'c',t_b(ii_prof).temp_doxy,t_b(ii_prof).pres,'r'); set(foo2,'linewidth',2);
+    foo2=plot(t_b(ii_prof-1).temp_doxy,t_b(ii_prof-1).pres,'c');
+    hold on;
+    if ii_prof<length(t)
+        foo2(end+1)=plot(t_b(ii_prof+1).temp_doxy,t_b(ii_prof+1).pres,'c');
+    end
+    foo2(end+1)=plot(t_b(ii_prof).temp_doxy,t_b(ii_prof).pres,'r'); set(foo2,'linewidth',2);
     xlabel('TEMP\_DOXY (^{\circ}C)'); ylabel('PRES (dBar)');
     grid on; set(gca,'ydir','rev','ylim',[0 2010]); 
-    legend([foo1(1),foo2(1),foo2(3)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
+    legend([foo1(1),foo2(1),foo2(end)],['Float ' float_num], ['Profiles ' num2str(cycle_num-1) ',' num2str(cycle_num+1)], ['Profile ' num2str(cycle_num)], 'location','SouthEast');
     title(title_string)
     subplot(1,3,3);
     plot(TEMP_DOXY-TEMP,PRES,'b'); 

@@ -1,9 +1,15 @@
 function check_pressure_inversions(float_num, report_only)
-% CHECK_PRESSURE_INVERSIONS Quick check for pressure non-incrasing
+% CHECK_PRESSURE_INVERSIONS Quick check for pressure non-increasing
 % Routine assumes the mat file has already been created
-% Isabelle Gaboury, 22 Jan. 2018
-% 27 Apr. 2018, IG: Changed default behaviour to only report, not change
-%   the files
+%   USAGE: check_pressure_inversions(float_num, report_only)
+%   INPUTS:
+%       float_num - Float number, as a string
+%       report_only - Set to 0 to flag the bad values, 1 to only report
+%           (default)
+%   VERSION HISTORY:
+%       Isabelle Gaboury, 22 Jan. 2018
+%       27 Apr. 2018, IG: Changed default behaviour to only report, not
+%           change the files
 
 if nargin < 2, report_only=1; end
 

@@ -13,6 +13,8 @@ function summarize_qc_flags(float_directory, float_name, is_mat)
 %       June 2017, Isabelle Gaboury: Created
 %       21 Aug. 2017, IG: Expanded to include DOXY flags
 %       4 Jan. 2018, IG: Fixed bug with reading of B files
+%       15 May 2018, IG: Fixed issue with B files that do not have
+%           temp_doxy
 
 if nargin < 3, is_mat = 0; end
 
@@ -46,20 +48,20 @@ end
     
 % Initialize output matrices
 [qc_pres, qc_temp, qc_psal] = deal(repmat(' ',n_z,n_cyc));
-if isfield(t,'doxy')
-    [qc_doxy, qc_temp_doxy, qc_phase_delay_doxy] = deal(qc_pres);
-end
+if isfield(t,'doxy'), qc_doxy = qc_pres; end
+if isfield(t,'temp_doxy'), qc_temp_doxy=qc_pres; end
+if isfield(t,'phase_delay_doxy'), qc_phase_delay_doxy = qc_pres; end
+if isfield(t,'molar_doxy'), qc_molar_doxy = qc_pres; end
 
 % Generate the summary
 for ii=1:n_cyc
     qc_pres(1:length(t(ii).pres_qc),ii) = t(ii).pres_qc;
     qc_temp(1:length(t(ii).temp_qc),ii) = t(ii).temp_qc;
     qc_psal(1:length(t(ii).psal_qc),ii) = t(ii).psal_qc;
-    if isfield(t,'doxy')
-        qc_doxy(1:length(t(ii).doxy_qc),ii) = t(ii).doxy_qc;
-        qc_temp_doxy(1:length(t(ii).temp_doxy_qc),ii) = t(ii).temp_doxy_qc;
-        qc_phase_delay_doxy(1:length(t(ii).phase_delay_doxy_qc),ii) = t(ii).phase_delay_doxy_qc;
-    end
+    if isfield(t,'doxy'), qc_doxy(1:length(t(ii).doxy_qc),ii) = t(ii).doxy_qc; end
+    if isfield(t,'temp_doxy'), qc_temp_doxy(1:length(t(ii).temp_doxy_qc),ii) = t(ii).temp_doxy_qc; end
+    if isfield(t,'phase_delay_doxy'), qc_phase_delay_doxy(1:length(t(ii).phase_delay_doxy_qc),ii) = t(ii).phase_delay_doxy_qc; end
+    if isfield(t,'molar_doxy'), qc_molar_doxy(1:length(t(ii).molar_doxy_qc),ii) = t(ii).molar_doxy_qc; end
 end
 
 % % Output to file--full report. Not currently used, as this was kind of
@@ -86,16 +88,17 @@ for ii_cyc=1:n_cyc
         if qc_psal(ii_z,ii_cyc) > '1'
             fprintf(fid,'%d,%f,%c,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'S',qc_psal(ii_z,ii_cyc));
         end
-        if isfield(t,'doxy')
-            if qc_doxy(ii_z,ii_cyc) > '1'
-                fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'DOXY',qc_doxy(ii_z,ii_cyc));
-            end
-            if qc_temp_doxy(ii_z,ii_cyc) > '1'
-                fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'TEMP_DOXY',qc_temp_doxy(ii_z,ii_cyc));
-            end
-            if qc_phase_delay_doxy(ii_z,ii_cyc) > '1'
-                fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'PHASE_DELAY_DOXY',qc_phase_delay_doxy(ii_z,ii_cyc));
-            end
+        if isfield(t,'doxy') && qc_doxy(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'DOXY',qc_doxy(ii_z,ii_cyc));
+        end
+        if isfield(t,'temp_doxy') && qc_temp_doxy(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'TEMP_DOXY',qc_temp_doxy(ii_z,ii_cyc));
+        end
+        if isfield(t,'phase_delay_doxy') && qc_phase_delay_doxy(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'PHASE_DELAY_DOXY',qc_phase_delay_doxy(ii_z,ii_cyc));
+        end
+        if isfield(t,'molar_doxy') && qc_molar_doxy(ii_z,ii_cyc) > '1'
+            fprintf(fid,'%d,%f,%s,%c\n',t(ii_cyc).cycle_number,t(ii_cyc).pres(ii_z),'MOLAR_DOXY',qc_molar_doxy(ii_z,ii_cyc));
         end
     end
 end

@@ -1,8 +1,13 @@
-function fetch_from_web(dire, floatname)
+function fetch_from_web(dire, floatname, download_tech_meta)
 % FETCH_FROM_WEB  Fetch Argo files from the Coriolis FTP site
 %   USAGE:
 %      fetch_from_web
-%   INPUTS:   
+%   INPUTS:
+%       dire: destination directory
+%       floatname: name of the float
+%   OPTIONAL INPUTS:
+%       download_tech_meta: 1 to download .tech, .meta, and .traj files; 0
+%           to skip download; empty for prompt
 %   OUTPUTS:
 %   VERSION HISTORY:
 %       06 June 2017, Isabelle Gaboury: Created, based on menudmqc.m dated
@@ -11,6 +16,8 @@ function fetch_from_web(dire, floatname)
 %           deleted before fetching the new files.
 %       30 Aug. 2017, IG: Do not fetch M files
 %       5 Jan. 2018, IG: Download traj files
+%       15 May 2018, IG: Option to download/skip metadata files can be
+%           provided as an input
 
 % FTP configuration
 ftpaddress.ifremer='ftp.ifremer.fr';
@@ -26,7 +33,7 @@ subdir=findnameofsubdir(floatname,listdirs(dire));
 pathe=[dire subdir filesep];
 allfloats=uniquefloatsindir(pathe);
 cd(f,[ftppath floatname '/profiles/']);
-downtechmeta=input('Force download of meta, tech, and traj files ? (1/0)');
+if nargin<3, downtechmeta=input('Force download of meta, tech, and traj files ? (1/0)'); end
 if isempty(strmatch(floatname,allfloats)) %we don't have this float
     display(['downloading' floatname ' in ' pathe]);
     mget(f,'D*.nc',pathe);

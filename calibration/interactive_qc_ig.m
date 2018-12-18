@@ -20,7 +20,8 @@ function fname=interactive_qc_ig(local_config,files)
 %       26 May 2017, Isabelle Gaboury: Created, based on original version
 %           dated 13 September 2016.
 %       July, 2017, IG: KML files now being stored in the kml directory.
-%       8 Nov. 2017, IG: Fixed a bug in how QC flags are adjusted 
+%       8 Nov. 2017, IG: Fixed a bug in how QC flags are adjusted
+%       9 May 2018, IG: Fixed bugs for files that don't have temp_doxy
 
 ITS90toIPTS68=1.00024;
 
@@ -94,7 +95,7 @@ if any(dokeep==0)
                 for ii_field=1:length(bfields)
                     if ismember(bfields{ii_field},cfields) && any(t_b(ii).(bfields{ii_field})~=t(ii).(bfields{ii_field}))
                         warning(['Mismatch for ii=',num2str(ii),',field ',bfields{ii_field}]);
-                        keyboard
+%                         keyboard
                     else
                         t(ii).(bfields{ii_field}) = t_b(ii).(bfields{ii_field});
                     end
@@ -149,7 +150,8 @@ if ~isempty(todo)
     si = zeros(1,lt);   
     for ii_cyc=1:lt, si(ii_cyc) = length(t(ii_cyc).pres); end
     [PRES,PSAL,TEMP,SAL_QC,TEMP_QC]=deal(nan(max(si),lt)); %preallocate profile with max depths
-    if size(files,2)==2, [DOXY,DOXY_QC]=deal(nan(max(si),lt)); end
+    % IG note: I think we never use these
+%     if size(files,2)==2, [DOXY,DOXY_QC]=deal(nan(max(si),lt)); end
     for i=1:lt
         PRES(1:si(i),i)=t(i).pres;
         PSAL(1:si(i),i)=t(i).psal;
@@ -157,14 +159,18 @@ if ~isempty(todo)
         SAL_QC(1:si(i),i)=t(i).psal_qc;
         TEMP_QC(1:si(i),i)=t(i).temp_qc;
     end
-    if isfield(t,'doxy')
-        for i=1:lt
-            DOXY(1:si(i),i)=t(i).doxy;
-            DOXY_QC(1:si(i),i)=t(i).doxy_qc;
-            TEMP_DOXY(1:si(i),i)=t(i).temp_doxy;
-            TEMP_DOXY_QC(1:si(i),i)=t(i).temp_doxy_qc;
-        end
-    end
+%     if isfield(t,'doxy')
+%         for i=1:lt
+%             DOXY(1:si(i),i)=t(i).doxy;
+%             DOXY_QC(1:si(i),i)=t(i).doxy_qc;
+%         end
+%     end
+%     if isfield(t,'temp_doxy')
+%         for i=1:lt
+%             TEMP_DOXY(1:si(i),i)=t(i).temp_doxy;
+%             TEMP_DOXY_QC(1:si(i),i)=t(i).temp_doxy_qc;
+%         end
+%     end
     PTMP = sw_ptmp(PSAL,TEMP*ITS90toIPTS68,PRES,0);  % Calculate the potential temperature
     
     % TS plot
@@ -217,7 +223,9 @@ if ~isempty(todo)
             t(i).temp_qc=char(t(i).temp_qc);
             t(i).pres_qc=char(t(i).pres_qc);
             if isfield(t,'doxy_qc')
-                t(i).doxy_qc=char(t(i).doxy_qc); 
+                t(i).doxy_qc=char(t(i).doxy_qc);  
+            end
+            if isfield(t,'temp_doxy_qc')
                 t(i).temp_doxy_qc=char(t(i).temp_doxy_qc); 
             end
             tic;
@@ -289,10 +297,12 @@ if ~strcmp(q, 'Q')
         t(i).psal_qc((flag.psal | tempOrPres) & t(i).psal_qc<'3')='3';
         [t(i).temp_qc(tempOrPres),t(i).ptmp_qc(tempOrPres)]=deal('3');
         t(i).pres_qc(flag.pres & t(i).pres_qc<'3')='3';
+        % Flag out-of-range DOXY/TEMP_DOXY values as '4', as per the
+        % biogeochemical QC manual, section 2.2.1
         if isfield(t,'doxy')
-            % Flag out-of-range DOXY/TEMP_DOXY values as '4', as per the
-            % biogeochemical QC manual, section 2.2.1
             t(i).doxy_qc(flag.doxy & t(i).doxy_qc<'4')='4';
+        end
+        if isfield(t,'temp_doxy')
             t(i).temp_doxy_qc(flag.temp_doxy & t(i).temp_doxy_qc<'4')='4';
         end
     end

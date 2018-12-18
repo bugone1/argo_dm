@@ -22,6 +22,7 @@ function fig_ts=plot_float_ts(PROFILE_NO,PTMP,PSAL,TEMP_QC,SAL_QC,qc_good_only,h
 %       22 Jan. 2017, IG: Fixed a small bug with plotting points with bad
 %           QC flags.
 %       1 May 2018, IG: Highlight cycle can now be a vector
+%       28 Sep. 2018, IG: Changed the style of the highlighted profiles
 
 if nargin < 7, highlight_cycle=[]; end
 if nargin<6, qc_good_only=0; end
@@ -45,7 +46,8 @@ end
 if ~isempty(highlight_cycle)
     [foo1,ii_hl,foo2]=intersect(PROFILE_NO,highlight_cycle);
     if ~isempty(ii_hl)
-        hold on; plot(PSAL(:,ii_hl),PTMP(:,ii_hl),'wo');
+        %hold on; plot(PSAL(:,ii_hl),PTMP(:,ii_hl),'wo');
+        set(h(ii_hl),'markersize',20);
     end
 end
 for ii=1:length(h)-1

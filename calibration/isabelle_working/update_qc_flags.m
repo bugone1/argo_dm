@@ -17,6 +17,11 @@ function update_qc_flags(float_num, skip_tnpd_adj)
 %       13 Apr. 2018, IG: Added ability to fill adjusted values previously
 %           set to the fill value when upgrading QC flags; added history
 %           reduction.
+%       9 May 2018, IG: Fixed an issue with the filling of previously-bad
+%           values.
+%       29 May 2018, IG: Fixed an issue with how adjusted QC flags were
+%           set.
+%       11 Dec. 2018, IG: Updated call to rewrite_nc
 
 if nargin<2, skip_tnpd_adj=0; end
 
@@ -66,8 +71,7 @@ for ii_prof=1:length(t)
             all(t(ii_prof).psal_qc==t_old.psal_qc) && (~isfield(t(ii_prof),'doxy') || ...
             all(t(ii_prof).doxy_qc==t_old_doxy(ii_prof).doxy_qc)))
          
-        % Raw flags are taken directly from the temppresraw file, and in
-        % most cases the adjusted flags are the same as the raw flags
+        % Raw flags are taken directly from the temppresraw file
         [qc.PRES.ADJ,qc.PRES.RAW]=deal(char(t(ii_prof).pres_qc));
         [qc.TEMP.ADJ,qc.TEMP.RAW]=deal(char(t(ii_prof).temp_qc));
         [qc.PSAL.ADJ,qc.PSAL.RAW]=deal(char(t(ii_prof).psal_qc));
@@ -90,16 +94,30 @@ for ii_prof=1:length(t)
         % the adjusted values
         tem={};
         for temp_var = {'pres','temp','psal'}
-            ii_improved = t(ii_prof).([temp_var{1},'_qc'])=='1' & t_old.([temp_var{1},'_qc'])=='4';
+            tem.(upper(temp_var{1})) = t(ii_prof).([temp_var{1},'_adjusted']);
+            ii_improved = t(ii_prof).([temp_var{1},'_qc'])=='1' & t_old.([temp_var{1},'_qc'])>='3';
             if any(ii_improved)
                 if all(ii_improved)
-                    error('Unable to fill in the adjusted values')
+                    disp('Unable to fill in the adjusted values, can try to do it manually')
+                    keyboard
                 else
-                    temp_offsets = t_old.temp_adjusted(~ii_improved)-t_old.temp(~ii_improved);
-                    if min(temp_offsets)~=max(temp_offsets)
-                        error('Unable to fill in the adjusted values')
+                    ii_temp = t_old.([temp_var{1},'_qc'])=='1';
+                    if strcmp(temp_var,'psal')
+                        temp_offsets = t_old.([temp_var{1},'_adjusted'])(ii_temp)./t_old.(temp_var{1})(ii_temp);
                     else
-                        tem.(upper(temp_var{1})) = t(ii_prof).([temp_var{1},'_adjusted']);
+                        temp_offsets = t_old.([temp_var{1},'_adjusted'])(ii_temp)-t_old.(temp_var{1})(ii_temp);
+                    end
+                    if any(temp_offsets)>0 && max(temp_offsets)-min(temp_offsets) >= abs(median(temp_offsets))*0.01
+                        disp('Unable to fill in the adjusted values, please fix temp_offsets')
+                        keyboard
+                        if any(temp_offsets)>0 && max(temp_offsets)-min(temp_offsets) >= abs(median(temp_offsets))*0.01
+                            error('Still have different offsets')
+                        end
+                    end
+                    if strcmp(temp_var,'psal')
+                        tem.(upper(temp_var{1}))(ii_improved) = ...
+                            t(ii_prof).(temp_var{1})(ii_improved)*median(temp_offsets);
+                    else
                         tem.(upper(temp_var{1}))(ii_improved) = ...
                             t(ii_prof).(temp_var{1})(ii_improved) + median(temp_offsets);
                     end
@@ -125,10 +143,11 @@ for ii_prof=1:length(t)
             end
         end
         
-        rewrite_nc(flnm,tem,qc,[],temptime_str,[],[],[],0,1);
+        % Rewrite the NC file
+        rewrite_nc(flnm,tem,qc,[],temptime_str,[],[],[],'R');
         reducehistory_i(flnm.output)
         if ~isempty(flnm_b.input)
-            rewrite_nc(flnm_b,tem,qc,[],temptime_str,[],[],[],0,1);
+            rewrite_nc(flnm_b,tem,qc,[],temptime_str,[],[],[],'R');
             reducehistory_i(flnm_b.output)
         end
     end

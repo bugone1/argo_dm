@@ -11,6 +11,7 @@ function plot_float_tsprof(float_num, qc_good_only, highlight_cycle)
 %   VERSION HISTORY:
 %       Isabelle Gaboury, January 2018: Written
 %       1 May 2018, IG: Highlight cycle can now be a vector
+%       28 Sep. 2018, IG: Changed the style of the highlighted profiles
 
 % Default values
 if nargin < 3, highlight_cycle=[]; end
@@ -59,26 +60,30 @@ figure
 set(gcf,'colormap',jet(lt));
 ax1=subplot(1,2,1);
 set(ax1,'colororder',jet(lt));
-h1=plot(TEMP, PRES,'- .');
+h1=plot(TEMP, PRES,'-');
 if ~qc_good_only
     hold on; plot(TEMP(bad_temp),PRES(bad_temp),'ko');
 end
 if ~isempty(highlight_cycle)
     [foo1,ii_hl,foo2]=intersect(PROFILE_NO,highlight_cycle);
-    if isempty(ii_hl), highlight_cycle=[]; end
-    hold on; plot(TEMP(:,ii_hl),PRES(:,ii_hl),'wo');
+    if isempty(ii_hl), highlight_cycle=[]; 
+    else
+        set(h1(ii_hl),'linewidth',3);
+    end
+    %hold on; plot(TEMP(:,ii_hl),PRES(:,ii_hl),'wo');
 end
 xlabel('temp'); ylabel('pres'); grid on;
 set(gca,'ydir','rev');
 colorbar;
 ax2=subplot(1,2,2);
 set(ax2,'colororder',jet(lt));
-h2=plot(PSAL,PRES,'- .');
+h2=plot(PSAL,PRES,'-');
 if ~qc_good_only
     hold on; plot(PSAL(bad_psal),PRES(bad_psal),'ko');
 end
 if ~isempty(highlight_cycle)
-    hold on; plot(PSAL(:,ii_hl),PRES(:,ii_hl),'wo');
+    % hold on; plot(PSAL(:,ii_hl),PRES(:,ii_hl),'wo');
+    set(h2(ii_hl),'linewidth',3);
 end
 xlabel('psal'); ylabel('pres'); grid on;
 set(gca,'ydir','rev');

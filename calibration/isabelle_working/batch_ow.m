@@ -10,6 +10,7 @@ function batch_ow(float_names, action, region)
 %           floats
 %       17 July 2017, IG - Generalized for other regions, removed any
 %           hard-coded variables
+%       28 Nov. 2018, IG - Updated paths for OW v2
 
 % Process the inputs
 if ischar(float_names), float_names = {float_names}; end
@@ -30,11 +31,11 @@ else
 end
  
 % Load configuration files
-local_config=load_configuration('local_OW.txt');
+local_config=load_configuration('local_OW_v2.txt');
 if strcmpi(region,'atlantic')
-    lo_system_configuration=load_configuration([local_config.BASE 'config_ow_atlantic.txt']);
+    lo_system_configuration=load_configuration([local_config.BASE 'config_ow_atlantic_v2.txt']);
 else
-    lo_system_configuration=load_configuration([local_config.BASE 'config_ow.txt']);
+    lo_system_configuration=load_configuration([local_config.BASE 'config_ow_v2.txt']);
 end
 
 % Default figure position

@@ -1,4 +1,4 @@
-function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile)
+function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile, preserve_doxy_correction)
 % VIEWPLOTS Review results of OW calculations on Argo floats, choose
 %   adjustment factors, and apply to the NetCDF files.
 %   USAGE:
@@ -7,6 +7,11 @@ function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile)
 %       lo_system_configuration - Structure of OW parameters
 %       local_config - Structure of visual QC parameters
 %       floatNum - Float number
+%   OPTIONAL INPUTS:
+%       adj_bfile - Set to 1 to write 'BD' files, otherwise leave as 'BR'
+%       preserve_doxy_correction - Set to 1 to indicate a pre-adjusted
+%           (typically) Aanderaa float, where we do not change the
+%           DOXY_ADJUSTED
 %   OUTPUTS:
 %       None, but updated the NetCDF files
 %   VERSION HISTORY:
@@ -22,15 +27,22 @@ function viewplots_ig(lo_system_configuration,local_config,floatNum, adj_bfile)
 %           adjustment
 %       28 Nov. 2017: Updates to how TNPD flags are handled to reflect
 %           version 3.0 of the DMQC manual.
-%       31 Jan. 2018: Added option to define a custom error for the
+%       31 Jan. 2018: Added option to defipne a custom error for the
 %           adjusted salinity
 %       12 Feb. 2018: Fixed a bug in the indexing of the pressure
 %           corrections
 %       08 Mar. 2018: Added a special case for the comment for float
 %           4900503
 %       05 Apr. 2018: Expanded the applicability of custom comments
+%       10 May 2018, IG: Added preserve_doxy_correction flag to generalize
+%           the special case of R files with a valid DOXY correction.
+%       12 Jun. 2018, IG: Added code to calculate max DOXY when some
+%           profiles have no valid values; fixed dimension of tem.DOXY
+%       04 Sep. 2018, IG: Further expanded cases where a custom comment may
+%           be entered.
 
 if nargin<4, adj_bfile=0; end
+if nargin<5, preserve_doxy_correction=0; end
 
 conf.dbname=lo_system_configuration.DBNAME;
 conf.swname=lo_system_configuration.SWNAME;
@@ -65,6 +77,21 @@ displaygraphs_fun(lo_system_configuration.FLOAT_PLOTS_DIRECTORY,floatNum,-1);
 [CellK,slope,offset,start,ende,psalflag,adjpsalflag]=piaction_psal_ig(PROFILE_NO,pcond_factor,oldcoeff);
 save piaction CellK slope offset start ende psalflag adjpsalflag
 
+% If we have a DOXY file, ask the user how to handle the DOXY
+if isfield(t,'doxy')
+    adj_bfile=input('Create BD files? (1/0, default  is 0) ');
+    if isempty(adj_bfile), adj_bfile=0; end
+    if adj_bfile==1 && isfield(t,'doxy_adjusted')
+        preserve_doxy_correction=input('Preserve existing DOXY correction? (1/0, default is 0) ');
+        if isempty(preserve_doxy_correction), preserve_doxy_correction=0; end
+        if preserve_doxy_correction==1
+            scical.DOXY.comment=input('DOXY calibration comment: ','s');
+            scical.DOXY.equation=input('DOXY calibration equation: ','s');
+            scical.DOXY.coefficient=input('DOXY calibration coefficient: ','s');
+        end
+    end
+end
+
 beg=piaction_pres(lo_system_configuration,floatNum);
 presscorrect.tnpd(presscorrect.cyc>beg)=5;
 try
@@ -73,7 +100,7 @@ catch
 end
 % TODO: Still working on generalizing these cases
 custom_comment_start_index=-1;
-if all(CellK==1) || all(adjpsalflag>='1')
+if all(CellK==1) || adjpsalflag(end)>='1'
     ba=input('Provide custom comment (comment, or blank to skip)?','s')
     if ~strcmpi(ba,'')
         scical.PSAL.comment=ba;
@@ -81,7 +108,9 @@ if all(CellK==1) || all(adjpsalflag>='1')
     else
         scical.PSAL.comment='No conductivity adjustment was judged needed because no significant sensor drift was detected.';
     end
-elseif any(CellK(~isnan(CellK))~=1)    
+    ocomment2 = scical.PSAL.comment;
+end
+if any(CellK(~isnan(CellK))~=1)    
     if max(abs(diff(CellK)))>=.001
         sucyc=sprintf('%i',cat(1,t(1+find((abs(diff(CellK)))>.001,1)).cycle_number));
         scical.PSAL.comment=['Sudden drift in sensor detected at cycle ' sucyc '. Adjusted salinity to ' conf.swname ' statistical recommendation with ' conf.dbname ' as reference database. Mapping scales used are ' conf.m1 ' (lon) ' conf.m2 ' (lat). Visual piecewise linear fit done upon inspection of profiles ' num2str(PROFILE_NO(1)) ' to ' num2str(PROFILE_NO(end)) '. ' num2str(length(unique(ende))) ' breakpoints.'];
@@ -97,11 +126,11 @@ anomaliesornot='The float showed no major T/S anomalies thus far.';
 
 % Custom code to add the error for a set of floats where Anh had previously
 % applied a correction. There's also some corresponding code below.
-if strcmp(floatNum,'4900494') && adj_bfile
+if adj_bfile && preserve_doxy_correction
     max_doxy = 0;
     for i=1:length(PROFILE_NO)
-        ok = find(t(i).doxy_qc=='1');
-        max_doxy = max(max_doxy, max(t(i).doxy_qc));
+        ok = t(i).doxy_qc=='1';
+        if any(ok), max_doxy = max(max_doxy, max(t(i).doxy(ok))); end
     end
     doxy_err = max_doxy*0.01;   % For the method applied, the error is 1% of the DOXY value       
 end
@@ -109,7 +138,7 @@ end
 % Custom error for profiles with adjusted salinity flagged as bad
 % TODO: Do we want to automate the selection of this value, and/or provide
 % similar options for the other variables?
-ok=find(adjpsalflag>'2');
+ok=find(adjpsalflag>='2');
 if ~isempty(ok)
     ba=input('Custom error for adjusted salinity profiles flagged as bad (value, HO for half the offset, or blank if none)? ','s');
     if ~isempty(ba)
@@ -121,6 +150,9 @@ if ~isempty(ok)
         end
     end
 end
+
+% Leave some files as R
+leave_as_R=input('Cycles to leave in A-mode (empty to convert all to D)?');
 
 for i=1:length(PROFILE_NO)
     ok_t=find(cat(1,t.cycle_number)==PROFILE_NO(i));
@@ -173,7 +205,9 @@ for i=1:length(PROFILE_NO)
     end
     scical.PRES.coefficient=['ADDITIVE COEFFICIENT FOR PRESSURE ADJUSTMENT IS ' num2str(addcoeff) ' dbar'];
     %SALINITY
-    if ~isnan(CellK(i)) && any(CellK(1:i)~=1)
+    if custom_comment_start_index>=0 && PROFILE_NO(i)>=custom_comment_start_index
+        scical.PSAL.comment = ocomment2;
+    elseif ~isnan(CellK(i)) && any(CellK(1:i)~=1)
         %scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', � ' num2str(pcond_factor_err(i),7)];
         scical.PSAL.coefficient=['r=' num2str(CellK(i),7) ', +/- ' num2str(pcond_factor_err(i),7)];
         scical.PSAL.equation='PSAL_ADJUSTED is calculated from a potential conductivity (ref to 0 dbar) multiplicative adjustment term r.';
@@ -181,12 +215,7 @@ for i=1:length(PROFILE_NO)
             scical.PSAL.comment=[ocomment ' The DMQC software initially suggested r=' num2str(pcond_factor(i),7) ' for this cycle.'];
         end
     elseif CellK(i)==1
-        if custom_comment_start_index>=0 && PROFILE_NO(i)>=custom_comment_start_index
-            scical.PSAL.comment = ocomment;
-        else
-            scical.PSAL.comment='No adjustment is needed on this parameter because no significant sensor drift has been detected.';
-        end
-        
+        scical.PSAL.comment='No adjustment is needed on this parameter because no significant sensor drift has been detected.';        
     elseif isnan(CellK(i))
         scical.PSAL.comment='No adjustment was performed on this parameter because it seemed beyond correction by actual methods.';
     end
@@ -282,8 +311,8 @@ for i=1:length(PROFILE_NO)
     % these might be adjusted.
     if isfield(t(ok_t),'doxy_adjusted') && any(t(ok_t).doxy_adjusted<10000)
         qc.DOXY.ADJ = char(t(ok_t).doxy_qc(x));
-        if strcmp(floatNum,'4900494') && adj_bfile
-            tem.DOXY = t(ok_t).doxy_adjusted(x);
+        if adj_bfile && preserve_doxy_correction
+            tem.DOXY = t(ok_t).doxy_adjusted(x)';
             err.DOXY = doxy_err*ones(length(x),1);
         end
     end
@@ -335,8 +364,17 @@ for i=1:length(PROFILE_NO)
         qc.PSAL.ADJ(qc.PSAL.ADJ=='3')='4'; %(DMQC-3)
     end
     rawpress=tem.PRES-addcoeff; %raw pressure vector calculated this way for sorting purposes
-    rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress);
+    if any(leave_as_R==PROFILE_NO(i))
+        rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress,'A');
+    else
+        rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,rawpress,'D');
+    end
     if ~isempty(flnm_b.input)
-        rewrite_nc(flnm_b,tem,qc,err,CalDate,conf,scical,rawpress,adj_bfile);
+        % TODO: I'm not entirely sure this will always work as desired
+        if adj_bfile==0 %&& preserve_doxy_correction==0
+            rewrite_nc(flnm_b,tem,qc,err,CalDate,[],scical,rawpress,'R');
+        elseif adj_bfile==1
+            rewrite_nc(flnm_b,tem,qc,err,CalDate,[],scical,rawpress,'D');
+        end
     end
 end

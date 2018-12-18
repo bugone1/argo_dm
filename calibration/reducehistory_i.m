@@ -52,7 +52,10 @@ iparm=strmatch('PARAMETER',vals);
 for k=1:length(uparm) %create parm specific table
     udat=unique(qdat);
     table=table(:,1);
-    table(:,2)=netcdf.getVar(nc,netcdf.inqVarID(nc,[strtrim(uparm{k}) '_QC']))-'0';
+    try
+        table(:,2)=netcdf.getVar(nc,netcdf.inqVarID(nc,[strtrim(uparm{k}) '_QC']))-'0';
+    catch keyboard;
+    end
     clear stable;
     for i=1:length(q)
         if strcmp(q{i}{iparm},uparm{k})

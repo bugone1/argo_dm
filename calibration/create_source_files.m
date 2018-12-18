@@ -27,6 +27,7 @@ function create_source_files(local_config,lo_system_configuration,floatname)
 %           consistent with the OW code; verified that this does not affect
 %           any other existing codes.
 %       23 Apr. 2018: Fixed issue with fetching of bathymetry
+%       02 Oct. 2018: PROFILE_NO now saved as double to avoid issues in OW
 
 dbstop if error
 ITS90toIPTS68=1.00024;
@@ -156,7 +157,7 @@ DATES = (DATES_VEC(:,1) + cal2dec(DATES_VEC(:,2),DATES_VEC(:,3),DATES_VEC(:,4),D
 LAT=cat(1,s.latitude)';
 LONG=cat(1,s.longitude)';
 LONG(LONG<0)=LONG(LONG<0)+360;
-PROFILE_NO=cat(1,s.cycle_number)';
+PROFILE_NO=double(cat(1,s.cycle_number)');
 flnm=[lo_system_configuration.FLOAT_SOURCE_DIRECTORY floatname];
 if exist(flnm,'file')
     temp=load('flnm','DATES');
