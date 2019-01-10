@@ -38,10 +38,10 @@ if ~ispc
     addpath('/u01/rapps/gsw/library');
 else
     addpath('w:\argo_dm\calibration');
-    addpath('W:\argo_dm\matlab_codes\ow');
+    addpath('W:\argo_dm\matlab_codes\ow_v2_x');
     addpath('w:\seawater');
     addpath('w:\vms_tools');
-    addpath('w:\m_map');
+    addpath('w:\m_map_1_4');
     addpath('w:\gsw');
     addpath('w:\gsw\library');
 end

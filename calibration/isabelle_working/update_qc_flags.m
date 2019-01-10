@@ -90,25 +90,25 @@ for ii_prof=1:length(t)
             end
         end
         
-        % If we've changed a flag from '3' or '4' to '1', we need to reset
+        % If we've changed a flag from '4' to '1', we need to reset
         % the adjusted values
         tem={};
         for temp_var = {'pres','temp','psal'}
             tem.(upper(temp_var{1})) = t(ii_prof).([temp_var{1},'_adjusted']);
-            ii_improved = t(ii_prof).([temp_var{1},'_qc'])=='1' & t_old.([temp_var{1},'_qc'])>='3';
+            ii_improved = t(ii_prof).([temp_var{1},'_qc'])=='1' & t_old.([temp_var{1},'_qc'])=='4';
             if any(ii_improved)
                 if all(ii_improved)
                     disp('Unable to fill in the adjusted values, can try to do it manually')
                     keyboard
                 else
-                    ii_temp = t_old.([temp_var{1},'_qc'])=='1';
+                    ii_temp = t_old.([temp_var{1},'_qc'])=='1' & t_old.([temp_var{1},'_adjusted_qc'])=='1';
                     if strcmp(temp_var,'psal')
                         temp_offsets = t_old.([temp_var{1},'_adjusted'])(ii_temp)./t_old.(temp_var{1})(ii_temp);
                     else
                         temp_offsets = t_old.([temp_var{1},'_adjusted'])(ii_temp)-t_old.(temp_var{1})(ii_temp);
                     end
                     if any(temp_offsets)>0 && max(temp_offsets)-min(temp_offsets) >= abs(median(temp_offsets))*0.01
-                        disp('Unable to fill in the adjusted values, please fix temp_offsets')
+                        disp('update_qc_flags.m: Unable to fill in the adjusted values, please fix temp_offsets')
                         keyboard
                         if any(temp_offsets)>0 && max(temp_offsets)-min(temp_offsets) >= abs(median(temp_offsets))*0.01
                             error('Still have different offsets')
@@ -138,13 +138,13 @@ for ii_prof=1:length(t)
             elseif any(t_old.pres_adjusted_qc~=t_old.pres_qc) || any(t_old.temp_adjusted_qc~=t_old.temp_qc) || ...
                     any(t_old.psal_adjusted_qc~=t_old.psal_adjusted_qc) || ...
                     (isfield(t(ii_prof),'doxy') && any(t_old_doxy.doxy_adjusted_qc~=t_old_doxy.doxy_qc))
-                disp('WARNING: Non-TNPD differences in adjusted vs raw QC flags found, need manual adjustment');
+                disp('update_qc_flags.m WARNING: Non-TNPD differences in adjusted vs raw QC flags found, need manual adjustment');
                 keyboard;
             end
         end
         
         % Rewrite the NC file
-        rewrite_nc(flnm,tem,qc,[],temptime_str,[],[],[],'R');
+        rewrite_nc(flnm,tem,qc,[],temptime_str,[],[],[],'A');
         reducehistory_i(flnm.output)
         if ~isempty(flnm_b.input)
             rewrite_nc(flnm_b,tem,qc,[],temptime_str,[],[],[],'R');

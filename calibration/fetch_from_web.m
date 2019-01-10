@@ -18,6 +18,7 @@ function fetch_from_web(dire, floatname, download_tech_meta)
 %       5 Jan. 2018, IG: Download traj files
 %       15 May 2018, IG: Option to download/skip metadata files can be
 %           provided as an input
+%       09 Jan 2019, IG: Now download to float-specific subdirectories
 
 % FTP configuration
 ftpaddress.ifremer='ftp.ifremer.fr';
@@ -29,8 +30,10 @@ user.pwd='mathieu.ouellet@dfo-mpo.gc.ca';
 % Fetch the requested files from the Coriolis FTP server
 f=ftp(ftpaddress.current,user.login,user.pwd);
 cd(f,ftppath);
-subdir=findnameofsubdir(floatname,listdirs(dire));
-pathe=[dire subdir filesep];
+%subdir=findnameofsubdir(floatname,listdirs(dire));
+%pathe=[dire subdir filesep];
+pathe = [dire floatname filesep];
+if ~exist(pathe,'dir'), mkdir(pathe); end
 allfloats=uniquefloatsindir(pathe);
 cd(f,[ftppath floatname '/profiles/']);
 if nargin<3, downtechmeta=input('Force download of meta, tech, and traj files ? (1/0)'); end

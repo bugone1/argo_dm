@@ -22,12 +22,17 @@ function t=read_all_nc(dire,files,t,dokeep,is_b_file)
 %   Isabelle Gaboury, 30 May 2017: After discussion with Mathieu Ouellet,
 %       fixed a bug where dokeep was being interpreted incorrectly.
 %   IG, 24 July 2017: Expanded documentation, added is_b_file flag
+%   IG, 10 Jan 2019: Fixed issue whereby undefined at is not allowed in
+%       more recent versions of Matlab
 
 % Default is core-Argo files
 if nargin < 5, is_b_file=0; end
 
+at=struct();
 for i=1:length(files)
-    at(i)=read_nc([dire filesep files(i).name], is_b_file);
+    if i==1, at=[read_nc([dire filesep files(i).name], is_b_file)];
+    else at(i)=read_nc([dire filesep files(i).name], is_b_file);
+    end
 end
 if ~isempty(t)
     cyc1=cat(1,at.cycle_number);

@@ -1,4 +1,5 @@
-function [list,numr,numd,numbr,numbd,dat_dmqc,pre_adj,doxy_visqc,dat_deploy,dat_lastd]=calculate_server_stats(url,login,pass_wd,ftppath,temp_dir,eligible_age,exclude_floats,skip_downloads)
+function [list,numr,numd,numbr,numbd,dat_dmqc,pre_adj,doxy_visqc,dat_deploy,dat_lastd]=calculate_server_stats(url,...
+    login,pass_wd,ftppath,temp_dir,eligible_age,exclude_floats,skip_downloads)
 % CALCULATE_SERVER_STATS Calculate D/R file and calibration statistics for
 % files on an Argo FTP server
 %   USAGE: 
@@ -35,6 +36,8 @@ function [list,numr,numd,numbr,numbd,dat_dmqc,pre_adj,doxy_visqc,dat_deploy,dat_
 %           calculation of the statistics
 %       16 Oct. 2018, IG: Added options to specify the temporary directory
 %           and eligible age.
+%       8 Jan. 2019, IG: Updates to the code to count up the B-files that
+%           have been visually QC'd.
 
 if nargin<5, temp_dir=pwd; 
 elseif exist(temp_dir,'dir')<=0, mkdir(temp_dir);
@@ -95,13 +98,21 @@ while i<=length(list)
                     numbr(i)=0;
                 end
                 %howold
-                % Check if the DOXY data were visually QC'd
+                % Check if the DOXY data were visually QC'd. I'm checking
+                % for both the DOXY_QC values and the ARSQ history step for
+                % now, but I'm not yet sure the DOXY_QC flag check is
+                % needed.
                 if numbr(i)>0
                     if ~skip_downloads, mget(f,deblank(rd2(1,:)),temp_dir); end
                     nc=netcdf.open([temp_dir,filesep,deblank(rd2(1,:))],'nowrite');
                     doxy_qc=netcdf.getVar(nc,netcdf.inqVarID(nc,'DOXY_QC'));
+                    steps=netcdf.getVar(nc,netcdf.inqVarID(nc,'HISTORY_STEP'));steps=squeeze(steps(:,end,:))';
                     netcdf.close(nc);
-                    doxy_visqc(i)=any(doxy_qc>'0');
+                    if any(doxy_qc>'0') && ~isempty(strmatch('ARSQ',steps))
+                        doxy_visqc(i)=1;
+                    else
+                        doxy_visqc(i)=0;
+                    end
                 end
             elseif numd(i)>0
                 % If there are D files, get the date of the most recent
@@ -121,7 +132,25 @@ while i<=length(list)
 %                     tdat
 %     %                         pause
 %                 end
-                if numbd(i)>0, doxy_visqc(i)=1; end
+                % Check if the DOXY data were visually QC'd. I'm checking
+                % for both the DOXY_QC values and the ARSQ history step for
+                % now, but I'm not yet sure the DOXY_QC flag check is
+                % needed.
+                if numbd(i)>0, 
+                    doxy_visqc(i)=1; 
+                elseif numbr(i)>0
+                    if ~skip_downloads, mget(f,deblank(rd2(1,:)),temp_dir); end
+                    nc=netcdf.open([temp_dir,filesep,deblank(rd2(1,:))],'nowrite');
+                    doxy_qc=netcdf.getVar(nc,netcdf.inqVarID(nc,'DOXY_QC'));
+                    steps=netcdf.getVar(nc,netcdf.inqVarID(nc,'HISTORY_STEP'));steps=squeeze(steps(:,end,:))';
+                    netcdf.close(nc);
+                    doxy_visqc(i)=any(doxy_qc>'0');
+                    if any(doxy_qc>'0') && ~isempty(strmatch('ARSQ',steps))
+                        doxy_visqc(i)=1;
+                    else
+                        doxy_visqc(i)=0;
+                    end
+                end
                 if numr(i)>0
                     if ~skip_downloads, mget(f,deblank(rd1(end,:)),temp_dir); end
                     nc=netcdf.open([temp_dir,filesep,deblank(rd1(end,:))],'nowrite');

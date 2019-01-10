@@ -381,7 +381,7 @@ for i=1:N_PARAM
             end
             di(i_parlen)=256;
         end
-        if ~strcmpi(output_data_mode,'R')
+        if ~strcmpi(output_data_mode,'R') && ~isempty(scical)
             if strcmp('PSAL',parm(1:4)) || (~is_bfile && strcmp('PRES',parm(1:4))) || (strcmp('DOXY', parm(1:4)) && isfield(scical,'DOXY'))
                 netcdf.putVar(f,netcdf.inqVarID(f,'SCIENTIFIC_CALIB_COMMENT'),dj,di,netstr(scical.(parm).comment,256));
                 if isfield(scical.(parm),'equation')
@@ -496,7 +496,7 @@ di(i_history)=1;
 di(i_parlen)=4;
 netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
 netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_STEP'),dj,di,netstr('ARSQ',4));
-if strcmpi(output_data_mode,'R')
+if strcmpi(output_data_mode,'R') || isempty(conf)
     netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE'),dj,di,netstr('',4));
     netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE_RELEASE'),dj,di,netstr('',4));
 else
@@ -507,7 +507,7 @@ netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),dj,di,netstr('QCCV',4));
 di(i_parlen)=14;
 netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_DATE'),dj,di,netstr(DATE_CAL,14));
 di(i_parlen)=64;
-if strcmpi(output_data_mode,'R')
+if strcmpi(output_data_mode,'R') || isempty(conf)
     netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_REFERENCE'),dj,di,netstr('',64));
 else
     netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_REFERENCE'),dj,di,netstr(conf.dbname,64));

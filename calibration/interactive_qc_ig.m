@@ -120,7 +120,7 @@ t_traj=read_traj_nc([dir_traj filesep files(1).name(2:8) '_Rtraj.nc']);
 fig_traj=plot_time_and_traj(t,t_traj);
 
 %write KML file for Google Earth
-writekml(['kml' filesep floatname '.kml'],[cat(1,t.longitude) cat(1,t.latitude)],cat(1,t.cycle_number));
+writekml([local_config.BASE filesep 'kml' filesep floatname '.kml'],[cat(1,t.longitude) cat(1,t.latitude)],cat(1,t.cycle_number));
 %actxserver([floatname '.kml'])
 display(['Start Google Earth and load ' floatname '.kml']);
 
