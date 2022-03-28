@@ -1,7 +1,9 @@
 function fix_dimflags(floatdir, floatname)
-% For a float with N_HISTORY set to a fixed number, restore the correct
-% UNLIMITED dimension
-% Isabelle Gaboury, 12 July 2017
+% FIX_DIMFLAGS: For a float with N_HISTORY set to a fixed number, restore the correct
+%   UNLIMITED dimension
+%   USAGE: fix_dimflags(floatdir,floatname)
+%   VERSION HISTORY:
+%       Created by Isabelle Gaboury, 12 July 2017
 
 % Check what files are available in the directory
 files = dir([floatdir filesep '*' floatname '*.nc']);

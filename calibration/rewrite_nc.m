@@ -1,4 +1,4 @@
-function fname=rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,PRES,output_data_mode)
+function fname=rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,PRES,output_data_mode,force_output_data_mode)
 % REWRITE_NC Create an output Argo NetCDF file from an input file and parameters
 %   DESCRIPTION:
 %       Given an input NetCDF file and parameters arising from DMQC, copy
@@ -43,8 +43,12 @@ function fname=rewrite_nc(flnm,tem,qc,err,CalDate,conf,scical,PRES,output_data_m
 %       12 Jun. 2018, IG: Fixed bug with padding vectors for DOXY
 %       12 Nov. 2018, IG: Replaced adj_bfile and qc_flags_only with
 %           output_data_mode
+%       14 Jan. 2019, IG: Adjusting how output_data_mode is interpreted
+%       17 May 2019, IG: Added option to force the output_data_mode
 
+if nargin<10, force_output_data_mode=0; end
 if nargin < 9, output_data_mode = 'D'; end
+
 
 ovarnames={'PRES','TEMP','PSAL','DOXY','TEMP_DOXY','BPHASE_DOXY','PHASE_DELAY_DOXY','MOLAR_DOXY'};
 adjornot={'_ADJUSTED',''};
@@ -89,15 +93,17 @@ else
     else redim_num=1;
     end
     copy_nc_redim(flnm.input,flnm.output,'N_CALIB',redim_num);
+    %zhimin ma add one dimensiona to N-history, otherwise there is a bug
+    %seems, not sure how this was done beofore.
+%     copy_nc_redim(flnm.input,flnm.output,'N_HISTORY',redim_num);
 end
 
 %open file in write mode
 f=netcdf.open(flnm.output,'WRITE');
-if is_bfile && ~strcmpi(output_data_mode,'R')
+if is_bfile %&& ~strcmpi(output_data_mode,'R')
 	try
 	    % Rename 'OTMP' variable to 'TEMP_DOXY'
-	    netcdf.inqVarID(f,'OTMP')
-	    'OTMP'
+	    netcdf.inqVarID(f,'OTMP');
 	    netcdf.renameVar(f,netcdf.inqVarID(f,'OTMP'),'TEMP_DOXY');
 	    netcdf.renameVar(f,netcdf.inqVarID(f,'OTMP_QC'),'TEMP_DOXY_QC');
 	    netcdf.renameVar(f,netcdf.inqVarID(f,'OTMP_ADJUSTED'),'TEMP_DOXY_ADJUSTED');
@@ -129,11 +135,12 @@ oparms=netcdf.getVar(f,netcdf.inqVarID(f,'STATION_PARAMETERS'))';
 if strcmpi(output_data_mode,'D')
     netcdf.putVar(f,netcdf.inqVarID(f,'DATA_MODE'),'D');
     netcdf.putVar(f,netcdf.inqVarID(f,'DATA_STATE_INDICATOR'),netstr('2C+',4));
-elseif strcmpi(output_data_mode,'A')
+else
     % If we are specifying R or A mode then we can do this PROVIDED the
     % data are not already in a more advanced state.
-    if ~strcmpi(netcdf.getVar(f,netcdf.inqVarID(f,'DATA_MODE')),'D')
-        netcdf.putVar(f,netcdf.inqVarID(f,'DATA_MODE'),'A');
+    if force_output_data_mode==1 || ~(strcmpi(netcdf.getVar(f,netcdf.inqVarID(f,'DATA_MODE')),'D') || ...
+            (strcmpi(output_data_mode,'R') && strcmpi(netcdf.getVar(f,netcdf.inqVarID(f,'DATA_MODE')),'A')))
+        netcdf.putVar(f,netcdf.inqVarID(f,'DATA_MODE'), output_data_mode);
         netcdf.putVar(f,netcdf.inqVarID(f,'DATA_STATE_INDICATOR'),netstr('2B+',4));
     end
 end
@@ -144,40 +151,43 @@ if is_bfile && ~strcmpi(output_data_mode,'R')
     if ~isempty(ii_doxy)
         if strcmpi(output_data_mode,'D')
             temp_str(ii_doxy)='D'; 
-        elseif strcmpi(output_data_mode,'A')
+        else
             temp_data_mode = netcdf.getVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'));
-            if ~strcmpi(temp_data_mode(ii_doxy),'D')
-                temp_str(ii_doxy)='A'; 
+            if force_output_data_mode==1 || ~(strcmpi(temp_data_mode(ii_doxy),'D') || ...
+                    (strcmpi(output_data_mode,'R') && strcmpi(netcdf.getVar(f,netcdf.inqVarID(f,'DATA_MODE')),'A')))
+                temp_str(ii_doxy)=output_data_mode; 
             end
         end
     end
     netcdf.putVar(f,netcdf.inqVarID(f,'PARAMETER_DATA_MODE'),temp_str);
 end
 
-if ~strcmpi(output_data_mode,'R')
-	di=N_LEVELS-length(tem.PRES);
-	if di>0 %Lenghten vectors if there are more levels
-	    temfn=fieldnames(tem);
-	    for i=1:length(temfn)
-	        tem.(temfn{i})=[tem.(temfn{i}); nan(di,1)];
-	        tem.(temfn{i})=tem.(temfn{i})(1:N_LEVELS);
-	    end
-	    temfn=fieldnames(qc);
-	    for i=1:length(temfn)
-            qc.(temfn{i}).RAW=[qc.(temfn{i}).RAW(:); ones(di,1)*'4'];
-	        qc.(temfn{i}).RAW=char(qc.(temfn{i}).RAW(1:N_LEVELS));
-            if isfield(qc.(temfn{i}),'ADJ')
-                qc.(temfn{i}).ADJ=[qc.(temfn{i}).ADJ(:); ones(di,1)*'4'];
-                qc.(temfn{i}).ADJ=char(qc.(temfn{i}).ADJ(1:N_LEVELS));
-            end
-	    end
-	    temfn=fieldnames(err);
-	    for i=1:length(temfn)
-	        err.(temfn{i})=[err.(temfn{i}); nan(di,1)];
-	        err.(temfn{i})=err.(temfn{i})(1:N_LEVELS);
-	    end
-	end
+% TODO: I'm currently seeing if maybe this is needed for all output data
+% modes, but need to keep working with this a bit.
+%if ~strcmpi(output_data_mode,'R')
+di=N_LEVELS-length(tem.PRES);
+if di>0 %Lenghten vectors if there are more levels
+    temfn=fieldnames(tem);
+    for i=1:length(temfn)
+        tem.(temfn{i})=[tem.(temfn{i}); nan(di,1)];
+        tem.(temfn{i})=tem.(temfn{i})(1:N_LEVELS);
+    end
+    temfn=fieldnames(qc);
+    for i=1:length(temfn)
+        qc.(temfn{i}).RAW=[qc.(temfn{i}).RAW(:); ones(di,1)*'4'];
+        qc.(temfn{i}).RAW=char(qc.(temfn{i}).RAW(1:N_LEVELS));
+        if isfield(qc.(temfn{i}),'ADJ')
+            qc.(temfn{i}).ADJ=[qc.(temfn{i}).ADJ(:); ones(di,1)*'4'];
+            qc.(temfn{i}).ADJ=char(qc.(temfn{i}).ADJ(1:N_LEVELS));
+        end
+    end
+    temfn=fieldnames(err);
+    for i=1:length(temfn)
+        err.(temfn{i})=[err.(temfn{i}); nan(di,1)];
+        err.(temfn{i})=err.(temfn{i})(1:N_LEVELS);
+    end
 end
+%end
 fc=[];
 %Only keep vars that are present in file
 [ndims,nvars] = netcdf.inq(f);
@@ -208,12 +218,13 @@ for i=1:length(varnames) %keep same fields unless they are provided in the struc
         end
         raw.(varname)=netcdf.getVar(f,varid)';
         if ~isfield(tem,varname)
-            if strcmpi(output_data_mode,'R')
+            % TODO: Still testing what to do here
+            %if strcmpi(output_data_mode,'R')
                 % In this case we reuse whatever is there already
-                adj.(varname)=netcdf.getVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED']))';
-            else
-            	adj.(varname)=netcdf.getVar(f,varid)';
-            end
+%                 adj.(varname)=netcdf.getVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED']))';
+%             else
+            adj.(varname)=netcdf.getVar(f,varid)';
+%             end
         else
             adj.(varname)=tem.(varname);
         end
@@ -270,7 +281,10 @@ end
 [tr,i,j]=intersect(rond(str2num(num2str(PRES)),2),rond(str2num(num2str(raw.PRES)),2));
 ok1=setdiff(1:length(raw.PRES),j);
 ok2=setdiff(1:length(adj.PRES),i);
-if ~isempty(ok1) && ~isempty(ok2) && any(ok1~=ok2) && all(raw.PRES(ok1)==raw.PRES(ok2))
+[~,name,~] = fileparts(flnm.input);
+if (strcmp(name(2:8),'4900525'))
+else
+   if ~isempty(ok1) && ~isempty(ok2) && any(ok1~=ok2) && all(raw.PRES(ok1)==raw.PRES(ok2))
     % IG, 25 Apr. 2018: This came up when dealing with duplicate pressures
     % where the deeper pressur was marked as bad (as recommended in the QC
     % manual); the normal adjustment below was inverting the flags. For
@@ -279,7 +293,7 @@ if ~isempty(ok1) && ~isempty(ok2) && any(ok1~=ok2) && all(raw.PRES(ok1)==raw.PRE
     % doesn't come up again then this if statement can be removed.
     disp('Seem to have duplicate pressures, currently need to deal with this manually')
     keyboard
-else
+   else
     fn=fieldnames(adj);
     for k=1:length(fn)
         clear t
@@ -287,7 +301,9 @@ else
         t(j)=adj.(fn{k})(i);        % Elements in common, ordered by raw.PRES
         adj.(fn{k})=t;
     end
+   end
 end
+%write adjusted value to the output;
 for i=1:length(varnames)
     varname=varnames{i};
     if is_bfile && strcmp(varname,'PRES'), continue; end % We don't do anything with PRES for b-files
@@ -297,7 +313,8 @@ for i=1:length(varnames)
         ok=(ok1|ok2|ok3);
         adj.([varname '_QC'])(ok')='4';adj.(varname)(ok)= fv1;adj.([varname '_ERR'])(ok)=fv1;
         netcdf.putVar(f,netcdf.inqVarID(f,[varname '_QC']),raw.([varname '_QC'])); %raw flags
-        if ~strcmpi(output_data_mode,'R') && (~is_bfile || strcmp(varname,'DOXY'))  % TODO: Expand to i-variables?
+        %if ~strcmpi(output_data_mode,'R') && (~is_bfile || strcmp(varname,'DOXY'))  % TODO: Expand to i-variables?
+        if ~is_bfile || (strcmp(varname,'DOXY') && ~strcmpi(output_data_mode,'R')) % TODO: Expand to i-variables? TODO: Revisit case where we write adjusted DOXY, could change
             netcdf.putVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED']),adj.(varname));
             netcdf.putVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED_QC']),adj.([varname '_QC']));     %adj flags
             netcdf.putVar(f,netcdf.inqVarID(f,[varname '_ADJUSTED_ERROR']),adj.([varname '_ERR']));
@@ -451,9 +468,12 @@ else %case when this is the first time we calculate a QCP
     dj(i_history)=0;
     oldcode='0';
 end
-netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_QCTEST'),dj,di,netstr(decplushex2hex(131072,oldcode),16)'); %means "Wong et al. Correction and Visual QC performed by PI"
-di(i_parlen)=14;
-netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_DATE'),dj,di,netstr(DATE_CAL,14)');
+if ~strcmpi(output_data_mode,'R')
+    % TODO: Confirm with Anh that it's OK to leave this out
+    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_QCTEST'),dj,di,netstr(decplushex2hex(131072,oldcode),16)'); %means "Wong et al. Correction and Visual QC performed by PI"
+    di(i_parlen)=14;
+    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_DATE'),dj,di,netstr(DATE_CAL,14)');
+end
 if ~isempty(fc) %only if visual failed/>0 raw flag(s) were changed
     %(5.4 Recording changes in values: record change of raw flags
     varswithcf=fieldnames(fc);
@@ -465,6 +485,7 @@ if ~isempty(fc) %only if visual failed/>0 raw flag(s) were changed
             dj(i_history)=N_HISTORY-1;
             di(i_history)=1;
             di(i_parlen)=4;
+            %zhimin ma has issue appending data to extra dimension.
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_STEP'),dj,di,netstr('ARGQ',4));
             netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),dj,di,netstr('CF',4));
@@ -488,29 +509,31 @@ if ~isempty(fc) %only if visual failed/>0 raw flag(s) were changed
         end
     end
 end
-%5.1 Recording information about the Delayed Mode QC process
-N_HISTORY=N_HISTORY+1;
-dj(i_history)=N_HISTORY-1;
-di(i_history)=1;
 
-di(i_parlen)=4;
-netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
-netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_STEP'),dj,di,netstr('ARSQ',4));
-if strcmpi(output_data_mode,'R') || isempty(conf)
-    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE'),dj,di,netstr('',4));
-    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE_RELEASE'),dj,di,netstr('',4));
-else
-    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE'),dj,di,netstr(conf.swname,4));
-    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE_RELEASE'),dj,di,netstr(conf.swv,4));
-end
-netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),dj,di,netstr('QCCV',4));
-di(i_parlen)=14;
-netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_DATE'),dj,di,netstr(DATE_CAL,14));
-di(i_parlen)=64;
-if strcmpi(output_data_mode,'R') || isempty(conf)
-    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_REFERENCE'),dj,di,netstr('',64));
-else
-    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_REFERENCE'),dj,di,netstr(conf.dbname,64));
+%5.1 Recording information about the Delayed Mode QC process
+if ~strcmpi(output_data_mode,'R')
+    N_HISTORY=N_HISTORY+1;
+    dj(i_history)=N_HISTORY-1;
+    di(i_history)=1;
+    di(i_parlen)=4;
+    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_INSTITUTION'),dj,di,netstr('ME',4));
+    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_STEP'),dj,di,netstr('ARSQ',4));
+    if strcmpi(output_data_mode,'R') || isempty(conf)
+        netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE'),dj,di,netstr('',4));
+        netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE_RELEASE'),dj,di,netstr('',4));
+    else
+        netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE'),dj,di,netstr(conf.swname,4));
+        netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_SOFTWARE_RELEASE'),dj,di,netstr(conf.swv,4));
+    end
+    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_ACTION'),dj,di,netstr('QCCV',4));
+    di(i_parlen)=14;
+    netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_DATE'),dj,di,netstr(DATE_CAL,14));
+    di(i_parlen)=64;
+    if strcmpi(output_data_mode,'R') || isempty(conf)
+        netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_REFERENCE'),dj,di,netstr('',64));
+    else
+        netcdf.putVar(f,netcdf.inqVarID(f,'HISTORY_REFERENCE'),dj,di,netstr(conf.dbname,64));
+    end
 end
 
 adj.PRES(adj.PRES==fv1)=nan;
@@ -524,6 +547,7 @@ if ~strcmpi(output_data_mode,'R') && length(unique(ok))>1 && max(diff(unique(ok)
 end
 netcdf.close(f);
 fname=flnm.output;
+
 function newhex=decplushex2hex(dec,hex)
 	l(1)=length(dec2bin(dec));
 	l(2)=length(dec2bin(hex2dec(hex)));

@@ -63,6 +63,8 @@ end
 
 % Plot the data
 plot(axedesxy(:,1),axedesxy(:,2),'-','tag','profile');
+
+%%
 yylim=[min(axedesxy(:,2)) max(axedesxy(:,2))]+[-.05 .05];
 if all(isnan(yylim))
     yylim=[0 1];
@@ -83,11 +85,19 @@ for i=1:length(colscheme)
     else ok=qcxy(:,1)==num2str(i);
     end
     if ~any(ok==1), h_qc{i,1} = plot(NaN,NaN,['.' colscheme(i)],'tag',['x' num2str(i)]);   % This just leaves a placeholder we can use later
-    else h_qc{i,1}=plot(axedesxy(ok,1),axedesxy(ok,end),['.' colscheme(i)],'tag',['x' num2str(i)]);
+    else h_qc{i,1}=plot(axedesxy(ok,1),axedesxy(ok,end),['.' colscheme(i)],'tag',['x' num2str(i)]);        
     end
 end
 set(cat(1,h_qc{:}),'markersize',16);
-
+%% zhimin ma for AVHRR demonstration
+% if(subplot_arr(3)==2)
+% hold on;
+% plot(8.1820,2,'rs',...
+%     'LineWidth',1,...
+%     'MarkerSize',10,...
+%     'MarkerEdgeColor','r',...
+%     'MarkerFaceColor','r')
+% end
 % Indicate position(s) of QC flags on the other axis along the edge of the
 % plot
 xxlim = get(gca,'xlim');

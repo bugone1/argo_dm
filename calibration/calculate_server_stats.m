@@ -38,6 +38,7 @@ function [list,numr,numd,numbr,numbd,dat_dmqc,pre_adj,doxy_visqc,dat_deploy,dat_
 %           and eligible age.
 %       8 Jan. 2019, IG: Updates to the code to count up the B-files that
 %           have been visually QC'd.
+%       10 Jan 2019, IG: Added some code to remove load from menudmqc_ig.m
 
 if nargin<5, temp_dir=pwd; 
 elseif exist(temp_dir,'dir')<=0, mkdir(temp_dir);
@@ -90,10 +91,12 @@ while i<=length(list)
                 nc=netcdf.open([temp_dir,filesep,deblank(rd1(1,:))],'nowrite');
                 % How old is the first profile? If less than the eligible
                 % age then we set both numr and numbr to zero
-                dat_deploy(i)=netcdf.getVar(nc,netcdf.inqVarID(nc,'JULD'))-datenum(1950,1,0);
+                dat_deploy(i)=netcdf.getVar(nc,netcdf.inqVarID(nc,'JULD'))+datenum(1950,1,0);
                 howold=now-netcdf.getVar(nc,netcdf.inqVarID(nc,'JULD'))-datenum(1950,1,0); 
                 netcdf.close(nc);
                 if howold<eligible_age
+                    numr_ille(i)=numr(i);
+                    numbr_ille(i)=numbr(i);
                     numr(i)=0;
                     numbr(i)=0;
                 end
@@ -102,7 +105,7 @@ while i<=length(list)
                 % for both the DOXY_QC values and the ARSQ history step for
                 % now, but I'm not yet sure the DOXY_QC flag check is
                 % needed.
-                if numbr(i)>0
+                if numbr(i)>1
                     if ~skip_downloads, mget(f,deblank(rd2(1,:)),temp_dir); end
                     nc=netcdf.open([temp_dir,filesep,deblank(rd2(1,:))],'nowrite');
                     doxy_qc=netcdf.getVar(nc,netcdf.inqVarID(nc,'DOXY_QC'));
@@ -136,9 +139,9 @@ while i<=length(list)
                 % for both the DOXY_QC values and the ARSQ history step for
                 % now, but I'm not yet sure the DOXY_QC flag check is
                 % needed.
-                if numbd(i)>0, 
+                if numbd(i)>0
                     doxy_visqc(i)=1; 
-                elseif numbr(i)>0
+                elseif numbr(i)>1
                     if ~skip_downloads, mget(f,deblank(rd2(1,:)),temp_dir); end
                     nc=netcdf.open([temp_dir,filesep,deblank(rd2(1,:))],'nowrite');
                     doxy_qc=netcdf.getVar(nc,netcdf.inqVarID(nc,'DOXY_QC'));
@@ -154,7 +157,8 @@ while i<=length(list)
                 if numr(i)>0
                     if ~skip_downloads, mget(f,deblank(rd1(end,:)),temp_dir); end
                     nc=netcdf.open([temp_dir,filesep,deblank(rd1(end,:))],'nowrite');
-                    dat_lastd(i) = netcdf.getVar(nc,netcdf.inqVarID(nc,'JULD'));
+                    tmp = netcdf.getVar(nc,netcdf.inqVarID(nc,'JULD'));
+                    dat_lastd(i) = tmp(1);
                     netcdf.close(nc);
                 end
             end
@@ -173,17 +177,17 @@ while i<=length(list)
     i=i+1;
 end
 % Do some sorting
-[k,i]=sort(numr,'descend');
-list=list(i);
-dat_deploy=dat_deploy(i);
-dat_dmqc=dat_dmqc(i);
-dat_lastd=dat_lastd(i);
-pre_adj=pre_adj(i);
-numr=numr(i);
-numd=numd(i);
-numbr=numbr(i);
-numbd=numbd(i);
-doxy_visqc=doxy_visqc(i);
+% [k,i]=sort(numr,'descend');
+% list=list(i);
+% dat_deploy=dat_deploy(i);
+% dat_dmqc=dat_dmqc(i);
+% dat_lastd=dat_lastd(i);
+% pre_adj=pre_adj(i);
+% numr=numr(i);
+% numd=numd(i);
+% numbr=numbr(i);
+% numbd=numbd(i);
+% doxy_visqc=doxy_visqc(i);
 
 % Print statistics
 sprintf('%f of eligible profiles have been DMQCed at least once',100*sum(numd)./sum(numd+numr))
@@ -191,6 +195,24 @@ sprintf('%f of eligible floats have been DMQCed at least once with sal',100*sum(
 sprintf('%f of eligible floats have been DMQCed at least once with both sal and pres',100*sum(numd(pre_adj)>0)./sum(numd>0 | numr>0))
 sprintf('%f of eligible DOXY floats have been DMQCed at least once',100*sum(numbd>0)./sum(numbd>0 | numbr>0))
 sprintf('~ %i profiles DMQCed since last year',sum(numd(dat_dmqc>(now-365.25))))
-char(list.name)
+sprintf('%f of eligible DOXY profiles have been visually QCd at least once',100*sum(max([numbd numbd.*doxy_visqc],[],2))./sum(numbr+numbd))
+sprintf('%f of eligible DOXY profiles have been DMQCed at least once',100*sum(numbd)./sum(numbd+numbr))
+% char(list.name)
+
+% Save to file
+[foo,i]=sort({list.name});
+list=list(i);
+numr=numr(i);
+numd=numd(i);
+numbr=numbr(i);
+numbd=numbd(i);
+dat_dmqc=dat_dmqc(i);
+pre_adj=pre_adj(i);
+doxy_visqc=doxy_visqc(i);
+dat_deploy=dat_deploy(i);
+dat_lastd=dat_lastd(i);
+
+save stats list numr numd numbr numbd dat_dmqc pre_adj doxy_visqc dat_deploy dat_lastd numr_ille numbr_ille
+dlmwrite('stats.txt',[str2num(vertcat(list.name)), pre_adj, numr, numd, numbr, numbd],'precision','%d');
 
 end

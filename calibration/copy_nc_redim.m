@@ -49,10 +49,24 @@ for i=1:ndims
     end
     netcdf.defDim(f2,dimname,dimlen);
 end
+%% zhimin ma add one more global attribute for DMQC operator
+comment_dmqc=false;
+DMQC_Operator="PRIMARY|https://orcid.org/0000-0002-1716-6352|"...
+        +"Zhimin(Robert) Ma, OSB, DFO";
+varid=netcdf.getConstant('GLOBAL');
 for i=1:ngatts
-    varid=netcdf.getConstant('GLOBAL');
-    netcdf.copyAtt(f1,varid,netcdf.inqAttName(f1,varid,i-1),f2,varid);
+    if string(netcdf.inqAttName(f1,varid,i-1))=="comment_dmqc_operator"
+        comment_dmqc=true;
+        netcdf.putAtt(f2,varid,'comment_dmqc_operator',DMQC_Operator);
+    else
+        netcdf.copyAtt(f1,varid,netcdf.inqAttName(f1,varid,i-1),f2,varid);      
+    end
 end
+if ~comment_dmqc
+    netcdf.putAtt(f2,varid,'comment_dmqc_operator',DMQC_Operator);
+    comment_dmqc=true;
+end
+%%
 for i=1:nvars
     varid=i-1;
     [varname,xtype,dimids,natts]=netcdf.inqVar(f1,varid);

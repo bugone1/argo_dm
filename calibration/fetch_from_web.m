@@ -41,7 +41,7 @@ if isempty(strmatch(floatname,allfloats)) %we don't have this float
     display(['downloading' floatname ' in ' pathe]);
     mget(f,'D*.nc',pathe);
     mget(f,'R*.nc',pathe);
-    mget(f,'B*.nc',pathe);
+%    mget(f,'B*.nc',pathe);
     todown=1;
 else
     % IG, 24 July 2017: Older version of the code avoids re-fetching files

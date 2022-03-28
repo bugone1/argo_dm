@@ -22,7 +22,8 @@ psalflag=ones(size(PROFILE_NO))*'1';
 adjpsalflag=ones(size(PROFILE_NO))*'0';
 
 % Give the user the option to set all conversion factors and flags to 1
-q=input('Press q to skip GUI-based salinity adjustment and accept adjustment=1, or any other key to continue','s');
+%q=input('Press q to skip GUI-based salinity adjustment and accept adjustment=1, or any other key to continue','s');
+q=[];
 
 % Interactively select a salinity adjustment
 if isempty(q) || q~='q'

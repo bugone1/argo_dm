@@ -24,7 +24,7 @@ dates_temp = [t.dates];
 cycles_temp = [t.cycle_number];
 lon_temp = [t.longitude];
 lat_temp = [t.latitude];
-hp=plot(lon_temp,lat_temp,'k');
+hp=plot(lon_temp,lat_temp,'k'); 
 position_accuracy = repmat(' ',1,length(t));
 position_qc_traj = repmat(' ',1,length(t));
 if ~isempty(t_traj)

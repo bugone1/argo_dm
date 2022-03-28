@@ -29,7 +29,7 @@ if nargin<6, qc_good_only=0; end
 
 % Figure out which positions are good
 ok=(SAL_QC>'1' | TEMP_QC>'1');
-[foo,prof_qc]=find(ok);
+[~,prof_qc]=find(ok);
 if qc_good_only
     PSAL(ok)=NaN;
     PTMP(ok)=NaN;
@@ -55,8 +55,8 @@ for ii=1:length(h)-1
 end
 set(h(end),'userdata',PROFILE_NO(prof_qc));
 % This line just tricks colorbar into working correctly for later
-% versions of Matlab
-scatter(ones(1,lt)*NaN,ones(1,lt)*NaN,0,PROFILE_NO);
+% versions of Matlab zhimin ma comment
+%scatter(ones(1,lt)*NaN,ones(1,lt)*NaN,0,PROFILE_NO);
 xlabel('psal'); ylabel('ptmp'); grid on;
 set(fig_ts,'colormap',jet(lt)); colorbar
 

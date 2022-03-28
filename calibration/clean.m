@@ -28,7 +28,7 @@ end
 todel=[];
 for i=1:length(cyc)
     ok=find(cyc==cyc(i));
-    if length(ok)>1
+    if (length(ok)>1&& sum(nums(ok,12)=='D')==0)
         firstletter=filenames(ok,ii_rd);
         dfiles=ok(firstletter=='D' | firstletter=='d'); %delete oldest of d and D files
         if length(dfiles)==2

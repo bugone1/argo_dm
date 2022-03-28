@@ -22,12 +22,15 @@ function fname=interactive_qc_ig(local_config,files)
 %       July, 2017, IG: KML files now being stored in the kml directory.
 %       8 Nov. 2017, IG: Fixed a bug in how QC flags are adjusted
 %       9 May 2018, IG: Fixed bugs for files that don't have temp_doxy
+%       11 Jan. 2019, IG: Float NetCDF files now in float-specific
+%           sub-directories, removed option to skip previously-QC'd cycles.
+%       03 Sep 2020, Zhimin Ma change seawater function to GSW. 
 
-ITS90toIPTS68=1.00024;
 
 floatname=files(1).name(2:8);
 fname=[local_config.RAWFLAGSPRES_DIR floatname]; %presscorrect file
-dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
+%dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
+dire=fullfile(local_config.DATA,floatname);
 dir_traj = [local_config.DATA 'trajfiles'];
 clean(dire,files(:,1));
 if size(files,2)>1, clean(dire,files(:,2),1); end
@@ -41,7 +44,7 @@ if exist([fname '.mat'],'file')
         cyn1=cat(1,tem.t.cycle_number);
         fnames=char(files(:,1).name);
         cyn2=int32(str2num(fnames(:,10:12)));
-        [a,b]=setdiff(cyn2,cyn1);
+        [~,b]=setdiff(cyn2,cyn1);
         t=tem.t;
         if ~isempty(b)
             t_new = read_all_nc(dire,files(b,1),[],[0 0]);
@@ -64,15 +67,30 @@ if exist([fname '.mat'],'file')
             end
             t=aggstruct(t,t_new);
         end
-        [tr,j]=unique(cat(1,t.cycle_number));
-        t=t(j);
+          for i=1:length(files)
+              if(files(i).name(13)~='D')
+                  indD=0;
+              else
+                  indD=1;
+                  break;
+              end 
+          end
+          if (indD==0)
+               [~,j]=unique(cat(1,t.cycle_number));% why need to unique,maybe there is D files.
+               t=t(j);
+          end
     end
-    ynn=input('Do you want to reload QC flags from the netCDF files? (y/n, default=n) ','s');
-    if isempty(ynn),ynn='n'; end
-    dokeep(1)=lower(ynn(1))=='n';
-    ynn=input('Do you want to reload temperature and salinity (and oxygen) values from the netCDF files (y/n, default=n) ','s');
-    if isempty(ynn), ynn='n'; end
-    dokeep(2)=lower(ynn(1))=='n';
+%     ynn=input('Do you want to reload QC flags from the netCDF files? (y/n, default=n) ','s');
+%     if isempty(ynn),ynn='n'; end
+%     dokeep(1)=lower(ynn(1))=='n';
+%     ynn=input('Do you want to reload temperature and salinity (and oxygen) values from the netCDF files (y/n, default=n) ','s');
+%     if isempty(ynn), ynn='n'; end
+%     dokeep(2)=lower(ynn(1))=='n';
+    ynn=input('Do you want to reload data and QC flags from the netCDF files? (y/n, default=n) ','s');
+    if ~isempty(ynn) && strcmpi(ynn,'y')
+        dokeep = [0 0];
+    else dokeep = [1 1];
+    end
 end
 
 % If the pressure correction file contains no data then we need to force
@@ -105,10 +123,10 @@ if any(dokeep==0)
     end
 end
 
-%Remove redundant cycles
-t=remove_redundant_struct(t,'cycle_number'); %this also sorts the structure by cycle number
+%Remove redundant cycles; there maybe issue if there is descending profile
+%t=remove_redundant_struct(t,'cycle_number'); %this also sorts the structure by cycle number
 cyc1=(cat(1,t.cycle_number));
-lf=length(t);
+% lf=length(t);ZHimin ma remove this variable.
 
 % Load the trajectory file (IG: Currently under construction)
 for ii=1:length(files)
@@ -118,25 +136,30 @@ t_traj=read_traj_nc([dir_traj filesep files(1).name(2:8) '_Rtraj.nc']);
 
 % Plot the dates and trajectory
 fig_traj=plot_time_and_traj(t,t_traj);
+% fig_traj=plot_time_and_traj(t);
 
 %write KML file for Google Earth
 writekml([local_config.BASE filesep 'kml' filesep floatname '.kml'],[cat(1,t.longitude) cat(1,t.latitude)],cat(1,t.cycle_number));
 %actxserver([floatname '.kml'])
 display(['Start Google Earth and load ' floatname '.kml']);
 
+% I've continued to display the information about previously-QC'd cycles,
+% but now that we can jump to a specific cycle easily I've commented out
+% options to skip the un-QC'd cycles, as I generally find the extra
+% question to be more of a nuisance than a help.
 if isfield(t,'qc')
     qc=cyc1(cat(1,t.qc)==1);
     display(['Cycles Available: ' collapse_vec(cyc1)])
     display(['At least some level of QC Already Done On ' collapse_vec(qc)])
-    nottodo=intersect(cyc1,qc);
+%     nottodo=intersect(cyc1,qc);
     todo=cyc1;
-    if ~isempty(nottodo)
-        yn=input(['Do you want do perform visual QC on ' collapse_vec(nottodo) 'in addition to un-QCed cycles ? (y/n, default=y)'],'s');
-        if isempty(yn), yn='y'; end
-        if lower(yn)=='n'
-            todo=setdiff(cyc1,qc);
-        end
-    end
+%     if ~isempty(nottodo)
+%         yn=input(['Do you want do perform visual QC on ' collapse_vec(nottodo) 'in addition to un-QCed cycles ? (y/n, default=y)'],'s');
+%         if isempty(yn), yn='y'; end
+%         if lower(yn)=='n'
+%             todo=setdiff(cyc1,qc);
+%         end
+%     end
 else
     todo=cyc1;
 end
@@ -158,6 +181,8 @@ if ~isempty(todo)
         TEMP(1:si(i),i)=t(i).temp;
         SAL_QC(1:si(i),i)=t(i).psal_qc;
         TEMP_QC(1:si(i),i)=t(i).temp_qc;
+        LONTMP(i)=t(i).longitude;
+        LATTMP(i)=t(i).latitude;
     end
 %     if isfield(t,'doxy')
 %         for i=1:lt
@@ -171,20 +196,15 @@ if ~isempty(todo)
 %             TEMP_DOXY_QC(1:si(i),i)=t(i).temp_doxy_qc;
 %         end
 %     end
-    PTMP = sw_ptmp(PSAL,TEMP*ITS90toIPTS68,PRES,0);  % Calculate the potential temperature
+      AbsSal=gsw_SA_from_SP(PSAL,PRES,LONTMP,LATTMP);
+        PTMP=gsw_pt_from_t(AbsSal,TEMP,PRES,0);
+%     PTMP = sw_ptmp(PSAL,TEMP*ITS90toIPTS68,PRES,0);  % Calculate the potential temperature
     
     % TS plot
     fig_ts=plot_float_ts([t.cycle_number],PTMP,PSAL,TEMP_QC,SAL_QC);
-    
-    % Get the first profile to view
-    i=input(['start at which profile? (default=', num2str(min(cyc1)), ')']);
-    if isempty(i) || i<min(cyc1)
-        i=min(cyc1);
-    end
-    i=find(i==cyc1);
-    if i>1
-        i=i-1;
-    end
+    % As we now have a way to go directly to a given cycle, we just start
+    % at the first cycle
+    i=1;
     % Create a figure, prepare the axes and UI elements
     % TODO: The passing of h_axes, h_ui is a temporary fix to avoid having
     % to constantly redraw the UI elements, which is hurting performance.
@@ -195,13 +215,7 @@ if ~isempty(todo)
     % Iterate through all available cycles, processing those marked
     % previously as needing to be done (i.e., those greater than the
     % starting cycle that still need QC)
-    % IG testing
-    try
-        foo = i<lf || (i==lf && q==8);
-    catch
-        disp('Problem!!')
-    end
-    while i<lf || (i==lf && q==8)
+    while i<length(t) || (i==length(t) && q==8)
         if any(cyc1(i)==todo)
             % Adjust our bookmark forward or backward. Note that q=8 is the
             % backspace
@@ -222,17 +236,17 @@ if ~isempty(todo)
             t(i).psal_qc=char(t(i).psal_qc);
             t(i).temp_qc=char(t(i).temp_qc);
             t(i).pres_qc=char(t(i).pres_qc);
-            if isfield(t,'doxy_qc')
-                t(i).doxy_qc=char(t(i).doxy_qc);  
-            end
-            if isfield(t,'temp_doxy_qc')
-                t(i).temp_doxy_qc=char(t(i).temp_doxy_qc); 
-            end
+%             if isfield(t,'doxy_qc')
+%                 t(i).doxy_qc=char(t(i).doxy_qc);  
+%             end
+%             if isfield(t,'temp_doxy_qc')
+%                 t(i).temp_doxy_qc=char(t(i).temp_doxy_qc); 
+%             end
             tic;
             % Launch visual QC for this cycle
             if ~strcmpi(q,'q')
                 try
-                    [temm,q,h_axes,h_ui]=visual_qc_ig(t(i),q,h_axes,h_ui);
+                    [temm,q,h_axes,h_ui]=visual_qc_ig(t(i),q,h_axes,h_ui);% 
                     % Update the overall structures
                     t(i)=rmfield(temm,setdiff(fieldnames(temm),fieldnames(t)));
                     dura=toc;
@@ -264,15 +278,15 @@ end
 % user has opted to exit the process entirely via the 'Q' option.
 if ~strcmp(q, 'Q')
     % If the salinity was unpumped we need to flag additional points
-    i=input('Was salinity unpumped? y/n','s');
+    i=input('Was salinity unpumped? y/n (default is n)','s');
     if lower(i)=='y'
-        for j=1:lf
+        for j=1:length(t)
             ok=find(t(j).pres<=4);
             t(j).psal_qc(ok)='3';
             t(j).temp_qc(ok)='3';
         end
-    elseif lower(i)~='n'
-        error('Answer must be either y or n');
+%     elseif lower(i)~='n'
+%         error('Answer must be either y or n');
     end
 
     %Perform range checks; override visual flags
@@ -289,7 +303,7 @@ if ~strcmp(q, 'Q')
     for j=1:length(trio)
         lim.(trio{j})=eval(local_config.(['lim' trio2{j}]));
     end
-    for i=1:lf
+    for i=1:length(t)
         for j=1:length(trio)
             flag.(trio{j})=t(i).(trio{j})>lim.(trio{j})(2) | t(i).(trio{j})<lim.(trio{j})(1) | isnan(t(i).(trio{j}));
         end

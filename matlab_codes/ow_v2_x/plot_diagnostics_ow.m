@@ -150,7 +150,7 @@ set(gca,'XTickLabel',xticklabels);
 drawnow
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
 %print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.png'));
 
 
 % plot the uncalibrated theta-S curves from the float (figure 2) --------
@@ -208,7 +208,7 @@ drawnow
 title( strcat( title_floatname, ' uncalibrated float data (-) and mapped salinity (o) with objective errors' ) );
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
 %print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.png'));
 
 % calibration curve (figure 3) --------------------------
 
@@ -289,7 +289,7 @@ title( strcat(title_floatname, ' vertically-averaged salinity (PSS-78) additive 
 drawnow
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
 %print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.png'));
 
 
 % plot the calibrated theta-S curves from the float (figure 4) --------------------------
@@ -347,7 +347,7 @@ drawnow
 title( strcat(title_floatname, ' calibrated float data (-) and mapped salinity (o) with objective errors' ) );
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
 % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.png'));
 
 % Brian King's plot: salinity anomaly time series on theta levels (figure 5) ------------
 
@@ -375,7 +375,7 @@ title(['       Salinity anom on theta.    ' title_floatname])
 drawnow
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.5,8,10]);
 % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.png'));
 
 
 % plot salinity time series on theta levels with the smallest S variance (figure 6) ------------
@@ -581,7 +581,7 @@ xlabel('float profile number');
 drawnow
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
 % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6.png'));
 
 
 % Brian King's plot: salinity anomaly time series on theta levels (figure 7) ------------
@@ -610,7 +610,7 @@ title(['Calibrated salinity anom on theta. ' title_floatname])
 drawnow
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.5,8,10]);
 % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.png'));
 
 
 % Paul Robbins' analyse variance plot (figure 8) ------------
@@ -672,7 +672,7 @@ end
 drawnow
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.5,.25,8,10.25]);
 % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8.eps'));
-print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8.png'));
+print('-dpng',strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8.png'));
 
 end %if(isempty(find(isnan(cal_SAL)==0))==0) ---------------
 

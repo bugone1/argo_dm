@@ -11,17 +11,23 @@ function resize_dimension(ndimname,ndimleng,fname1)
 %   VERSION HISTORY:
 %       16 September 2016: Current working version
 %       4 Aug. 2017, Isabelle Gaboury: Expanded documentation
+%       15 Jan. 2019: Improved handling of variables with unlimited
+%           dimensions.
 
 ncid_in=netcdf.open(fname1,'NOWRITE');
 fname2=char(round(rand(1,15)*26+65));
 ncid_out=netcdf.create(fname2,'WRITE');
-[ndims,nvars,ngatts]=netcdf.inq(ncid_in);
+[ndims,nvars,ngatts,unlimdimid]=netcdf.inq(ncid_in);
 dimid=-1;
 for i=1:ndims
     [dimname,dimlen]=netcdf.inqDim(ncid_in,i-1);
     if strcmp(dimname,ndimname)
-        netcdf.defDim(ncid_out,dimname,ndimleng);
         dimid=i-1;
+        if dimid==unlimdimid
+            netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
+        else
+            netcdf.defDim(ncid_out,dimname,ndimleng);
+        end
     else
         netcdf.defDim(ncid_out,dimname,dimlen);
     end
@@ -47,11 +53,12 @@ netcdf.endDef(ncid_out);
 for j=1:nvars    
     varid=j-1;
     data = netcdf.getVar(ncid_in,varid);
-    [varname,xtype,dimids] = netcdf.inqVar(ncid_in,varid);
+    [varname,xtype,dimids,unlimdimids] = netcdf.inqVar(ncid_in,varid);
     ok=find(dimids==dimid);
     if isempty(ok)
         ok=0;
     end
+
     ndims=length(dimids);
     if ndims==1 && ok==1
         data=data(1:ndimleng);
@@ -64,11 +71,20 @@ for j=1:nvars
     elseif ndims==3 && ok==2
         data=data(:,1:ndimleng,:);
     elseif ndims==3 && ok==3
+%         if(size(data,3)<ndimleng)
+%             data(:,:,ndimleng)=data(:,:,ndimleng-1);
+%         end
         data=data(:,:,1:ndimleng);
     elseif ok~=0
         error('Unknown case');
+    
     end
-    netcdf.putVar(ncid_out,varid,data);
+    %%%%% zhimin ma fix a bug here 
+    if (ok==3&& ndims==3)
+        netcdf.putVar(ncid_out,varid,[0 0 0],size(data),data);
+    else
+        netcdf.putVar(ncid_out,varid,data);
+     end
 end
 netcdf.close(ncid_in);
 netcdf.close(ncid_out);

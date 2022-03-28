@@ -1,3 +1,5 @@
+function update_ref_dbase(config)
+
 load(fullfile(config.CONFIG_DIRECTORY,config.CONFIG_WMO_BOXES),'la_wmo_boxes');
 a.data_types={'ctd','bot','argo'};
 %Enter WMO#s to exclude
@@ -16,5 +18,11 @@ for i=1:3
         la_wmo_boxes(a.ok,i+1)=1;
     end
 end
+% Version with all data types
 save(fullfile(config.CONFIG_DIRECTORY,config.CONFIG_WMO_BOXES),'la_wmo_boxes');
+% No Argo data
+la_wmo_boxes(:,4)=0;
+save(fullfile(config.CONFIG_DIRECTORY,[config.CONFIG_WMO_BOXES '_noargo']),'la_wmo_boxes');
 clear a
+
+end

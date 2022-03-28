@@ -1,4 +1,4 @@
-function presMain_ig(local_config,lo_system_configuration,files,floatname)
+function presMain_ig(local_config,lo_system_configuration,floatname)
 % PRESMAIN DMQC of Argo pressures
 %   DESCRIPTION:
 %       Load the surface pressures from the tech file, clean, despike, fit,
@@ -10,8 +10,6 @@ function presMain_ig(local_config,lo_system_configuration,files,floatname)
 %   INPUTS:
 %       local_config - Structure of configuration data
 %       lo_system_configuration - Structure of OW configuration data
-%       files - Array of NetCDF files to process; each element is a
-%           structure, with field "name"
 %       floatname - Name of the float
 %   OUTPUTS:
 %       None, but results (MAT file and PNG) are saved to the directories
@@ -38,15 +36,23 @@ function presMain_ig(local_config,lo_system_configuration,files,floatname)
 %       31 Jan. 2018, IG: Further tweak to the TNPD criteria.
 %       9 Apr. 2018, IG: Fixed minor bug with how a warning was being
 %           displayed.
+%       11 Jan. 2018, IG: Float data now being stored in float-specific
+%           subdirectories.
+%       11 Feb. 2019, IG: Corrected TNPD check for case where all values
+%           are zero.
+%       26 Feb. 2019, IG: Removed unused code to remove exceedance
+%           pressure, removed "files" input parameter.
 
 % Data directory, extended file name
-dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
+%dire=[local_config.DATA findnameofsubdir(floatname,listdirs(local_config.DATA))];
+dire=fullfile(local_config.DATA,floatname);
 fname=[local_config.RAWFLAGSPRES_DIR floatname];
 
 pres3=[];linfit=[];presscorrect.cyc=[];
 %extract metadata info
 pc=netcdf.open([local_config.METAFILES floatname '_meta.nc'],'nowrite');
 p=netcdf.getVar(pc,netcdf.inqVarID(pc,'LAUNCH_DATE'))';
+%zhimin ma yearlaunch seems can be retrieved from str2double(p(1:4));
 yearlaunch=str2num(p(1:4));ser=netcdf.getVar(pc,netcdf.inqVarID(pc,'SENSOR_SERIAL_NO'))';netcdf.close(pc);
 nc=netcdf.open([local_config.TECHFILES floatname '_tech.nc'],'nowrite');
 names=lower(netcdf.getVar(nc,netcdf.inqVarID(nc,'TECHNICAL_PARAMETER_NAME')))';
@@ -56,19 +62,33 @@ if size(names,2)>34
     if ~isempty(ok)
         offset=0;
         scalefactor=1;
+        SPscale=1.0;
     end
     if isempty(ok) && size(names,2)>40
         ok=strmatch(lower('PRES_SurfaceOffsetTruncatedPlus5dbar_dBAR'),names(:,1:41)); %potential tnpd
         offset=5;
         scalefactor=1;
         tnpd=1;
+        SPscale=1.0;
     end
     if isempty(ok) && size(names,2)>20
         ok=strmatch(lower('pressure_offset_dbar'),names(:,1:35)); %apex
         scalefactor=1;
         offset=0;
+        SPscale=1.0;
+    end
+    if isempty(ok) && size(names,2)>20
+        ok=strmatch(lower('pres_surfaceoffsetcorrectednotresetnegative_1cbarresolution_dbar'),...
+            names(:,1:64)); %no need to adjust pressure according to argo technical xlsx file. 
+        scalefactor=1;
+        offset=0;
+        SPscale=0.0;
     end
 end
+% if(floatname=='4902406')
+%     ok(106)=[];
+%     ok(127)=[];
+% end
 if isempty(ok)
     error('Can''t find pressure');
 end
@@ -108,7 +128,7 @@ if yn(1)=='y'
         loktime = numel(oktime);
         netcdf.close(nc);
         for j=1:lok
-            pres(j)=str2double(values(ok(j),:));
+            pres(j)=str2double(values(ok(j),:))*SPscale;% add SPscale to zero if no need for pressure adjust
             if apex
                 % The "ok" and "oktime" vectors may not match, as there can
                 % be cycles without one of the pressure or the satellite
@@ -124,12 +144,25 @@ if yn(1)=='y'
                     end
                 end
             else
-                sdn(j)=datenum(values(okhour(j),:),'hh')+datenum(values(okdate(j),:),'yyyymmdd');
+                if(isempty(okhour)&&isempty(okdate))
+                    sdn(j)=j;
+                else
+%                     sdn(j)=datenum(values(okhour(j),:),'hh')+datenum(values(okdate(j),:),'yyyymmdd');
+%                    zhimin ma 
+                      int_hour=floor(str2double(values(okhour(j),:)));
+                      resid=str2double(values(okhour(j),:))-int_hour;
+                      int_min=floor(resid*60);
+%                       resid_min=resid-
+                     sdn(j)=datenum(str2double(values(okdate(j),1:4)),str2double(values(okdate(j),5:6)),...
+                         str2double(values(okdate(j),7:8)),floor(str2double(values(okhour(j),:))),int_min,0);
+                end
             end
         end
         pres(abs(pres)>1e30)=0.0;
         acyc=min(cyc):macyc;
         [tr,ok]=setdiff(acyc,cyc); %find missing cycles
+        % zhimin if missing cycle is larger than 2, maybe it is not good
+        % way to averaged the adjacent numbers. 
         for i=1:length(ok)
             cyc(end+1)=acyc(ok(i));
             ok1=[find(cyc==acyc(ok(i))-1); find(cyc==acyc(ok(i))+1)];
@@ -155,11 +188,11 @@ if yn(1)=='y'
                 % sections longer than 6 months and that are not followd by
                 % a section with positive values are considered TNPD. 
                 if pres3(end)==0 || isnan(pres3(end))
-                    if sdn(end)-sdn(find(pres3>0 &  ~isnan(pres3),1,'last')) >= (365/2)
+                    if all(pres3==0) || sdn(end)-sdn(find(pres3>0 &  ~isnan(pres3),1,'last')) >= (365/2)
                         tnpd=1;
                     else
                         % Again, the PI may wish to reevaluate
-                        print('WARNING: TNPD float with a final zero-adjustment period <6mo in length');
+                        disp('WARNING: TNPD float with a final zero-adjustment period <6mo in length');
                         tnpd = 0;
                     end
                 else tnpd=0;
@@ -202,38 +235,7 @@ if yn(1)=='y'
         %surface values after the cycle
         presscorrect.tnpd(ok(end):end)=2+factor;
     end
-    
-    %---remove exceeding presure
-    if 0
-        for i=1:length(files)
-            files(i)
-            t(i)=read_nc([dire filesep files(i).name]);
-            coef(i)=rmsfit(t(i).longitude,t(i).latitude,datestr(t(i).dates,5),t(i).pres(t(i).temp_qc=='1'),t(i).temp(t(i).temp_qc=='1'),t(i).pres(t(i).psal_qc=='1'),t(i).psal(t(i).psal_qc=='1'),t(i).cycle_number);
-            deepest(i)=t(i).pres(end)-2000;
-            if length(unique(t(i).pres))~=length(t(i).pres)
-                warning(['dups in ' files(i).name]);
-                pause
-            end
-        end
-        [ncyc,i]=sort(cat(1,t.cycle_number));
-        deepest=deepest(i);coef=coef(i);
-        [tr,ok1,ok2]=intersect(presscorrect.cyc,ncyc);
-        a(1)=plot(tr,presscorrect.pres(ok1),'b.');
-        a(2)=plot(tr,deepest(ok2),'or');
-        a(3)=plot(tr,coef(ok2),'.g');
-        xlabel('Cycle');
-        ylabel('Pressure (db)');
-        legend(a,'DM Press correct. according to manual','Deepest pres-2000','Press correct. according to PSAL RMS adjustment',4);
-        display('OK?');
-        print('-dpng',[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep '3pres_' floatname '.png']);
-        presscorrect.rms=coef;
-        presscorrect.deepest=deepest;
-        pause
-        close
-    end
-    %------------
-    clear a
-    
+       
     close all
     hold on
     a(1)=plot(presscorrect.sdn(1:length(presscorrect.orig_pres))-presscorrect.sdn(1),presscorrect.orig_pres,'.r');
@@ -249,7 +251,7 @@ if yn(1)=='y'
     legend(a,'Surface pressure in tech file, raw','Despiked and filtered','Cubic fit on raw');
     xlabel('Time (days)');
     ylabel('Pressure (dbar)');
-    print('-dpng',[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep 'pres_' floatname '.png']);
+    print('-dpng',[lo_system_configuration.FLOAT_PLOTS_DIRECTORY 'pres_' floatname '.png']);
     rorb=input('Blue circles (c) or blue line (l) ?','s');
     close
     if lower(rorb)=='l'

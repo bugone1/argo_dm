@@ -96,7 +96,7 @@ if isfield(s,'temp')
                 jj2=jj2+1;
                 % Calculate the potential density
                 try
-                    [sal_abs,foo] = gsw_SA_from_SP(s.psal,s.pres,s.longitude,s.latitude);
+                    [sal_abs,~] = gsw_SA_from_SP(s.psal,s.pres,s.longitude,s.latitude);
                     temp_cons = gsw_CT_from_t(sal_abs,s.temp,s.pres);
                     dens_ct = gsw_rho_CT(sal_abs,temp_cons,mean(s.pres));
                     prof_data{ii_plot}(:,jj)=dens_ct'-1000.0;

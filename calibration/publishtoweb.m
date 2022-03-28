@@ -1,4 +1,4 @@
-function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
+function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id,ftp_url,ftp_path)
 % PUBLISHTOWEB Prepare plots summarizing the result of Argo DMQC,
 %   assemble plots and updated NetCDF files, upload to the MEDS FTP site
 % USAGE: 
@@ -15,6 +15,10 @@ function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
 %   pub - 0/1 flag defining whether or not to include the NetCDF output
 %       files
 %   user_id - FTP user ID
+% OPTIONAL INPUTS:
+%   ftp_url - URL of the FTP server. Default is the MEDS FTP site
+%   ftp_path - path on the FTP server to which files are to be uploaded.
+%       Default is /pub/argo/
 % VERSION HISTORY:
 %   03 Feb. 2017 (and before): Creation and updates, history not tracked
 %       here
@@ -29,12 +33,20 @@ function publishtoweb(local_config,lo_system_configuration,floatNum,pub,user_id)
 %   29 Aug. 2017, IG: Upload the KML file
 %   25 Jan. 2018, IG: Fixed a minor bug in plotting data where all samples
 %       have bad QC flags
+%   11 Jan. 2019, IG: Added ftp_url and ftp_path optional inputs
 
 % Close any existing plots so we can start with a clean slate
 close all
 
+% Default inputs
+if nargin<7, ftp_path = '/pub/Argo/'; 
+elseif ~strcmpi(ftp_path(end),'/'), ftp_path=[ftp_path '/']; 
+end
+if nargin<6, ftp_url='dfonk1awvwsp002.dfo-mpo.gc.ca'; end
+
 opathe=lo_system_configuration.FLOAT_PLOTS_DIRECTORY;
-pathe=[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep];
+%pathe=[lo_system_configuration.FLOAT_PLOTS_DIRECTORY '..' filesep];
+pathe='C:/Users/maz/Desktop/MEDS Project/argo_dm/data/float_plots/';
 uc='changed';
 flnm=[dir([local_config.OUT uc filesep 'D' floatNum '_*.nc']); dir([local_config.OUT uc filesep 'R' floatNum '_*.nc'])];
 clean([local_config.OUT uc],flnm, 0);
@@ -272,62 +284,36 @@ if pub
     zip(['zip' filesep floatNum],[local_config.OUT uc filesep '*' floatNum '_*.nc']);
 end
 
-% Upload the files to the MEDS FTP server
-% The following lines are being temporarily kept for reference, but as of
-% June 2017 they do not work (plain FTP and the alphapro user are no longer
-% supported).
-% f=ftp('ftp.meds-sdmm.dfo-mpo.gc.ca','alphapro','aiLahm4u');
-% binary(f);
-% cd(f,'/pub/Argo/DM/PICorner')
-% cd(pathe)
-% mput(f,['*' floatNum '*.png']);
-% ascii(f);
-% mput(f,['*' floatNum '*.htm']);
-% cd(opathe)
-% binary(f);
-% mput(f,['*' floatNum '*.png']);
-% cd(f,'/pub/Argo/DM');
-% binary(f);
-% if pub
-%     cd('../../../calibration')
-%     mput(f,[floatNum '.zip'])
-% end
-% close(f)
-%%% Another set of lines being kept (temporarily) for reference, copying the
-%%% files into a temporary directory
-% ftp_dir = [local_config.BASE '..' filesep 'ready_to_ftp' filesep floatNum filesep];
-% ftp_dir_pi = [ftp_dir 'PICorner/'];
-% mkdir(ftp_dir_pi);
-% cd(pathe)
-% copyfile(['*' floatNum '*.png'], ftp_dir_pi);
-% copyfile(['*' floatNum '*.htm'], ftp_dir_pi);
-% cd(opathe)
-% copyfile(['*' floatNum '*.png'], ftp_dir_pi);
-% if pub
-%     cd('../../../calibration')
-%     copyfile([floatNum '.zip'], ftp_dir);
-% end
-
 % Create the file containing the FTP commands that will be input to sftp
 % below. We create this intermediate file to avoid having to enter the
 % password multiple times, as sftp cannot accept a password from the
 % command line, and as of June 2017 it is not possible to copy a key over
 % to the FTP server
-fid=fopen(['sftp_' floatNum '.txt'],'w');
-fprintf(fid,'cd /pub/Argo/DM/PICorner\n');
-fprintf(fid,['put ' pathe '*' floatNum '*.png\n']);
-fprintf(fid,['put ' pathe '*' floatNum '*.htm\n']);
-fprintf(fid,['put ' opathe '*' floatNum '*.png\n']);
-fprintf(fid,['put ' local_config.BASE filesep 'kml' filesep floatNum '.kml\n']);
-fprintf(fid,'cd /pub/Argo/DM\n');
-if pub
-    fprintf(fid,['put ' opathe '..' filesep '..' filesep '..' filesep 'calibration' filesep 'zip' filesep floatNum '.zip\n']);
-end
-fprintf(fid,'bye');
-fclose(fid);
+% fid=fopen(['sftp_' floatNum '.txt'],'w');
+% fprintf(fid,['cd ' ftp_path 'DM/PICorner\n']);
+% fprintf(fid,['put ' pathe '*' floatNum '*.png\n']);
+% fprintf(fid,['put ' pathe '*' floatNum '*.htm\n']);
+% fprintf(fid,['put ' opathe '*' floatNum '*.png\n']);
+% fprintf(fid,['put ' local_config.BASE 'kml' filesep floatNum '.kml\n']);
+% fprintf(fid,['cd ' ftp_path 'DM\n']);
+% if pub
+%     fprintf(fid,['put ' local_config.BASE filesep 'zip' filesep floatNum '.zip\n']);
+% end
+% fprintf(fid,'bye');
+% fclose(fid);
     
 % Actually upload
-system(['sftp ' user_id '@ftp.meds-sdmm.dfo-mpo.gc.ca < sftp_' floatNum '.txt']);
+% system(['sftp ' user_id '@' ftp_url ' < sftp_' floatNum '.txt']);
+user_id='maz';
+pw_id='Maz2407*';
+% fhandle=ftp(ftp_url,user_id,pw_id);
+% cd(fhandle,[ftp_path 'DM/']);
+% mput(fhandle,[local_config.BASE filesep 'zip' filesep floatNum '.zip']);
+% cd(fhandle,'picorner');
+% mput(fhandle,[pathe '*' floatNum '*.png']);
+% mput(fhandle,[pathe '*' floatNum '*.htm']);
+% mput(fhandle,[opathe '*' floatNum '*.png']);
+% mput(fhandle,[local_config.BASE 'kml' filesep floatNum '.kml']);
 
 % Delete the temporary file (temporarily commented out, for troubleshooting
 % purposes)

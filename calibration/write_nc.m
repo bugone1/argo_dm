@@ -226,4 +226,5 @@ for i=1:length(vars)
     end
     netcdf.putVar(f,netcdf.inqVarID(f,'DATE_UPDATE'),datestr(now, 'yyyymmddHHMMSS'));
 end
+
 netcdf.close(f);

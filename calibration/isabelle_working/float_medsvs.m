@@ -14,6 +14,8 @@ function float_medsvs(float_num,medsvs_file,cycle_num, title_string, show_bad_po
 %       title_string - Title for the plots
 %       show_bad_points - Set to 1 to show points that failed QC (default is to
 %           hide these)
+%       float_from_mat - Set to 1 to load from the MAT file rather than the
+%           NetCDF files
 %   VERSION HISTORY:
 %       Created 11 Sep. 2017, Isabelle Gaboury
 %       IG, 10 Oct. 2017 - Improved handling of data directory and mixes of
@@ -21,6 +23,8 @@ function float_medsvs(float_num,medsvs_file,cycle_num, title_string, show_bad_po
 %       IG, 21 Dec. 2017 - Added show_bad_points flag
 %       IG, 12 Jul. 2018 - Added option to calculate pressure from depth, 
 %           fixed bug with loading of temp_doxy
+
+if nargin<6, float_from_mat=0; end
 
 % Setup
 addpath('/u01/rapps/argo_dm/calibration');
@@ -32,7 +36,8 @@ if nargin<5, show_bad_points=0; end
 ITS90toIPTS68=1.00024;
 
 % Figure out the data directory
-data_dir = ['/u01/rapps/argo_dm/calibration/data/' float_num(1:4) '000/'];
+%data_dir = ['/u01/rapps/argo_dm/calibration/data/' float_num(1:4) '000/'];
+data_dir = ['/u01/rapps/argo_dm/calibration/data/' float_num filesep];
 data_dir_mat = '/u01/rapps/argo_dm/data/temppresraw/';
 
 % Load the profile data, get the profile index

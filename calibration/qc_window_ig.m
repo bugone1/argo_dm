@@ -37,11 +37,11 @@ function [prof_data_qc,but]=qc_window_ig(prof_data,S,prof_data_qc,plot_labels,ti
 
 
 % Configuration
-ui_position = [0.8 0 0.19 1];
+ui_position = [0.8 0.5 0.19 0.5];
 x0_gui=0.01;
 y0_gui=1.0;
 but_width =0.5;
-but_height=0.03;
+but_height=0.03*2;
 stretch_factor=[1.1,1.1]; % Matlab leaves a lot of space around subplots, so we tighten them up a bit
 
 % Starting values
@@ -53,9 +53,13 @@ gui_fig = gcf;
 if isempty(findobj('parent',gui_fig,'type','uipanel'))
     clf;
     h_axes = zeros(1,n_plots);
+    g_axes=zeros(1);
 else
     h_axes = getappdata(gui_fig,'h_axes');
     for ii_ax=1:length(h_axes), cla(h_axes(ii_ax)); end
+    g_axes = getappdata(gui_fig,'g_axes');
+    geobasemap(g_axes,'none');
+    cla(g_axes);
 end
 
 n_doxy=0;
@@ -101,19 +105,47 @@ end
 setappdata(gui_fig,'h_axes',h_axes);
 % Start with axes linked
 linkaxes(h_axes(1:end-1),'y');
-
+%% zhimin ma add geeographic plot 
+if isempty(findobj('parent',gui_fig,'type','uipanel','tag','ax_panel_geo'))
+    h_geo_plots = uipanel('tag','ax_panel_geo','position',[0.8,0.0,0.19,0.5]);
+else
+    h_geo_plots = findobj('parent',gui_fig,'type','uipanel','tag','ax_panel_geo');
+end
+baseURL = "https://basemap.nationalmap.gov/ArcGIS/rest/services";
+usgsURL = baseURL + "/BASEMAP/MapServer/tile/${z}/${y}/${x}";
+basemaps = "USGSImageryTopo";
+displayNames ="USGS Topographic Imagery";
+maxZoomLevel = 16;
+attribution = 'Credit: U.S. Geological Survey';
+name = lower(basemaps);
+url = replace(usgsURL,"BASEMAP",basemaps);
+addCustomBasemap(name,url,'Attribution',attribution, ...
+         'DisplayName',displayNames,'MaxZoomLevel',maxZoomLevel)
+     
+g_axes=geoaxes(h_geo_plots);
+if(title_string(1)~=99999)
+geoplot(g_axes,title_string(2),title_string(1),'or','LineWidth',3);
+geobasemap(g_axes,basemaps)
+title(g_axes,displayNames)
+else
+% geobasemap(g_axes,basemaps)
+% title(g_axes,displayNames)  
+end
+setappdata(gui_fig,'g_axes',g_axes);
+%  setappdata(gui_fig,'h_geo_plots',h_geo_plots);
+%%
 % Add the GUI elements
 if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     h_ui = uipanel('tag','gui_panel','Position',ui_position);
-    y_cur=y0_gui-0.04;
+    y_cur=y0_gui-0.04*2;
     % Select individual points
     uicontrol('parent',h_ui,'style','pushbutton','string','Flag points (q to stop)', ...
         'units','normalized', 'position', [x0_gui,y_cur,but_width,but_height], 'callback', @flag_points);
-    y_cur=y_cur-0.04;
+    y_cur=y_cur-0.04*2;
     % Select polygon
     uicontrol('parent',h_ui,'style','pushbutton','string','Flag points by polygon', ...
         'units','normalized', 'position', [x0_gui,y_cur,but_width,but_height], 'callback', @flag_points_poly);
-    y_cur=y_cur-0.05;
+    y_cur=y_cur-0.05*2;
     % Toggle flags for the entire profile
     tog_flag_bg = uibuttongroup('parent',h_ui,'tag','tog_flag_bg', ...
         'position',[x0_gui,y_cur,but_width,but_height+0.01], ...
@@ -134,7 +166,7 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     % swap_but = uicontrol('Parent',gui_fig,'Style','pushbutton', 'String', 'Invert 1 to 4 and 4 to 1', ...
     %     'Units', 'normalized', 'Position', [x0_gui,y_cur,0.1,0.03], ...
     %     'callback', @swap_flags_1_and_4);
-    y_cur=y_cur-0.05;
+    y_cur=y_cur-0.05*2;
     % Select axes to select on
     tog_ax_bg = uibuttongroup('parent',h_ui,'tag','tog_ax_bg','position',[x0_gui,y_cur,but_width,but_height+0.01], ...
         'title', 'Axes to flag', 'SelectionChangeFcn', @toggle_select_axes);
@@ -142,7 +174,7 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     uicontrol(tog_ax_bg,'style','radiobutton','tag','tog_ax_bg_y','string','y','units','normalized','position',[0.5,0,0.5,1])
     % Option to link the axes. This is useful when looking at variables
     % together, but slows down drawing considerably.
-    y_cur=y_cur-0.04;
+    y_cur=y_cur-0.04*2;
     uicontrol(h_ui,'style','checkbox','tag','link_axes_checkbox','string','Link axis y-extents',...
         'units','normalized','position',[x0_gui,y_cur,but_width,but_height],...
         'callback',@toggle_link_axes);
@@ -166,12 +198,12 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     uicontrol(skip_bg,'style','pushbutton','tag','skip_to_cycle_button','String','Go',...
         'units','normalized','position',[0.6,0,0.3,0.28],'callback', @update_but_and_resume);
     % Escape to the keyboard
-    y_cur=y_cur-0.04;
+    y_cur=y_cur-0.04*2;
     uicontrol('parent',h_ui,'tag','keyboard_button','string','Escape to keyboard',...
         'units','normalized','position',[x0_gui,y_cur,but_width,but_height],...
         'callback','keyboard');
     % Quit visual QC, either saving progress or not
-    y_cur=y_cur-0.04;
+    y_cur=y_cur-0.04*2;
     uicontrol('parent',h_ui,'tag','quit_button','string','Quit visual QC', ...
         'units','normalized', 'position',[x0_gui,y_cur,but_width,but_height], ...
         'callback', @update_but_and_resume);
@@ -179,6 +211,7 @@ if isempty(findobj('parent',gui_fig,'type','uipanel','tag','gui_panel'))
     set(gui_fig,'KeyPressFcn', @qc_window_keypress);
     % Restore the figure toolbar
     set(gui_fig,'toolbar','figure');
+    
 else
     % For now we always start by showing the x-flags, selecting one plot at
     % a time
@@ -254,13 +287,15 @@ end
 
 % Flag points by polygon
 % TODO: I would like to make this a bit clearer
+%so mouth select three points and key board to select the number of qc. 
 function flag_points_poly(hObject, event, handles)
     indxy = getappdata(gcf,'indxy');
     prof_data_qc = getappdata(gcf,'prof_data_qc');
     [xy1,xy2,fla]=ginput(4);
     xy=[xy1 xy2];
-    fla=fla(end);
-    if fla > 1, fla = fla+1; end
+    fla=fla(end); %
+    %zhimin ma comment, not sure why need to add one.
+%     if fla > 1, fla = fla+1; end 
     if fla>=0 && fla<5, fla=char(fla+'0'); end
     ii_plot_fn = find(getappdata(gcf,'h_axes')==gca);
     if strncmp(get(get(gca,'xlabel'),'string'),'dens',4), warning('Cannot select points from the density plot'); 
@@ -317,24 +352,6 @@ function flag_whole_profile(hObject, event, handles)
     % Reset control for later reuse
     set(findobj('tag','tog_flag_bg'),'selectedobject','');
 end
-
-%     % Switch between QC flags 1 and 4
-%     % I've never needed this, but am leaving it here just in case
-%     function swap_flags_1_and_4(hObject, event, handles)
-%         ii_plot_fn = find(h_axes==gca);
-%         if isempty(ii_plot_fn), warning('Please select a plot first'); 
-%         elseif strcmp(plot_labels{ii_plot_fn}(1,1:4),'dens')
-%             warning('Cannot select points from the density plot'); 
-%         else
-%             ok1=prof_data_qc{ii_plot_fn}(:,indxy)=='4';
-%             ok2=prof_data_qc{ii_plot_fn}(:,indxy)=='1';
-%             prof_data_qc{ii_plot_fn}(ok1,indxy)='1';
-%             prof_data_qc{ii_plot_fn}(ok2,indxy)='4';
-%             update_related_profiles(ii_plot_fn);
-%             update_qc_flag_curves;
-%         end
-%     end
-
 % Toggle axes for selection
 function toggle_select_axes(hObject, event, handles)
     new_ax = get(event.NewValue,'string');
