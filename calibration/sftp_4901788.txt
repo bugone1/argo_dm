@@ -1,0 +1,7 @@
+cd /pub/argo/DM/PICorner
+put C:/Users/maz/Desktop/MEDS Project/argo_dm/data/float_plots/*4901788*.png
+put C:/Users/maz/Desktop/MEDS Project/argo_dm/data/float_plots/*4901788*.htm
+put C:/Users/maz/Desktop/MEDS Project/argo_dm/data/float_plots/ow/*4901788*.png
+put C:/Users/maz/Desktop/MEDS Project/argo_dm/calibration/kml901788.kml
+cd /pub/argo/DM
+put C:/Users/maz/Desktop/MEDS Project/argo_dm/calibration/bye

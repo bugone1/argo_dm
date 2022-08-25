@@ -1,0 +1,21 @@
+ARGO FLOATS DMQC - GLAZEO 2017 :  
+ FLOAT #WMO :  4901748 
+ FORMAT_VERSION :  3.1  
+ ******************************* 
+ MISSING META-DATA  
+ ******************************* 
+ ANOMALY                              
+CONTROLLER_BOARD_TYPE_SECONDARY      
+CONTROLLER_BOARD_SERIAL_NO_SECONDARY 
+SPECIAL_FEATURES                     
+CUSTOMISATION                        
+STARTUP_DATE                         
+STARTUP_DATE_QC                      
+DEPLOYMENT_CRUISE_ID                 
+DEPLOYMENT_REFERENCE_STATION_ID      
+END_MISSION_DATE                     
+END_MISSION_STATUS                   
+******************************* 
+ META-DATA at 99999 :  
+ ******************************* 
+ 

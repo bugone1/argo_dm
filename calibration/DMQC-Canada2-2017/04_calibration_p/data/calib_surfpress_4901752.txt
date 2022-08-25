@@ -1,0 +1,13 @@
+4901752 - NOVA                             - SBE - DRUCK -  865 - 20130514 - 124 
+SPO name in tech file :  PRES_SurfaceOffsetNotTruncated_dbar                                                                                              
+****** AutoCorrection by DAC or onboard ???? ***************   
+autocorrection - no (0), yes by DACs(1) or yes on-board by float(2) :    1 
+*********************   
+Spike in SP serie - yes(1) or no (0) :     0 
+reset to zero - yes(1) or no (0) :     1 
+adjustment de 5 dbar - oui(1) ou non (0) :     0 
+valeurs de psurf cumulees (1) ou relatives (0)    0 
+resolution de transmission - dbar(1) ou cbar(2) :    1 
+detection de fuite capteur Druck possible - oui(1) ou non (0) :    0 
+SP series :  -0.50   0.00 [-0.5 ; 0] 
+Calculated Cumulated SP : -21.70  -0.40 [-21.7 ; -0.4] 

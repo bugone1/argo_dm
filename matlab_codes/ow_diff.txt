@@ -1,0 +1,101 @@
+Only in ow_v2_x/: argo_calibration.m
+diff -r -w ow_v2_x/find_besthist.m matlabow-2.0.1/matlab_codes/find_besthist.m
+15,17c15
+< %
+< % Isabelle Gaboury, August 31 2018 (local version only): Added code to set
+< % the random number generator seed for older versions of Matlab
+---
+> 
+51d48
+<     if exist('rng')>=2
+53,58d49
+<     else
+<         % Addition by ILG, 31 Aug. 2018, to work with older versions of
+<         % matlab
+<         s=RandStream.create('mt19937ar','seed',length(index_ellipse)); 
+<         RandStream.setDefaultStream(s);
+<     end
+diff -r -w ow_v2_x/fit_cond.m matlabow-2.0.1/matlab_codes/fit_cond.m
+76,80d75
+< %
+< % Isabelle Gaboury, 31 Aug. 2018: Fixed a minor bug causing an error with an 
+< % empty breaks vecotr 
+< %
+< % Isabelle Gaboury, 2 Oct. 2018: Experimenting with a lower cutoff for NDF
+276c271
+< if NDF < 1 %13 IG testing
+---
+> if NDF < 13
+526,528c521
+< if isempty(breaks), break_pts=[];   % Line added by IG, 31 Aug. 2018
+< else break_pts = breaks*xscale+x0;
+< end
+---
+> break_pts = breaks*xscale+x0;
+Only in ow_v2_x/: ow_calibration.m
+diff -r -w ow_v2_x/plot_diagnostics_ow.m matlabow-2.0.1/matlab_codes/plot_diagnostics_ow.m
+7,9d6
+< % Isabelle Gaboury, 31 Aug. 2018: Minor bug fix on an axis limit adjustment
+< %   for compatibility with older versions of Matlab; changed all plots from
+< %   epsc to png
+152,153c149
+< %print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
+210,211c206,207
+< %print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.eps'));
+> 
+261,263c257
+< % IG, 31 Aug. 2018: Added the double to avoid conversion of other elements
+< % in the vector to integers
+< axis([ 0, double(max(PROFILE_NO))+1, min([pcond_factor-pcond_factor_err,1])-.0004, max([pcond_factor+pcond_factor_err,1])+.0004 ])
+---
+> axis([ 0, max(PROFILE_NO)+1, min([pcond_factor-pcond_factor_err,1])-.0004, max([pcond_factor+pcond_factor_err,1])+.0004 ])
+280,282c274
+< % IG, 31 Aug. 2018: As above, converting PROFILE_NO to double to avoid
+< % conversion of other vector elements to int
+< axis([ 0, double(max(PROFILE_NO))+1, min([avg_Soffset-avg_Soffset_err,0])-.02, max([avg_Soffset+avg_Soffset_err,0])+.02 ])
+---
+> axis([ 0, max(PROFILE_NO)+1, min([avg_Soffset-avg_Soffset_err,0])-.02, max([avg_Soffset+avg_Soffset_err,0])+.02 ])
+291,292c283
+< %print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.eps'));
+349,350c340,341
+< % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.eps'));
+> 
+377,378c368
+< % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.eps'));
+569,571c559
+<     % IG, 31 Aug. 2018: Converting PROFILE_NO to double to avoid converting
+<     % the vector to int
+<     axis([0, double(max(PROFILE_NO))+1, SMIN-.05, SMAX+.05 ])
+---
+>     axis([0, max(PROFILE_NO)+1, SMIN-.05, SMAX+.05 ])
+583,584c571
+< % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6.eps'));
+612,613c599
+< % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.eps'));
+674,675c660,661
+< % print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8.eps'));
+< print('-dpng ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8.png'));
+---
+> print('-depsc ', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8.eps'));
+> 

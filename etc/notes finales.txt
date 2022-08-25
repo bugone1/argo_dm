@@ -1,0 +1,487 @@
+2900455 : correction always higher than 1.01; suggests that there was an offset to begin with. There was a drift towards fresher values afterwards, to which I applied a piecewise linear fit.
+
+2900456 : very small correction, do not correct
+
+4900124 : 2 degC level decreases in salinity since profile 65 while mapped salinity is supposed to increase. Even if mapped salinity didn't increase, float salinity would still be too fresh. 
+There is a drift towards fresher since profile 65. The drift seems to be on all depth. Ron's previous adjustements seemed not piecewise; redo all of it.
+The trend was offset so that profiles don't get "too corrected", in order to agree with profiles from 1 to 22 which seem fine (no offset nor trend).
+
+4900490 : too small. Ron did not correct for [1 50] and the sensor is still below that.
+
+4900491 : Offset towards more saline. Found one problematic position; do not adjust considering the local climatology of that one.
+Uncal conductivity at 2ºC is well within climatology during the first 100 cycles, although on the saline side. After 100 cycles the it starts to increase and be slightly more saline. Still too early too say if it is a trend developing.
+Do not correct. The 2.4ºC level behaves similarly.
+
+4900492 : very small suggested correction; again, towards more saline. There is however a jump in conductivity between cycles ~93 and ~94 , at 2.2ºC, which is not represented by cliamtology.
+At 3.2ºC, which is supposed to reflect water masses and/or eddies, there are a few jumps like that. It would be out of place to apply punctual corrections.
+No correction.
+
+4900493 : profile started more saline than normal, now evolves towards fresher. Suggested correction factor remains relatively low (3/1000).
+Looking at uncal float at 2ºC, it seems there is a negative drift in conductivity though the climatology is stable. The trend applies to all levels and starts to reach 0.01 psu. 
+So we can start correcting now, and to be consequent, extend the trend to all cycles.
+
+4900494 : Atlantic 
+seems to be at least an offset towards fresher (~0.015). Is the variation between ~90 and ~145 real or not ? Uncal values at 3.2ºC seem to show that there was indeed a rise in measured salinity during  between cycles, but the climatology seem to show that the uncal values are within climatology.
+Almost no valued below 3.2ºC.
+3.4ºC level shows that the few jumps in salinity are consistent with region, except for the 90-150 cycles, where the float went in a more saline region. 
+My diagnostic is that the salinity is good and stable and the unstable North Atlantic conditions which are reflected in climatology are responsible for the apparent variation.
+Should correct for offset but do not correct specifically the 90-145 portion.
+
+4900495 : Atlantic 
+salinity at 3.6ºC seems stable, but the reference climatology seems to increase, which is what that drives the correction factor. 
+The float probably drifted in a "historically" high salinity region which isn't quite so.
+No correction. though there could be an offset towards fresher, it would be a weak one.
+
+4900496 : GOA
+Salinity (7ºC) has always been on the low side but it got a lot worse at the last cycles (>66). However, uncal salinity at 2ºC has been quite stable. Diagnostics have been calculated with "high" values of theta.
+Apply no correction.
+
+4900499 : GOA
+offset towards more saline.. is it plausible ? 2ºC level seems to show slightly more saline than reference in the beginning, but not as of late cycles. Uncal salinty appears stable, it is the climatology which changes.
+Do not correct
+
+4900500 : Atlantic
+Offset towards fresher ~.01 psu, uncal salinity at 3.4ºC is often below climatology but sometimes right in the middle. It is otherwise stable except for some sudden jumps which are usually well represented by climatology. NO significant trend.
+Do not correct
+
+4900501 : Atlantic
+Too saline according to graph 4. HOwever, 4.5ºC level shows good salinity in the first 55 profiles; where the software suggests ~1.0004 correction. Jump at 65 seems to be caused by lack of profile data in the deep levels. 
+Highest correction factor suggested by graph4 is at cycle 90 but salinity at 4.5ºC shows good agreement at that cycle, though on the low salinity side; 4º is slightly below.
+I will correct segment from 63 to end but with an offset of ~1.002 to be continuos with previous, uncorrected segments.
+
+4900502 : Atlantic
+Graph 4 suggests a positive correction of ~0.01 psu. The 3.4ºC level shows a stable salinity, no drift. Only climatology changes and still shows good agreement despite being on the low side.
+-->Correct by constant 0.01 psu, it will at least bring back one of the salinity values at 3.4ºC in the "middle" of the several mapped salinity ranges.
+
+4900503 : Atlantic
+very low correction suggested, but systematic (positive). Uncal salinity at 3.4ºC appears stable and is sometimes "right on".
+No correction.
+
+4900504 : Atlantic.
+~.01 positive correction suggested with possible trend developing
+Salinity at 3.8º seems to show however good salinity with a chnage in the region characteristics well represented in climatologyat profile ~90.
+But salinity is almost always on the low side.. could use a push. 
+verdict : apply a constant correction of ~0.01 psu 
+
+4900505 : Atlantic
+graph 04 shows that the float began its life with fresher than normal salinity but that it resolved gradually to finally be ok at profile 40. This is sort of confirmed by looking at 3.2ºC salinity alone.
+Difficult to say since uncal salinity values are unstable at 3.8ºC. Only a few points are available at 3.2 and they seem to suggest slightly too fresh salinities between prof 15 to 40. This could be the end of the gradual resolve.
+Correct cycles from 1 to 35 but with an offset of 0.01 psu to make them agree with the following ones.
+
+4900506 : Atlantic / Gulf Stream
+salinity at 3.8ºC is very stable and is most times within climatology than not ; when it is not, it is because climatological values increase due to change of climatological regime.
+salinity at 3.2ºC is scarce but shows fresher than normal salinty after profile 30. Correction to apply would be small.
+Do not adjust.
+
+4900507 : Atlantic / GUlf STream
+Small correction suggested [0.015 0.005] psu
+However, sal at 3.6ºC agrees quite well towards the end (cycle 100) and even before. It seems we could apply a correction for the very first profiles, with an offset of 0.005 psu
+Correction is effected even though small, because it seems to reflect something real : some biocide which leaked when float was deployed and washed away.
+
+4900508 : GOA
+graph 4 suggests float started more saline that, and is becoming fresher than. However salinity at 2ºC is stable. The trend is one of climatological values as the float drifts through different water masses at other levels.
+Do not correct, but investigate cycle ~45 later, in real-time to see why it is so different at 2ºC
+No correction
+
+4900509 : GOA
+graph 4 suggests a small but sudden jump at profile ~50. 
+There is a salinity value to RTQC at profile ~25, at ~2.6ºC
+T=2ºC shows very slow drift in salinity but is rather stable. Perhaps 0.01 psu over 110 cycles.
+Do not correct.. trend is very slow.. need more cycles to decide.
+
+4900512 : South Pacific (Chile)
+graph4 suggests very small correcion factors | |<0.01
+sal at 2.4ºC is stable 
+do not correct
+
+4900513 : South Pacific (Chile)
+graph4 shows that float seems to start with offset ~0.075 and starts drifting towards fresher value at profile ~90. This is confirmed by 2.2ºC level which shows continuously decreasing salinity.
+[34.624 34.612] in ~120 cycles
+verdict : apply +.01 slope (psu/cycle) through all profiles ([1 to 1.003 in 120 profiles])
+
+4900514 : GOA
+graph4 suggests small correction factors (<.01)
+sal at 2ºC seems to indicate slow negative drift; similar to 4900513. 
+Drift would be ~([34.54-34.55])/(118-1)
+Apply correction as linear fit that reaches ~.01 at 118
+
+4900515 : GOA
+graph4 suggests small correction factors (<.01)
+sal at 2ºC seems to indicate slow negative drift; similar to 4900514. 
+Drift would be ~([34.54-34.56])/(118-1)
+Apply correction as linear fit from [1 1.003] from [1 118]
+
+4900516 : GOA / Pacific
+graph4 suggests very small offset towards more saline
+salinity at 2ºC is stable. 
+do not correct
+
+4900519 : GOA 
+Float has been drifting from central GOA towards the BC coast. 
+Uncal salinity at 2ºC started decreasing on cycle ~100 while climatology suggests it should have increased; and increasing at 3ºC but not "enough" as climatology wants.
+There is a gap of deep profiles between ~65 and ~95, so impossible to know what to do there.
+Apply a trend starting at 95 and reaching +.01 psu at 141.
+
+4900520 : Pacific
+Unstable salinity on all levels including 2ºC; but no apparent trend.
+Do not correct
+
+4900521 : GOA/PACIFIC
+File has been drifting relatively little. Sal at 2ºC level seems to show two negative trends which are separated by a sudden jump in salinity at profile ~50.
+this looks like progressive fouling which suddenly washes off and starts again.
+other levels don't show that "jump", they rather show a progressive negative trend.
+Climatology doesn't suggests that the salinity is decreasing along path.
+Correct with trend based in 2ºC level[34.552 34.536]/[1 120]
+[1 1.003]/[1 113]
+
+
+4900522 : GOA
+fig4 suggests rather small and constant correction factor.
+examination of sal at 2ºC level reveals stable salinity.
+No correction.
+
+4900531 : North atlantic
+fig4 suggests small corrections.
+Deep levels such as 2ºC seem to show a slow positive trend but it seems to be caused by drifting in higher salinity regions according to climatology.
+Do not correct. Keep an eye on.
+
+4900537 : North Atlantic
+fig4 suggests important trend reaching .025 psu
+examination of 3.2ºC level shows that "trend" could be caused by the float's drift in more saline waters. 
+Do not correct
+
+4900538 : North Atlantic
+Not enough good profiles to do anything. Shoudl convert all adjusted flags to 3
+
+4900539 : Atlantic / Gulf Stream/SLope
+Fig4 suggests negative correction
+however sal at 3.8ºC shows very good agreement with climatology in the beginning and in the end.
+do not correct
+
+4900628: North Atlantic
+fig4 suggests important correction to begin with, but negative (-.01); then less correction as cycles increase.
+Sal at 3.2ºC shows good agreement in the beginning and looks rather stable
+sal at 3.6ºC is on the high side of climatology for some time, but always within bounds
+Do not correct
+
+4900629 : GOA
+fig4 suggests a negative correction (-.01) to begin with.
+Sal at 2ºC does show higher than climatology salinity which drifts back into normal values by profile ~25.
+this would be a [34.35 34.54]/[1 120] slope, a 0.02 psu difference.
+There are no physical instrmental reasons to explain a "more saline" bias.
+Salinit appears well within norm and stable from 1 to ~50.
+COrrect for negative trend; .01 in ~120
+
+4900630 : GOA
+Salinity at 2ºC appears to show a slow negative trend : .01 in ~90 cycles [30 120]
+do correct
+
+4900631 : PACIFIC
+Salinity at 2ºC is stable, only climatology changes
+No correction
+
+4900632 : Pacific
+Fig4 suggests negative offset followed by negative correction
+Salinity at 2ºC suggests good initial salinity but positive drift (towards more saline); beginning at profile ~63.
+Correct from ~60 to ~120; .01 , negatively
+
+4900633 : GOA / Pacific
+Weird feature reflected in 2ºC Level between floats 10 and 30; after which salinity appears even more offset from salinity towards high values.
+HOwever, it could be a pressure problem, due to piston position.
+Don't even DMQC
+
+4900634 : GOA 
+a salinity trend starts to manifest at 2ºC : .02 psu between 60 and ~113
+do correct
+
+4900635 : NOrth Atlantic
+Salinity is stable at many levels.
+Do not correct
+
+4900636 : GOA
+Salinity is stable but on the low-end of mapped values at 2ºC, sometimes below; but a correction of 0.01 psu would be too much,
+do not correct
+
+4900637 : GOA
+No new data since ~90.. not normal
+do not DMQC
+
+4900676 : North Atlantic
+Within climatology
+do not correct
+
+4900677 : North Atlantic
+All deep levels show very stable salinity
+Do not correct
+
+4900678: NOrth Atlantic
+Salinity at 3.2ºC is stable and there is a lot of variability in the region..
+do not correct
+
+4900679: NOrth Atlantic
+Salinity at 3.2ºC is stable and there is a lot of variability in the region..
+do not correct
+
+4900680 : North Atlantic
+Salinity at 3.2ºC is within climatology and relatively stable
+do not correct
+
+4900681 : North Atlantic
+Salinity at 3.2ºC is within climatology and relatively stable
+do not correct
+
+4900682 : North Atlantic
+SOftware suggests weak negative correction
+Sal at 3.2ºC appears fine.
+No correction
+
+4900683 : North Atlantic
+graph4 seems to show drift
+sort of confirmed by 3.4ºC anomaly
+3.2ºC level agrees but at the same time, climatology salinity increases along
+there are missing data; wait for more data
+no correction
+
+4900733 : Pacific
+graph4 shows very small corrections
+salinity at 3.2ºC appears on the low end of salinity, but is otherwise stable and in many places "right on" climatology
+no correction
+
+4900734 : Pacific
+graph4 suggests very small corrections
+2ºC seems to show a small salinity since increase profile ~68 ; do not correct now. wait
+
+4900735 : GOA
+salinity at 1.8ºC appears stable and always within climatology
+
+4900736 : GOA
+fig4 suggests negative offset + trend
+salinity is over the high end side of climatology
+apply -.01; old correction factor suggested by Ron
+
+4900737 : GOA
+Salinity on 2ºC level and 3.2ºC too high; apply -.01 correction
+
+4900738 : GOA
+graph4 suggests strong positive salinity offset
+salinity on 2ºC level is ~.02psu too high at the beginning and ~0.005 psu too high at the end
+do correct
+
+4900739 : GOA
+Graph 4 suggests ~-.01 psu correction
+salinity at 2ºC level appears stable and above/beyond climatology.
+do not correct
+
+4900740 : GOA / Alaska
+Graph 4 suggests ~-.015 psu correction!
+Salinity at 2ºC seems to show a drift towards negative; though it's been "higher" than climatology in the beginning, the values were ~34.55, which is not uncommon.
+It seems that when the float was in the Alaskan Stream, its salinity was higher than normal. This could be because the Alaskan stream is not well represented in climatology.
+Since the float is in Pacific (profile ~55) it's agreement with climatology is better.
+But there seems to be a trend on top of it all. 
+Apply [34.552 34.542]/[40 93]
+
+4900741 : GOA
+Graph 4 suggests ~-.015 psu correction!
+Salinity at 2ºC is constant but on the high side (34.59 !)
+Apply offset -.01 psu
+
+4900742: GOA
+Graph 4 suggests negative correction..
+salinity at 3.4ºC shows slow negative drift but remains always higher than climatology.
+salinity at 2ºC shows less obvious negative drift and is sometimes within climatology.
+correct for offset AND trend ?
+How come there is more variability in salinity at 2ºC than at 3.4ºC ?
+Correct for offset : .997
+
+4900866: GOA
+Sal at 2ºC seems to show negatuve drift.. ~.02 psu in 76 cycles
+Fig4 suggests negative correction, but salinity is 34.56
+Correct for drift, not for "offset"
+
+4900867
+Fig4 suggests negative correction with drift, but salinity at 2ºC is stable and within climatology
+no correction
+
+4900868
+fig4 suggests drift
+salinity at 1.8ºC seems to indicate drift as well; but float has been drifting rather linearly in Alaskan Stream, changing water masses
+since all levels below 3ºC (1.8, 2, 2.2, 2.4, 2.6, 2.8) show a drift on ANOMALIES, I recommend to correct the salinity.
+the drift has been .01 in 71 profiles
+
+4900869 GOA
+fig4 suggests small offsets
+no clear salinity offset at 1.8ºC
+could be a trend, but too soon to tell
+do not correct
+
+4900870 GOA
+very small correction accoridng to fig4
+salinity at 2.4ºC is sometimes above, sometimes below climatlogy
+do not correct
+
+4900871 GOA
+very small correction accoridng to fig4
+some levels seem to show salinity drifts, but very weak. Salinity at 1.8ºC is always within climatology if not always constant.
+do not correct for now, but keep an eye
+
+4900872 GOA
+very small correction accoridng to fig4
+Salinity at 1.8ºC is always within climatology if not always constant.
+do not correct 
+
+4900873 GOA
+significant correction suggested by fig4 at the very end
+salinity at 2ºC appears stable and within climatology
+do not correct
+
+4900874 GOA
+salinity at 2ºC appears stable and within climatology
+do not correct
+
+4900875 North Atlantic
+sal at 3ºC stable
+do not correct; composite factor (fig4) seems to suggest there is a drift towards fresher	.. wait for more profiles
+
+4900876 North Atlantic
+suggested offset too small.. (.005 psu)
+no correction
+
+4900877 North Atlantic
+Small correction suggested by fig4.
+do not adjust
+
+4900878 atlantic
+important suggested postive correction by fig 4, offset
+correct with +.013 psu (1.0035)
+
+4900879 atlantic
+sal at 3ºC and 3.2ºC seem stable and to agree with climatology
+do not correct
+
+4900881 Atlantic
+salinity appears offset (too fresh) at several levels 3.2, 3.4, 3.6
+correct by *(1.0005)
+
+4900882 Atlantic
+fig4 suggests positive offset and trend
+Analysis of 3.4ºC level could reveal a small offset (<.01) but no trend so far.
+don't correct but keep an eye on
+
+4900883 Atlantic
+fig4 suggests .01 offset + maybe trend
+3.8ºC and 3.4ºC also suggest offset
+correct with offset +.01psu
+
+4901064 GOA
+small correction, very few profiles.
+wait
+
+4901065 GOA
+good agreement
+
+4901066 Pacific
+Uncal sal a 2.2ºC is more saline than climatology at most, but not all, cycles
+If offset persists, correct
+but for now, don't.
+
+4901067 Pacific
+Good agreement for most cycles at 2.8ºC
+do not adjust
+
+4901069 GOA
+Good agreement for most cycles at 2ºC
+do not adjust
+
+4901070 pacific
+sal at 1.8ºC is slightly more saline than climatology
+do not adjust but keep an eye
+
+4901071 pacific
+sal at 2.2ºC is slightly more saline than climatology
+do not adjust but keep an eye
+
+4901072
+no correction needed
+
+4901073 goa
+no correction needed
+
+4901074 pacific
+sal at 1.8ºC shows good agreement
+do not correct
+
+4901075 atlantic
+salinity at 3.9ºC stable and within climatology for the most part
+do not adjust
+
+4901076 atlantic
+stable and good agreement at 3.6
+
+4901079 atlantic
+ no correction
+ 
+4901080 atlantic
+some profiles appear to have too fresh salinity at ~3.2ºC past cycle 15. Before cycle 15 the agreemtn is good
+Wait for more cycles
+no correction
+
+4901081 atlantic
+~.01 offset on 3.6ºC level; correct
+
+4901082 atlantic
+slight offset but within climatology error bars
+do not adjust
+
+4901083 atlantic
+slight offset but within climatology error bars
+do not adjust
+
+4901084 atlantic
+uncal sal is within error bars most times at 3.6ºC
+do not correct
+
+4901090 atlantic
+one cycle
+don't even dmqc
+
+4901091 atlantic
+3.2 level is stable and within climato
+don't adjust
+
+4901092 atlantic
+3.2 level is stable and within climato
+don't adjust
+
+4901093 atlantic
+2.8 level is stable and within climato
+don't adjust
+
+4901094 
+don't adjust
+
+4901095 atlantic
+slightly too fresh
+but don't adjust now
+
+4901096 goa/pacific
+salinity at 1.8ºC level agrees well
+no correction
+
+
+4901097 goa/pacific
+salinity at 1.8ºC level agrees well
+no correction
+
+
+4901099 goa/pacific
+salinity at 1.8ºC level agrees well
+no correction
+
+4901101 goa/pacific
+salinity at 1.8ºC level agrees well
+no correction
+
+
+4901102 goa/pacific
+salinity at 1.8ºC level agrees well
+no correction

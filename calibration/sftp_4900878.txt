@@ -1,0 +1,8 @@
+cd /pub/argo/DM/PICorner
+put /u01/rapps/argo_dm/data/float_plots/ow/../*4900878*.png
+put /u01/rapps/argo_dm/data/float_plots/ow/../*4900878*.htm
+put /u01/rapps/argo_dm/data/float_plots/ow/*4900878*.png
+put /u01/rapps/argo_dm/calibration//kml/4900878.kml
+cd /pub/argo/DM
+put /u01/rapps/argo_dm/data/float_plots/ow/../../../calibration/zip/4900878.zip
+bye

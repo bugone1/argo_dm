@@ -1,0 +1,313 @@
+2:32 PM 15/08/2008
+
+2900193 : no new profile. No adjustments
+
+2900236 :
+
+2900237 : 
+
+2900455	: 
+
+In the Gulf of Alaska	
+
+Salinity have always been on the low side of mapped salinity
+Wjo recommendation is to increase salinity by ~.0075 psu or ~1.00025
+
+It sems to have drifted in a different salinity area (eddy? ) from profiles 50 to 128; and now back in a normal salinity area since
+
+4900124 : 
+IN the GOA
+Clearly a drift in salinity (plot 3 shows systematic bias of uncal float salinity at latest profile)
+Applied a piecewise linear fit except for profile 1 - 22)
+
+4900501 : 
+In the North Atlantic
+Salinity started systematically low side but started to correct itself. Could be some biocide leaking in the cell when the float was deployed and slowly washed away.
+Then, as probably there was no more biocide, fouling started to occurr because after profile 60, salinity decreased by lots, very abruptly and remains in the same range ever since, though it is hard to tell if the fouling is washing away. Could also be an eddy
+I would fit piecewise linear correction factors from 1 to 55; then apply a constant 1.0007 after profile 60 or so.
+
+4900503:
+In the North Atlantic
+Salinity consistently on the low side. As of late there seems to be a trend, but time will tell. In the meanwhile, safe thing to do is to 
+correct the apparent offset by applying a 1.0002 correction factor
+
+4900504:
+North Atlantic
+Has changed water masses on ~profile#90, but still shows "low side" salinity. Recently seems to show a trend but this could be 
+because of change in water masses. Safe thing is to correct the apparent offset with factor of 1.0003
+
+4900505:
+NOrth Atlantic
+No correction necessary according to Ron. Same verdict.
+
+4900506:
+North Atlantic
+No correction necessary according to Ron. Same verdict.
+
+4900507:
+North Atlantic
+Constant correction of .005
+
+4900508:
+GOA
+ROn thought there was a constant offset. Looks like the float would have gone from overestimating salinity to underestimating it (slope). Difficult to imagine a unique mechanism 
+responsible for such observation (biocide leaking, changing the configuration of conductivity cell, then fouling starting to occurr ?)
+Differences are then probably attributable to complexity of region. No corrections.
+Constant correction of .005
+
+4900509:
+GOA
+Ron thought float didn't need correction, close to QCI eddies. 2 degC level shows that it's indeed not bad. Do not correct.
+
+4900512:
+Chile
+Deep salinities good agreeement; climatology sparse.. do not correct
+
+4900513:
+Chile
+Started to drift a profile 90. Apply correction slope from 80 to 116 and constant offset for the beginning
+
+4900514:
+GOA
+Above and below climatology, seems normal
+
+4900515:
+GOA
+Above and below climatology, seems normal
+
+4900516:
+Pacific
+Systematic offset; apply constant factor .99984. No clear indication of drift.
+
+4900519:
+GOA/Pacific
+Seems to show disagreement even at 1.8 theta; then again it goes up and down. Getting closer to coast.. Do not correct
+
+4900520:
+Pacific
+Deep values agree; perceived difference is mainly around Theta=5 level. Do not correct
+
+4900521:
+GOA
+Deep values seem to agree; but there is a drift at all depths, including theta=2. Correct with plateau (35 - 67) + slopes.
+
+4900522:
+GOA
+Appears stable. Started out with constant offset, but now somehow "fixing" itself. Better not correct.
+
+4900531:
+North Atlantic
+Drifted in a zone not so well described by climatology (prof 90 to 130) ; but now is correct. Could be a slight drift in sensor towards higher values, but time will tell. Theta=3 is fine.
+
+4900537:
+North Atlantic
+Since cycle 90, salinity is lower than reference. However it is the reference which increased suddenly. This could be our float moving suddenly in a region usually historically characterized by high salinity but at the present time presenting different characteristics. If it was a conductivity drift we would probably see salinity values at 3.2 go down.. what is the likelihood that they suddenly start to go down at the very same time the float enters a higher salinity water mass? No corrections.
+
+4900538:
+North Atlantic
+Impossible to "correct". Just wrong. 
+
+4900627:
+North Atlantic
+Correction is systematic; however the fluctuations should on average be zero; applying .9996 like Ron did would not be a good idea. Theta=3.6 shows a good agreement. Do not correct.
+
+4900628:
+North Atlantic
+Fluctuations up and down; centered around 1. Good agreement
+
+4900629:
+GOA
+Fluctuations up and down; centered around 1. Theta=2 seems to show overall drift in conductivity which would have begun with higher than normal conductivity and now heading towards lower conductivity. Wait for more profiles before correcting.
+
+4900630:
+GOA
+Fluctuations centered around 1. However there seems to be a very slow drift at 2.0 and 1.8. Wait and see.
+
+4900631:
+Pacific
+Conductivity alone seems stable, but the climatology implies that salinity is too high (at theta=2 degC) since profile 50. I think that the float has drifted in a region whose characteristics are different than climatology. No correction.
+
+4900632:
+Pacific
+At least an offset and probably still drifting. Stable climatology. Better to correct the float with piecewise. Ron did it.
+
+4900633:
+GOA
+Seems like float started to foul and now is saturated. Do piecewise.
+
+4900634
+GOA
+Ron assumed problem with climatology for cycles 1-55. However there seems to be a drift since, visible at theta=2. Started at profile 75 or so. Do correction.
+
+4900635
+North Atlantic
+Reasonable agreement.
+
+4900636
+GOA
+Small but constant offset. Do correct. Evidence for trend not sufficient yet.
+
+4900637
+Goa
+strong drift. Accentuated since 75. Do correct piecewise linear.
+
+4900676
+North Atlantic
+Good agreement . DO not correct.
+
+4900677
+North Atlantic
+Negative offset, systematic. But good agreement at theta=3.4. Apply constant factor (very low)
+
+4900678
+North Atlantic
+Good agreement . DO not correct.
+
+4900679
+North Atlantic
+Good agreement . DO not correct.
+
+4900680
+North Atlantic
+Deviations from climatology are symmetrical; salinity seems more stable than climatology. Do not correct
+
+4900681
+North Atlantic
+Theta =3 and Theta=3.4 appear more stable than climatology. Many jumps in the beginning. Overall coefficient would decrease then increase. Looks more like normal variability to me.
+
+4900682
+North Atlantic
+Systematic offset; apply small coefficient to all.
+
+4900683
+North Atlantic
+Sensor seems more stable than climatology, at 3.4. Overall stable. Do not correct.
+
+4900683
+North Atlantic
+Sensor seems more stable than climatology, at 3.4. Overall stable. Do not correct.
+
+4900733
+Pacific 
+Rather stable
+
+4900734
+Pacific
+Quite good; though lately since #65, salinity has been on the high side at 2 deg C. Keep watching.
+
+4900735
+GOA
+theta=1.8 is very stable. do not correct
+
+4900736
+GOA
+Very big offset, but variation seem to make it less apparent. Correct with a fixed offset for all.
+
+4900737
+Pacific
+Very big offset similar to 4900736, Correct with a slope.
+
+4900738
+Pacific
+Very big offset similar to 4900736, Correct with a slope.
+
+4900739
+Pacific
+Very big offset similar to 4900736, Correct with a slope.
+
+4900740
+Pacific
+Very big offset similar to 4900736, Correct with a slope.
+
+4900741
+Pacific
+Very big offset similar to 4900736, Correct with a slope.
+
+4900742
+Pacific
+Very big offset similar to 4900736, Correct with a slope.
+
+4900866
+Goa
+Theta=2 seems to show a slow drift towards low salinity; 3.4 shows a lot of variability. Correct from profile 50 to today to compensate for the drift at theta=2; but then the "positive" error today is still smaller than the "negative" error used to be in the beginning. So don,t correct anything.
+
+4900867
+Goa
+Started with high salinities but now is cacthing up to "normal". Probably good since the start. Do not correct
+
+4900868
+Goa
+theta=1.8 level is most often than not below climatology. Correct recent slope which is >+.0001 above climatology
+
+4900869
+GOA
+theta=1.8 was on the low side of climatology and since the float drifted closer to coast, it is slightly below (climatology is more tight there). Better correct with constant (.005)
+
+4900870
+GOA
+Theta=2.4 shows a lot of variability (higher/lower) but do not adjust.
+
+4900871
+GOA
+Salinity could be drifting.. but it is consistent. It is the climatology salinity which is increasing recently. DO not correct. Keep an eye for next time because there COULD be a drift.
+
+4900872
+GOA
+theta=1.8 shows good agreement. Do not correct.
+
+4900873
+Pacific
+theta=2 shows good agreement. do not correct
+
+4900874
+Pacific
+theta=2 shows good agreement. do not correct
+
+4900875
+North atlantic
+constant offset seems needed but deeper levels don't always say so (3, 3.4theta). apply minimal correctino factor.
+
+4900876
+North atlantic
+seems ok but just like 4900875
+
+4900877
+North atlantic
+small offset; no correction
+
+4900878
+north atlantic
+systematic
+salinity at thera=3.4 level is too low. Do Correct.
+
+4900879
+north atlantic
+systematic offset but variability is quite big at 3=theta. Do not correct.
+
+4900881
+north atlantic
+systematic offset and always smaller than climatology even at 3.4theta. Give constant offset
+
+4900882
+north atlantic
+systematic offset and increasing, but theta=3.6 agrees with climatology. do nothing but keep an eye.
+
+4900883
+north atlantic; salinity is on the low side with new trend. Adjust piecewise.
+
+4900884
+systematic offset 
+
+4901064:4901065
+goa
+very little data yet but seem fine
+
+4901066
+goa
+offset at theta=3 ; 2.2 does not always agree. Correct a little.
+
+4901067
+west pacific
+lots of variability by 2.8 shows good agreement
+
+4901069

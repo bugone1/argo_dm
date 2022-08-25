@@ -1,0 +1,71 @@
+% ===============================
+%
+%    Historical Data Input Path and Files
+%
+HISTORICAL_DIRECTORY=c:\z\argo_dm\data\climatology\wjo
+HISTORICAL_BOTTLE_PREFIX=\historical_bot\bot_
+HISTORICAL_CTD_PREFIX=\historical_ctd\ctd_
+HISTORICAL_ARGO_PREFIX=\historical_argo\argo_
+
+% ===============================
+%
+%    Float Input Path and Files
+%
+
+FLOAT_SOURCE_DIRECTORY=c:\z\argo_dm\data\float_source\
+FLOAT_SOURCE_POSTFIX=.mat
+
+% ===============================
+%
+%    Mapping Output Path and Files
+%
+
+FLOAT_MAPPED_DIRECTORY=c:\z\argo_dm\data\float_mapped\wjo\
+FLOAT_MAPPED_PREFIX=map_
+FLOAT_MAPPED_POSTFIX=.mat
+
+% ===============================
+%
+%    Calibration Output Path and Files
+%
+
+FLOAT_CALIB_DIRECTORY=c:\z\argo_dm\data\float_calib\wjo\
+FLOAT_CALIB_PREFIX=cal_     
+FLOAT_CALSERIES_PREFIX=calseries_
+FLOAT_CALIB_POSTFIX=.mat
+
+% ===============================
+%
+%    Diagnostic Plots Output Path
+%
+
+FLOAT_PLOTS_DIRECTORY=c:\z\argo_dm\data\float_plots\wjo\
+
+% ===============================
+%
+%    Configuration File Path and Constants
+%
+
+CONFIG_DIRECTORY=c:\z\argo_dm\data\constants\wjo\
+CONFIG_CFC_DATA=cfc.mat
+CONFIG_1000M=isobath_1000.mat
+CONFIG_COASTLINES=coastdat.mat
+CONFIG_WMO_BOXES=wmo_boxes.mat
+CONFIG_STANDARD_LEVELS=standard_levels.mat
+NO_USED_STANDARD_LEVELS=49
+
+% ===============================
+%
+%    Calibration Parameters
+%
+CONFIG_MAX_CASTS=300
+CONFIG_RUNNING_CONST=20
+MAPSCALE_LONGITUDE_LARGE=8
+MAPSCALE_LATITUDE_LARGE=4
+MAPSCALE_LONGITUDE_SMALL=4
+MAPSCALE_LATITUDE_SMALL=2
+%
+USE_DM_DATA=NO
+SWNAME=WJO
+SWV=2.0b
+DBNAME=CTD&BOTTLE_2008V1

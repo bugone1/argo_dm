@@ -1,0 +1,889 @@
+PLATFORM_CODE,PARAMETER_NAME,START_DATE,END_DATE,QUALITY_CODE,COMMENT,DAC
+1900167,PSAL,20030719,,3,frozen profile,AO
+1900167,TEMP,20030719,,3,frozen profile,AO
+1900168,PSAL,20030608,,3,frozen profile,AO
+1900168,TEMP,20030608,,3,frozen profile,AO
+1900201,PRES,20070302,,3,potential problem with bin assignment,AO
+1900203,PSAL,20070117,,4,sensor problem,AO
+1900203,TEMP,20070117,,4,sensor problem,AO
+1900432,PRES,20071129,,3,sensor problem,AO
+1900432,PSAL,20071129,,3,sensor problem,AO
+1900432,TEMP,20071129,,3,sensor problem,AO
+1900504,PSAL,20060707,,3,sensor problem,AO
+1900504,TEMP,20060707,,3,sensor problem,AO
+1900527,PRES,20050626,,3,potential problem with bin assignment,AO
+1900528,PSAL,20070608,,3,sensor problem,AO
+1900528,TEMP,20070608,,3,sensor problem,AO
+1900531,PRES,20050810,,3,potential problem with bin assignment,AO
+1900533,PRES,20050810,,3,potential problem with bin assignment,AO
+1900534,PRES,20050812,,3,potential problem with bin assignment,AO
+1900560,PRES,20050826,,3,potential problem with bin assignment,AO
+1900561,PRES,20050912,,3,potential problem with bin assignment,AO
+1900562,PRES,20050920,,3,potential problem with bin assignment,AO
+1900563,PRES,20050921,,3,potential problem with bin assignment,AO
+1900566,PRES,20050924,,3,potential problem with bin assignment,AO
+1900567,PRES,20051016,,3,potential problem with bin assignment,AO
+1900573,PSAL,20060319,,3,salinity drift,AO
+1900574,PRES,20051202,,3,potential problem with bin assignment,AO
+1900581,PSAL,20060121,,3,sensor drift,AO
+1900582,PSAL,20060209,,4,sensor problem,AO
+1900582,TEMP,20060209,,4,sensor problem,AO
+1900635,PRES,20060127,,3,potential problem with bin assignment,AO
+1900636,PRES,20060128,,3,potential problem with bin assignment,AO
+1900637,PRES,20060129,,3,potential problem with bin assignment,AO
+1900639,PRES,20060128,,3,potential problem with bin assignment,AO
+1900641,PRES,20051010,,3,potential problem with bin assignment,AO
+1900643,PRES,20050929,,3,potential problem with bin assignment,AO
+1900645,PRES,20060207,,3,potential problem with bin assignment,AO
+1900646,PRES,20060208,,3,potential problem with bin assignment,AO
+1900688,PRES,20060218,,3,potential problem with bin assignment,AO
+1900690,PRES,20060220,,3,potential problem with bin assignment,AO
+1900702,PRES,20060508,,3,potential problem with bin assignment,AO
+1900703,PRES,20060509,,3,potential problem with bin assignment,AO
+1900704,PRES,20060510,,3,potential problem with bin assignment,AO
+1900707,PRES,20060602,,3,potential problem with bin assignment,AO
+1900709,PRES,20060605,,3,potential problem with bin assignment,AO
+1900710,PRES,20060607,,3,potential problem with bin assignment,AO
+1900727,PRES,20150612,,3,sensor problems,AO
+1900727,PSAL,20150612,,3,sensor problems,AO
+1900727,TEMP,20150612,,3,sensor problems,AO
+1900734,PSAL,20060811,,4,sensor failure,AO
+1900734,TEMP,20060811,,4,sensor failure,AO
+1900738,PSAL,20090102,,4,bad conductivity sensor,AO
+1900749,PSAL,20110914,,4,malfunction of CTD,AO
+1900749,TEMP,20110914,,4,malfunction of CTD,AO
+1900756,PSAL,20061202,,3,sensor problem & drift,AO
+1900976,PRES,20120702,,3,pressure microleak; snowflake starting 06-02-2014,AO
+1900976,PSAL,20120702,,3,pressure microleak; snowflake starting 06-02-2014,AO
+1900976,TEMP,20120702,,3,pressure microleak; snowflake starting 06-02-2014,AO
+1900991,PRES,20110225,,4,CTD malfunction,AO
+1900991,PSAL,20110225,,4,CTD malfunction,AO
+1900991,TEMP,20110225,,4,CTD malfunction,AO
+1901369,PSAL,20131001,,4,salinity sensor problem,AO
+1901396,PSAL,20110910,,4,salinity calibration jump,AO
+1901397,PSAL,20110713,,4,salinity calibration jump,AO
+1901410,PSAL,20170818,,4,sensor problem,AO
+1901504,PSAL,20140531,,4,sensor problem,AO
+1901504,TEMP,20140531,,4,sensor problem,AO
+1901522,PSAL,20160610,,3,sensor problem,AO
+1901522,TEMP,20160610,,3,sensor problem,AO
+1901696,PSAL,20140419,,4,salinity sensor problem,AO
+1901708,PSAL,20140304,,4,sensor problem,AO
+1901796,PSAL,20160603,,4,sensor problem,AO
+1901803,PSAL,20170322,,4,sensor drift,AO
+2900090,PSAL,20050523,,3,sensor drift,AO
+2900091,PRES,20060324,,3,on surface; battery is dying,AO
+2900091,PSAL,20060324,,3,on surface; battery is dying,AO
+2900091,TEMP,20060324,,3,on surface; battery is dying,AO
+2900156,PRES,20061020,,4,pressure sensor problem,AO
+2900156,PSAL,20061020,,3,pressure sensor problem,AO
+2900156,TEMP,20061020,,3,pressure sensor problem,AO
+2900368,PRES,20061129,,4,pressure sensor problem,AO
+2900368,PSAL,20061129,,3,pressure sensor problem,AO
+2900368,TEMP,20061129,,3,pressure sensor problem,AO
+2900385,PRES,20080213,,3,sensor problem,AO
+2900385,PSAL,20080213,,3,sensor problem,AO
+2900385,TEMP,20080213,,3,sensor problem,AO
+2900801,PRES,20080205,,3,sensor problem,AO
+2900801,PSAL,20080205,,3,sensor problem,AO
+2900801,TEMP,20080205,,3,sensor problem,AO
+2900803,PRES,20080220,,3,sensor problem,AO
+2900803,PSAL,20080220,,3,sensor problem,AO
+2900803,TEMP,20080220,,3,sensor problem,AO
+2901149,PRES,20100326,,4,on board of a ship,AO
+2901149,PSAL,20100326,,4,on board of a ship,AO
+2901149,TEMP,20100326,,4,on board of a ship,AO
+2901376,PRES,20100824,,4,picked up by a boat.,AO
+2901376,PSAL,20100824,,4,picked up by a boat.,AO
+2901376,TEMP,20100824,,4,picked up by a boat.,AO
+2901438,PRES,20140406,,4,sensor problem,AO
+2901438,PSAL,20140406,,4,sensor problem,AO
+2901438,TEMP,20140406,,4,sensor problem,AO
+3900148,PSAL,20031108,,3,T (S) often (mostly) fill value,AO
+3900148,TEMP,20031108,,3,T (S) often (mostly) fill value,AO
+3900356,PRES,20080521,,3,sensor problem,AO
+3900356,PSAL,20080521,,3,sensor problem,AO
+3900356,TEMP,20080521,,3,sensor problem,AO
+3900364,PSAL,20041218,,4,salinity drift,AO
+3900437,PRES,20050517,,3,potential problem with bin assignment,AO
+3900440,PSAL,20060707,,3,salinity drift,AO
+3900442,PSAL,20070331,,3,sensor problem,AO
+3900442,TEMP,20070331,,3,sensor problem,AO
+3900478,PRES,20050819,,3,potential problem with bin assignment,AO
+3900480,PRES,20050818,,3,potential problem with bin assignment,AO
+3900484,PRES,20050920,,3,potential problem with bin assignment,AO
+3900486,PRES,20060329,,3,sensor drift,AO
+3900486,PSAL,20060329,,3,sensor drift,AO
+3900489,PRES,20051005,,3,potential problem with bin assignment,AO
+3900490,PRES,20051007,,3,potential problem with bin assignment,AO
+3900492,PSAL,20061203,,4,sensor problem,AO
+3900492,TEMP,20061203,,4,sensor problem,AO
+3900495,PSAL,20051030,,4,salinity drift,AO
+3900548,PRES,20090211,,3,float on shore,AO
+3900548,PSAL,20090211,,3,float on shore,AO
+3900548,TEMP,20090211,,3,float on shore,AO
+3900564,PRES,20060124,,3,potential problem with bin assignment,AO
+3900567,PRES,20060209,,3,potential problem with bin assignment,AO
+3900568,PRES,20060210,,3,potential problem with bin assignment,AO
+3900569,PRES,20060223,,3,potential problem with bin assignment,AO
+3900570,PRES,20060223,,3,potential problem with bin assignment,AO
+3900579,PRES,20060612,,3,potential problem with bin assignment,AO
+3900581,PRES,20060702,,3,potential problem with bin assignment,AO
+3900601,PRES,20060827,,3,sensor drift,AO
+3900601,PSAL,20060827,,3,sensor drift,AO
+3900602,PRES,20060409,,3,sensor drift,AO
+3900602,PSAL,20060409,,3,sensor drift,AO
+3900608,PRES,20060802,,3,potential problem with bin assignment,AO
+3900611,PSAL,20100119,,3,message transmission errors,AO
+3900611,TEMP,20100119,,3,message transmission errors,AO
+3900678,PSAL,20111203,,4,failing conductivity cell,AO
+3900679,PSAL,20100324,,3,failing conductivity sensor,AO
+3900681,PSAL,20081115,,4,faulty conductivity sensor.,AO
+3900738,PRES,20140926,,3,pressure microleak; no snowflake as of profile 184,AO
+3900738,PSAL,20140926,,3,pressure microleak; no snowflake as of profile 184,AO
+3900738,TEMP,20140926,,3,pressure microleak; no snowflake as of profile 184,AO
+3900797,PSAL,20061218,,3,salinity drift,AO
+3900799,PSAL,20111102,,3,drifting conductivity cell,AO
+3900845,PRES,20140804,,3,sensor problem,AO
+3900845,PSAL,20140804,,3,sensor problem,AO
+3900845,TEMP,20140804,,3,sensor problem,AO
+3901004,PSAL,20120918,,3,sensor problem,AO
+3901037,PRES,20160827,,4,frozen profiles,AO
+3901037,PSAL,20160827,,4,frozen profiles,AO
+3901037,TEMP,20160827,,4,frozen profiles,AO
+3901048,PSAL,20150704,,3,sensor problem,AO
+3901121,PSAL,20121227,,4,sensor problem,AO
+3901121,TEMP,20121227,,4,sensor problem,AO
+3901122,PRES,20170504,,4,sensor problem,AO
+3901122,PSAL,20170504,,4,sensor problem,AO
+3901122,TEMP,20170504,,4,sensor problem,AO
+3901124,PSAL,20121230,,4,sensor problem,AO
+3901124,TEMP,20121230,,4,sensor problem,AO
+3901125,PSAL,20121101,,4,sensor problem,AO
+3901216,PSAL,20161229,,4,sensor problem,AO
+3901244,PRES,20151214,,4,sensor problem,AO
+3901244,PSAL,20151214,,4,sensor problem,AO
+3901244,TEMP,20151214,,4,sensor problem,AO
+3901469,PSAL,20170921,,4,sensor problem,AO
+3901469,TEMP,20170921,,4,sensor problem,AO
+4900229,PSAL,20020314,20020324,3,bad salinity below about 700 dbar,AO
+4900230,PSAL,20030826,,3,frozen profile,AO
+4900230,TEMP,20030826,,3,frozen profile,AO
+4900268,PSAL,20030523,,3,frozen profile,AO
+4900268,TEMP,20030523,,3,frozen profile,AO
+4900270,PSAL,20030623,,3,frozen profile,AO
+4900270,TEMP,20030623,,3,frozen profile,AO
+4900271,PSAL,20030414,,3,frozen profile,AO
+4900271,TEMP,20030414,,3,frozen profile,AO
+4900272,PSAL,20030305,,3,frozen profile,AO
+4900272,TEMP,20030305,,3,frozen profile,AO
+4900273,PSAL,20030723,,3,frozen profile; recovered?,AO
+4900273,TEMP,20030723,,3,frozen profile; recovered?,AO
+4900313,PRES,20070512,,3,sensor problem,AO
+4900313,PSAL,20070512,,3,sensor problem,AO
+4900313,TEMP,20070512,,3,sensor problem,AO
+4900358,PSAL,20040618,,3,frozen profile,AO
+4900358,TEMP,20040618,,3,frozen profile,AO
+4900361,PSAL,20040618,,3,frozen profile,AO
+4900361,TEMP,20040618,,3,frozen profile,AO
+4900364,PSAL,20040611,,3,frozen profile,AO
+4900364,TEMP,20040611,,3,frozen profile,AO
+4900366,PSAL,20040315,,3,frozen profile,AO
+4900366,TEMP,20040315,,3,frozen profile,AO
+4900367,PSAL,20040610,,3,frozen profile,AO
+4900367,TEMP,20040610,,3,frozen profile,AO
+4900382,PSAL,20040731,,3,frozen profile,AO
+4900382,TEMP,20040731,,3,frozen profile,AO
+4900385,PSAL,20040712,,3,frozen profile,AO
+4900385,TEMP,20040712,,3,frozen profile,AO
+4900427,PSAL,20040901,,3,frozen profile,AO
+4900427,TEMP,20040723,20040901,3,frozen profile,AO
+4900427,TEMP,20040901,,3,frozen profile,AO
+4900428,PSAL,20040624,,3,frozen profile,AO
+4900428,TEMP,20040624,,3,frozen profile,AO
+4900489,PRES,20080212,,3,sensor problem,AO
+4900489,PSAL,20080212,,3,sensor problem,AO
+4900489,TEMP,20080212,,3,sensor problem,AO
+4900550,PSAL,20040620,,3,surface drifter,AO
+4900550,TEMP,20040620,,3,surface drifter,AO
+4900590,PSAL,20061105,,3,salinity drift,AO
+4900615,PRES,20050714,,3,potential problem with bin assignment,AO
+4900616,PRES,20050714,,3,potential problem with bin assignment,AO
+4900618,PRES,20050715,,3,potential problem with bin assignment,AO
+4900622,PRES,20050719,,3,potential problem with bin assignment,AO
+4900686,PRES,20050922,,3,potential problem with bin assignment,AO
+4900731,PRES,20060129,,3,potential problem with bin assignment,AO
+4900732,PSAL,20060220,,3,sensor problem,AO
+4900732,TEMP,20060220,,3,sensor problem,AO
+4900745,PRES,20060219,,3,potential problem with bin assignment,AO
+4900748,PRES,20060222,,3,potential problem with bin assignment,AO
+4900750,PRES,20060302,,3,potential problem with bin assignment,AO
+4900752,PRES,20060315,,3,potential problem with bin assignment,AO
+4900753,PRES,20060606,,3,sensor drift,AO
+4900753,PSAL,20060606,,3,sensor drift,AO
+4900754,PRES,20060529,,3,potential problem with bin assignment,AO
+4900755,PRES,20060529,,3,potential problem with bin assignment,AO
+4900756,PRES,20060530,,3,potential problem with bin assignment,AO
+4900758,PRES,20060601,,3,potential problem with bin assignment,AO
+4900759,PRES,20060602,,3,potential problem with bin assignment,AO
+4900771,PRES,20060626,,3,potential problem with bin assignment,AO
+4900772,PRES,20060627,,3,potential problem with bin assignment,AO
+4900778,PRES,20060726,,3,potential problem with bin assignment,AO
+4900853,PRES,20130123,,3,pressure snowflake; microleak could start earlier; life-long TNPD,AO
+4900853,PSAL,20130123,,3,pressure snowflake; microleak could start earlier; life-long TNPD,AO
+4900853,TEMP,20130123,,3,pressure snowflake; microleak could start earlier; life-long TNPD,AO
+4900858,PRES,20081023,,3,microleak,AO
+4900858,PSAL,20081023,,3,microleak,AO
+4900858,TEMP,20081023,,3,microleak,AO
+4901022,PSAL,20110523,,3,transmission errors,AO
+4901022,TEMP,20110523,,3,transmission errors,AO
+4901027,PRES,20090712,,4,sensor failure,AO
+4901027,PSAL,20090712,,4,sensor failure,AO
+4901027,TEMP,20090712,,4,sensor failure,AO
+4901046,PSAL,20140721,,3,sensor problem,AO
+4901047,PRES,20101029,,4,sensor failure,AO
+4901047,PSAL,20101029,,4,sensor failure,AO
+4901047,TEMP,20101029,,4,sensor failure,AO
+4901050,PRES,20120206,,3,pressure microleak; snowflake starting 26-07-2012,AO
+4901050,PSAL,20120206,,3,pressure microleak; snowflake starting 26-07-2012,AO
+4901050,TEMP,20120206,,3,pressure microleak; snowflake starting 26-07-2012,AO
+4901451,PSAL,20140407,,3,sensor problem,AO
+4901475,PSAL,20130824,,4,salinity sensor problem,AO
+4901481,PRES,20161111,,4,frozen profiles,AO
+4901481,PSAL,20161111,,4,frozen profiles,AO
+4901481,TEMP,20161111,,4,frozen profiles,AO
+4901504,PRES,20160607,,4,sensor problem,AO
+4901504,PSAL,20160607,,4,sensor problem,AO
+4901504,TEMP,20160607,,4,sensor problem,AO
+4901548,PSAL,20160806,,3,salinity drift,AO
+4901639,PSAL,20170122,,3,sensor problem,AO
+4901679,PRES,20141025,,4,sensor problem,AO
+4901679,PSAL,20141025,,4,sensor problem,AO
+4901679,TEMP,20141025,,4,sensor problem,AO
+4901707,PSAL,20160208,,3,sensor problem,AO
+4902076,PSAL,20150909,,4,sensor drift,AO
+4902301,PSAL,20170603,,4,sensor drift,AO
+4902325,PSAL,20170325,,4,sensor problem,AO
+4902325,TEMP,20170325,,4,sensor problem,AO
+4902346,PSAL,20160919,,3,pump failure,AO
+4902346,TEMP,20160919,,3,pump failure,AO
+5900708,PSAL,20090221,,3,sensor problem,AO
+5900710,PRES,20070604,,3,sensor problem,AO
+5900710,PSAL,20070604,,3,sensor problem,AO
+5900710,TEMP,20070604,,3,sensor problem,AO
+5900884,PSAL,20080803,,3,salinity fresh shift,AO
+5900886,PRES,20130929,,3,pressure snowflake; but microleak might start earlier; not TNPD,AO
+5900886,PSAL,20130929,,3,pressure snowflake; but microleak might start earlier; not TNPD,AO
+5900886,TEMP,20130929,,3,pressure snowflake; but microleak might start earlier; not TNPD,AO
+5900893,PRES,20060808,,4,pressure sensor problem,AO
+5900893,PSAL,20060808,,3,pressure sensor problem,AO
+5900893,TEMP,20060808,,3,pressure sensor problem,AO
+5900984,PRES,20070922,,3,pressure sensor problem,AO
+5900984,PSAL,20070922,,3,pressure sensor problem,AO
+5900984,TEMP,20070922,,3,pressure sensor problem,AO
+5901014,PSAL,20130613,,3,salinity fresh shift,AO
+5901061,PRES,20140805,,4,sensor problem,AO
+5901061,PSAL,20140805,,4,sensor problem,AO
+5901061,TEMP,20140805,,4,sensor problem,AO
+5901091,PRES,20080225,,3,sensor problem,AO
+5901091,PSAL,20080225,,3,sensor problem,AO
+5901091,TEMP,20080225,,3,sensor problem,AO
+5901102,PRES,20051121,,3,potential problem with bin assignment,AO
+5901105,PRES,20051122,,3,potential problem with bin assignment,AO
+5901393,PRES,20110730,,3,pressure sensor problem,AO
+5901393,PSAL,20110730,,3,pressure sensor problem,AO
+5901393,TEMP,20110730,,3,pressure sensor problem,AO
+5901431,PSAL,20080825,,3,sensor problem,AO
+5901479,PRES,20080813,,3,sensor problem,AO
+5901479,PSAL,20080813,,3,sensor problem,AO
+5901479,TEMP,20080813,,3,sensor problem,AO
+5901489,PSAL,20130115,,3,sensor problem,AO
+5901495,PSAL,20121004,,3,sensor problem,AO
+5901746,PSAL,20090307,,3,sensor drift,AO
+5901886,PRES,20130116,,3,microleak problem,AO
+5901886,PSAL,20130116,,3,microleak problem,AO
+5901886,TEMP,20130116,,3,microleak problem,AO
+5901893,PRES,20121211,,4,microleak,AO
+5901893,PSAL,20121211,,4,microleak,AO
+5901893,TEMP,20121211,,4,microleak,AO
+5901894,PSAL,20141022,,3,salinity drift,AO
+5901896,PRES,20100301,,3,Druck oil microleak,AO
+5901896,PSAL,20100301,,4,Druck oil microleak,AO
+5901896,TEMP,20100301,,3,Druck oil microleak,AO
+5901898,PRES,20110723,,4,oil microleak,AO
+5901898,PSAL,20110723,,4,oil microleak,AO
+5901898,TEMP,20110723,,4,oil microleak,AO
+5901899,PRES,20100422,,3,oil microleak,AO
+5901899,PSAL,20100422,,3,oil microleak,AO
+5901899,TEMP,20100422,,3,oil microleak,AO
+5902070,PRES,20110218,,3,sensor failure,AO
+5902070,PSAL,20110218,,3,sensor failure,AO
+5902070,TEMP,20110218,,3,sensor failure,AO
+5902080,PRES,20140830,,3,sensor problem,AO
+5902080,PSAL,20140830,,3,sensor problem,AO
+5902080,TEMP,20140830,,3,sensor problem,AO
+5902082,PRES,20130128,,3,microleak problem,AO
+5902082,PSAL,20130128,,3,microleak problem,AO
+5902082,TEMP,20130128,,3,microleak problem,AO
+5902092,PRES,20140714,,3,sensor problem,AO
+5902092,PSAL,20140714,,3,sensor problem,AO
+5902092,TEMP,20140714,,3,sensor problem,AO
+5902136,PRES,20140820,,3,pressure snowflake; but microleak could start earlier; life-long TNPD,AO
+5902136,PSAL,20140820,,3,pressure snowflake; but microleak could start earlier; life-long TNPD,AO
+5902136,TEMP,20140820,,3,pressure snowflake; but microleak could start earlier; life-long TNPD,AO
+5902189,PRES,20120108,,4,sensor drift,AO
+5902189,PSAL,20120108,,4,sensor drift,AO
+5902189,TEMP,20120108,,4,sensor drift,AO
+5902206,PRES,20090915,,3,pressure sensor failure,AO
+5902206,PSAL,20090915,,3,pressure sensor failure,AO
+5902206,TEMP,20090915,,3,pressure sensor failure,AO
+5902215,PRES,20140622,,3,pressure microleak; no snowflake as of profile 193,AO
+5902215,PSAL,20140622,,3,pressure microleak; no snowflake as of profile 193,AO
+5902215,TEMP,20140622,,3,pressure microleak; no snowflake as of profile 193,AO
+5902216,PRES,20111101,,3,pressure microleak; snowflake starting 06-08-2012,AO
+5902216,PSAL,20111101,,3,pressure microleak; snowflake starting 06-08-2012,AO
+5902216,TEMP,20111101,,3,pressure microleak; snowflake starting 06-08-2012,AO
+5902219,PRES,20130422,,3,pressure microleak; snowflake starting 21-10-2013,AO
+5902219,PSAL,20130422,,3,pressure microleak; snowflake starting 21-10-2013,AO
+5902219,TEMP,20130422,,3,pressure microleak; snowflake starting 21-10-2013,AO
+5902234,PRES,20140630,,3,pressure microleak; no snowflake as of profile 189,AO
+5902234,PSAL,20140630,,3,pressure microleak; no snowflake as of profile 189,AO
+5902234,TEMP,20140630,,3,pressure microleak; no snowflake as of profile 189,AO
+5902239,PSAL,20100720,,3,salinity problem,AO
+5902245,PSAL,20130902,,3,salinity fresh shift,AO
+5902254,PSAL,20140913,,3,sensor problem,AO
+5902345,PSAL,20160720,,4,sensor problem,AO
+5902346,PRES,20141029,,4,sensor problem,AO
+5902346,PSAL,20141029,,4,sensor problem,AO
+5902346,TEMP,20141029,,4,sensor problem,AO
+5902360,PSAL,20160624,,3,sensor problem,AO
+5902364,PSAL,20161027,,4,sensor problem,AO
+5902369,PSAL,20141126,,3,sensor problem,AO
+5902391,PSAL,20150915,,2,noisy data,AO
+5902398,PSAL,20170206,,4,sensor problem,AO
+5902406,PSAL,20161026,,3,sensor problem,AO
+5902407,PSAL,20161006,,3,sensor problem,AO
+5902449,PSAL,20160917,,3,sensor failure,AO
+5903292,PSAL,20120304,,4,sensor failure,AO
+5903347,PRES,20170919,,3,sensor problem,AO
+5903347,PSAL,20170919,,3,sensor problem,AO
+5903347,TEMP,20170919,,3,sensor problem,AO
+5903348,PSAL,20130104,,4,salinity sensor problem,AO
+5903368,PSAL,20141019,,3,sensor problem,AO
+5903390,PSAL,20151203,,4,sensor problem,AO
+5903429,PSAL,20150115,,3,sensor problem,AO
+5903431,PRES,20120810,,3,sensor problem,AO
+5903431,PSAL,20120810,,3,sensor problem,AO
+5903431,TEMP,20120810,,3,sensor problem,AO
+5903436,PRES,20110927,,3,sensor problem,AO
+5903436,PSAL,20110927,,3,sensor problem,AO
+5903436,TEMP,20110927,,3,sensor problem,AO
+5903441,PSAL,20130312,,3,salinity drift,AO
+5903446,PRES,20110517,,3,pressure microleak or snowflake or float leaking,AO
+5903446,PSAL,20110517,,3,pressure microleak or snowflake or float leaking,AO
+5903446,TEMP,20110517,,3,pressure microleak or snowflake or float leaking,AO
+5903496,PRES,20140701,,4,sensor problem,AO
+5903496,PSAL,20140701,,4,sensor problem,AO
+5903496,TEMP,20140701,,4,sensor problem,AO
+5903498,PRES,20160630,,4,sensor problem,AO
+5903498,PSAL,20160630,,4,sensor problem,AO
+5903498,TEMP,20160630,,4,sensor problem,AO
+5903500,PSAL,20130602,,4,sensor problem,AO
+5903501,PSAL,20160429,,4,frozen profile,AO
+5903501,TEMP,20160429,,4,frozen profile,AO
+5903583,PSAL,20150120,,3,sensor problem,AO
+5903585,PSAL,20120719,,4,salinity sensor problem,AO
+5903712,PSAL,20121231,,3,sensor problem,AO
+5903790,PSAL,20150201,,4,sensor problem,AO
+5903790,TEMP,20150201,,4,sensor problem,AO
+5903793,PSAL,20110825,,4,bad decoding coefficients,AO
+5903793,TEMP,20110825,,4,bad decoding coefficients,AO
+5903799,PSAL,20110822,,4,bad decoding coefficients,AO
+5903799,TEMP,20110822,,4,bad decoding coefficients,AO
+5903829,PSAL,20170107,,4,sensor problem,AO
+5903872,PSAL,20130621,,3,salinity fresh shift,AO
+5903974,PSAL,20131125,,4,sensor problem,AO
+5903974,TEMP,20131125,,4,sensor problem,AO
+5903975,PRES,20141005,,4,sensor problem,AO
+5903975,PSAL,20141005,,4,sensor problem,AO
+5903975,TEMP,20141005,,4,sensor problem,AO
+5903978,PRES,20140622,,3,sensor problem,AO
+5903978,PSAL,20140622,,3,sensor problem,AO
+5903978,TEMP,20140622,,3,sensor problem,AO
+5903979,PRES,20130327,,4,sensor problem,AO
+5903979,PSAL,20130327,,4,sensor problem,AO
+5903979,TEMP,20130327,,4,sensor problem,AO
+5903980,PRES,20140112,,4,sensor problem,AO
+5903980,PSAL,20140112,,4,sensor problem,AO
+5903980,TEMP,20140112,,4,sensor problem,AO
+5903981,PSAL,20121203,,4,salinity sensor problem,AO
+5903982,PRES,20131016,,3,sensor problems,AO
+5903982,PSAL,20131016,,3,sensor problems,AO
+5903982,TEMP,20131016,,3,sensor problems,AO
+5903985,PRES,20131219,,4,sensor problem,AO
+5903985,PSAL,20131219,,4,sensor problem,AO
+5903985,TEMP,20131219,,4,sensor problem,AO
+5903986,PRES,20140721,,3,sensor problem,AO
+5903986,PSAL,20140721,,3,sensor problem,AO
+5903986,TEMP,20140721,,3,sensor problem,AO
+5903987,PRES,20131010,,3,sensor problem,AO
+5903987,PSAL,20131010,,3,sensor problem,AO
+5903987,TEMP,20131010,,3,sensor problem,AO
+5903988,PRES,20131103,,3,sensor problem,AO
+5903988,PSAL,20131103,,3,sensor problem,AO
+5903988,TEMP,20131103,,3,sensor problem,AO
+5903992,PRES,20141023,,4,sensor problem,AO
+5903992,PSAL,20141023,,4,sensor problem,AO
+5903992,TEMP,20141023,,4,sensor problem,AO
+5904001,PSAL,20130526,,4,salinity sensor problem,AO
+5904049,PSAL,20131001,,4,sensor problem,AO
+5904049,TEMP,20131001,,4,sensor problem,AO
+5904068,PSAL,20121228,,4,sensor problem,AO
+5904068,TEMP,20121228,,4,sensor problem,AO
+5904094,PSAL,20130215,,4,salinity sensor problem,AO
+5904127,PSAL,20130707,,3,salinity sensor problem,AO
+5904128,PSAL,20130715,,3,salinity sensor problem,AO
+5904130,PSAL,20150110,,3,sensor problem,AO
+5904143,PRES,20150117,,3,sensor problems,AO
+5904143,PSAL,20150117,,3,sensor problems,AO
+5904143,TEMP,20150117,,3,sensor problems,AO
+5904155,PSAL,20160604,,3,sensor problem,AO
+5904186,PSAL,20160424,,3,sensor problem,AO
+5904196,PRES,20150303,,4,sensor problem,AO
+5904196,PSAL,20150303,,4,sensor problem,AO
+5904196,TEMP,20150303,,4,sensor problem,AO
+5904363,PRES,20131113,,4,sensor problem,AO
+5904363,PSAL,20131113,,4,sensor problem,AO
+5904363,TEMP,20131113,,4,sensor problem,AO
+5904405,PRES,20150115,,4,sensor problem,AO
+5904405,PSAL,20150115,,4,sensor problem,AO
+5904405,TEMP,20150115,,4,sensor problem,AO
+5904407,PRES,20150111,,3,sensor problem,AO
+5904407,PSAL,20150111,,3,sensor problem,AO
+5904407,TEMP,20150111,,3,sensor problem,AO
+5904414,PSAL,20141026,,3,sensor problem,AO
+5904439,PSAL,20141206,,4,sensor problem,AO
+5904440,PSAL,20141028,,3,salinity drift,AO
+5904443,PSAL,20141027,,4,sensor problem,AO
+5904447,PSAL,20170823,,4,sensor problem,AO
+5904450,PSAL,20141023,,3,sensor problem,AO
+5904451,PSAL,20151002,,3,salinity drift,AO
+5904457,PSAL,20141103,,3,sensor problem,AO
+5904466,PSAL,20141031,,3,sensor problem,AO
+5904467,PSAL,20170123,,3,sensor problem,AO
+5904468,PSAL,20170209,,3,sensor problem,AO
+5904504,PSAL,20140212,,4,sensor problem,AO
+5904533,PSAL,20140902,,3,sensor problem,AO
+5904551,PSAL,20160724,,4,sensor drift,AO
+5904568,PSAL,20170414,,4,sensor drift,AO
+5904662,PSAL,20160416,,3,sensor problem,AO
+5904663,PSAL,20170126,,3,sensor problem,AO
+5904674,PSAL,20170124,,4,sensor drift,AO
+5904701,PSAL,20160811,,3,sensor drift,AO
+5904708,PSAL,20170224,,4,sensor drift,AO
+6900119,PRES,20050909,,4,sensor problem,AO
+6900119,PSAL,20050909,,4,sensor problem,AO
+6900119,TEMP,20050909,,4,sensor problem,AO
+6900121,PRES,20061105,,4,pressure sensor problem,AO
+6900121,PSAL,20061105,,3,pressure sensor problem,AO
+6900121,TEMP,20061105,,3,pressure sensor problem,AO
+6900320,PSAL,20151202,,4,sensor drift,AO
+7900046,PRES,20061221,,3,sensor problem,AO
+7900046,PSAL,20061221,,3,sensor problem,AO
+7900046,TEMP,20061221,,3,sensor problem,AO
+7900207,PSAL,20160915,,3,sensor failure,AO
+7900215,PSAL,20161209,,4,sensor problem,AO
+7900215,TEMP,20161209,,4,sensor problem,AO
+7900299,PSAL,20170129,,3,sensor problem,AO
+1900281,PRES,20050625,,4,sensor problem,BO
+1900281,PSAL,20050625,,4,sensor problem,BO
+1900281,TEMP,20050625,,4,sensor problem,BO
+1900938,PSAL,20110705,,4,sensor failure,BO
+1901060,PSAL,20130913,,3,Suspected biofouling drift,BO
+1901070,PRES,20100429,,4,sensor problem,BO
+1901070,PSAL,20100429,,4,sensor problem,BO
+1901070,TEMP,20100429,,4,sensor problem,BO
+1901071,PRES,20120826,,3,sensor problem - Druck microleak,BO
+1901071,PSAL,20120826,,3,sensor problem - Druck microleak,BO
+1901071,TEMP,20120826,,3,sensor problem - Druck microleak,BO
+1901220,PRES,20100924,,4,sensor problem - Druck microleak,BO
+1901220,PSAL,20100924,,4,sensor problem - Druck microleak,BO
+1901220,TEMP,20100924,,4,sensor problem - Druck microleak,BO
+1901223,PRES,20110809,,4,pressure sensor failure,BO
+1901223,PSAL,20110809,,4,pressure sensor failure,BO
+1901223,TEMP,20110809,,4,pressure sensor failure,BO
+1901228,PSAL,20101025,,4,sensor problem,BO
+1901230,PRES,20090712,,4,sensor problem - Druck microleak,BO
+1901230,PSAL,20090712,,4,sensor problem - Druck microleak,BO
+1901230,TEMP,20090712,,4,sensor problem - Druck microleak,BO
+1901235,PRES,20110926,,4,sensor problem-druck microleak,BO
+1901235,PSAL,20110926,,4,sensor problem-druck microleak,BO
+1901235,TEMP,20110926,,4,sensor problem-druck microleak,BO
+1901236,PRES,20100725,,4,sensor problem - druck microleak,BO
+1901236,PSAL,20100725,,4,sensor problem - druck microleak,BO
+1901236,TEMP,20100725,,4,sensor problem - druck microleak,BO
+1901241,PRES,20110224,,4,sensor problem - druck microleak,BO
+1901241,PSAL,20110224,,4,sensor problem - druck microleak,BO
+1901241,TEMP,20110224,,4,sensor problem - druck microleak,BO
+1901243,PSAL,20090606,,3,Severe PSAL drift to be revisited in DMQC,BO
+1901243,TEMP,20110926,,3,Temp drift to be revisited in DMQC,BO
+1901251,PSAL,20100414,,4,Salinity sensor problem,BO
+1901277,PSAL,20130306,,3,Salinity sensor drift to be revisited during DMQC,BO
+1901294,PSAL,20160312,,3,Severe PSAL drift to be revisited in DMQC,BO
+1901850,PSAL,20150627,,4,conductivity sensor failure,BO
+1901851,PSAL,20151009,,3,Severe PSAL drift to be revisited in DMQC,BO
+2901097,PRES,20101224,,4,Fished up then beached,BO
+2901097,PSAL,20101224,,4,Fished up then beached,BO
+2901097,TEMP,20101224,,4,Fished up then beached,BO
+3901499,PSAL,20141118,,3,Severe PSAL drift to be revisited in DMQC,BO
+3901499,TEMP,20141118,,3,Severe TEMP drift identified by Altimetry QC to be revisited in DMQC,BO
+6900614,PSAL,20100805,,4,flushing or pump problem,BO
+6900615,PRES,20120125,,4,pressure sensor fail,BO
+6900615,PSAL,20120125,,4,pressure sensor fail,BO
+6900615,TEMP,20120125,,4,pressure sensor fail,BO
+6900617,PRES,20121114,,4,Mechanical (piston) failure,BO
+6900617,PSAL,20121114,,4,Mechanical (piston) failure,BO
+6900617,TEMP,20121114,,4,Mechanical (piston) failure,BO
+6900622,PRES,20120620,,4,Druck microleak,BO
+6900622,PSAL,20120620,,4,Druck microleak,BO
+6900622,TEMP,20120620,,4,Druck microleak,BO
+6900647,PRES,20120620,,4,Mechanical (piston) failure,BO
+6900647,PSAL,20080312,20081218,3,sensor problem,BO
+6900647,TEMP,20120620,,4,Mechanical (piston) failure,BO
+6900651,PSAL,20090201,,3,flushing or pump problem,BO
+6900654,PRES,20100628,,4,sensor problem,BO
+6900654,PSAL,20100628,,4,sensor problem,BO
+6900654,TEMP,20100628,,4,sensor problem,BO
+6901119,PSAL,20160207,,4,Conductivity sensor problem,BO
+6901168,PSAL,20150709,,3,Salinity sensor problem - routine spiking and resultant improbable density profile,BO
+1901120,PRES,20100322,,3,snowflake? - dead and waiting for DMQC,CS
+1901120,PSAL,20100322,,3,snowflake? - dead and waiting for DMQC,CS
+1901120,TEMP,20100322,,3,snowflake? - dead and waiting for DMQC,CS
+1901320,PSAL,20120517,,3,Salinity bad - still alive,CS
+1901330,PSAL,20140506,,3,Maybe cracked cell,CS
+5900045,PSAL,20130913,,3,now dead - waiting for DMQC,CS
+5900348,PRES,20120118,,3,now dead - waiting for DMQC,CS
+5900348,PSAL,20120118,,3,now dead - waiting for DMQC,CS
+5900348,TEMP,20120118,,3,now dead - waiting for DMQC,CS
+5901619,PSAL,20090530,20120105,3,CTD problem after grounding - still alive - DMQC determined biofouling now cleared,CS
+5901649,PRES,20080928,,3,now dead - waiting for DMQC,CS
+5901649,PSAL,20080928,,3,now dead - waiting for DMQC,CS
+5901649,TEMP,20080928,,3,now dead - waiting for DMQC,CS
+5901659,PSAL,20120108,,3,Salinity bad from profile 133 - still alive,CS
+5901665,PSAL,20111217,,3,deep S is bad so entire profile is suspect - revisit in DM - still alive,CS
+5901667,PRES,20100811,,3,snowflake? - still alive,CS
+5901667,PSAL,20100811,,3,snowflake? - still alive,CS
+5901667,TEMP,20100811,,3,snowflake? - still alive,CS
+5901668,PRES,20150929,,3,deep problems and S offset,CS
+5901668,PSAL,20150929,,3,deep problems and S offset,CS
+5901668,TEMP,20150929,,3,deep problems and S offset,CS
+5901676,PRES,20091020,,3,bad P,CS
+5901676,PSAL,20091020,,3,bad P,CS
+5901676,TEMP,20091020,,3,bad P,CS
+5901683,PSAL ,20100205,20120406,3,still alive,CS
+5901689,PRES,20090506,,3,Not returning useable data,CS
+5901689,PSAL,20090506,,3,Not returning useable data,CS
+5901689,TEMP,20090506,,3,Not returning useable data,CS
+5901694,PSAL,20120201,,3,disappeared then bad data - still alive,CS
+5901694,TEMP,20120201,,3,disappeared then bad data - still alive,CS
+5901700,PSAL,20131209,,3,dodgy data generally. Will be reassessed in DMQC,CS
+5901700,TEMP,20131209,,3,dodgy data generally. Will be reassessed in DMQC,CS
+5901702,PSAL,20111214,20120222,3,fouling? Still alive,CS
+5901702,PSAL,20150904,,3,constant S,CS
+5901702,TEMP,20150904,,3,constant T,CS
+5901703,PRES,20101212,,3,druck snowflake? - still alive,CS
+5901703,PSAL,20101212,,3,druck snowflake? - still alive,CS
+5901703,TEMP,20101212,,3,druck snowflake? - still alive,CS
+5903221,PSAL,20130313,20140628,3,fresh salinity offset that hasn't recovered,CS
+5903251,PSAL,20160826,,3,Salinity drift from profile 244,CS
+5903628,PRES,20110113,20110113,3,severe S offset - still alive -  P should not have been grey listed - S issue only,CS
+5903628,PSAL,20110113,20110303,3,severe S offset - still alive - biofouling - only lasted 5 profiles.,CS
+5903628,TEMP,20110113,20110113,3,severe S offset - still alive -  T should not have been grey listed - S issue only,CS
+5903630,PRES,20101219,,3,now dead - waiting for DMQC,CS
+5903630,PSAL,20101219,,3,now dead - waiting for DMQC,CS
+5903630,TEMP,20101219,,3,now dead - waiting for DMQC,CS
+5903631,PSAL,20151012,,3,jumped saltyó ?,CS
+5903640,PSAL,20130914,,3,fresh salinity offset corrected earlier by test 16,CS
+5903660,PSAL,20120130,,3,now dead - waiting for DMQC,CS
+5903665,PSAL,20160303,,3,Very low salinity,CS
+5903700,PSAL,20120217,,3,spikey salinity - still alive,CS
+5903707,PSAL,20111111,20111130,3,Spikely salinity for first three profiles - then OK - still alive,CS
+5903914,PSAL,20150720,,3,Salinity drift from profile 134,CS
+7900325,PSAL,20110309,,3,severe and persistent fresh offset.,CS
+7900620,PSAL,20160505,,3,cracked cell probably,CS
+7900623,PSAL,20161214,,3,Salinity drift from deployment,CS
+2901157,PRES,20091027,,4,pressure sensor problem,HZ
+2901157,PSAL,20091027,,4,pressure sensor problem,HZ
+2901157,TEMP,20091027,,4,pressure sensor problem,HZ
+2901179,PSAL,20090709,,4,sensor problem,HZ
+2901486,PRES,20110513,,4,sensor problem,HZ
+2901486,PSAL,20110513,,4,sensor problem,HZ
+2901486,TEMP,20110513,,4,sensor problem,HZ
+2901489,PSAL,20120904,,4,sensor problem,HZ
+2901512,PSAL,20111114,,4,sensor problem,HZ
+2901549,PSAL,20150909,,4,sensor problem,HZ
+2902548,PSAL,20120225,,4,sensor problem,HZ
+2902586,PSAL,20160221,,4,sensor problem,HZ
+2902588,PSAL,20150311,,3,sensor problem,HZ
+2902590,PSAL,20140717,,3,sensor problem,HZ
+2902606,PSAL,20150202,,3,sensor problem,HZ
+2902611,PSAL,20160912,,4,sensor problem,HZ
+2902670,PSAL,20150909,,4,sensor problem,HZ
+1900135,PSAL,20040103,,4,VB 28/06/05,IF
+1900135,TEMP,20040103,,4,VB 28/06/05,IF
+1900275,PSAL,20031011,,4,CC 15/06/05,IF
+1900275,TEMP,20031021,,4,CC 15/06/05,IF
+1900276,PSAL,20031011,,4,CC 15/06/05,IF
+1900276,TEMP,20031011,,4,CC 15/06/05,IF
+1900277,PSAL,20041116,,4,VB 28/06/05,IF
+1900277,TEMP,20041116,,4,VB 28/06/05,IF
+1900278,PSAL,20041012,,4,VB 28/06/05,IF
+1900278,TEMP,20041012,,4,VB 28/06/05,IF
+1900616,PRES,20060511,,2,CC 20100723,IF
+1900617,PRES,20060620,,2,CC 20100723,IF
+1900618,PRES,20060511,,2,CC 20100723,IF
+1900619,PRES,20061219,,2,CC 20100723,IF
+1900620,PRES,20060511,,2,CC 20100723,IF
+1901202,PSAL,20130701,,3,VB 20130719,IF
+3900388,PSAL,20061216,,3,VB 23/01/07,IF
+3901085,PSAL,20130113,,3,CC 25/07/13,IF
+3901591,PSAL,20170410,,3,CL 20170612,IF
+3901863,PSAL,20160824,,4,CL 20160928,IF
+3901863,TEMP,20160824,,4,CL 20160928,IF
+5902297,DOXY,20100729,,4,VB 20161018 demande C Lagadec,IF
+5902300,DOXY,20110113,,4,VB 20161018 demande C Lagadec,IF
+6900169,PSAL,20021113,,3,CC 25/02/04,IF
+6900359,PSAL,20090115,,4,VB 20101022 beached float,IF
+6900359,TEMP,20090115,,4,VB 20101022 beached float,IF
+6900365,PSAL,20071206,,4,VB 20101022 beached float,IF
+6900365,TEMP,20071206,,4,VB 20101022 beached float,IF
+6900366,PSAL,20061005,,4,LPV 22/12/08,IF
+6900366,TEMP,20061005,,4,LPV 22/12/08,IF
+6900474,PSAL,20111001,,4,VB 20120127,IF
+6900701,PSAL,20130308,,3,VB 20150703,IF
+6900889,PSAL,20161127,,3,CL 20170110,IF
+6901246,PSAL,20150101,,3,VB 20150605 biais 0.25 psu,IF
+6901433,PSAL,20130214,,4,VB 20130219 decalage capteur CNDC,IF
+6901449,PSAL,20141210,,3,CC 20150622,IF
+6901449,TEMP,20141210,,3,CC 20150622,IF
+6901509,PSAL,20160515,,3,CCG 20170531 Feedback altimetry CLS,IF
+6901556,PSAL,20170703,,3,CP 20170726,IF
+6901559,PSAL,20170612,,3,CL 20170705,IF
+6901567,PSAL,20160922,,3,CC 20170110 feedback altimetry cls,IF
+6901622,PSAL,20170126,,3,CCG 20170531 Feedback altimetry CLS,IF
+6901623,PSAL,20170501,,3,CP 20170721,IF
+6901661,PSAL,20160801,,3,VB 20160928 presentation V Guinehut ADMT,IF
+6901698,PSAL,20170310,,3,CL 20170705,IF
+6901700,PSAL,20150403,,3,VB 20150703,IF
+6901701,PSAL,20161220,,3,CL 20170106,IF
+6901708,PSAL,20161215,,3,CL 20170707,IF
+6901713,PSAL,20170820,,3,CP 20170918 Derive,IF
+6901719,PSAL,20161110,,3,CL 20170106,IF
+6901742,PSAL,20161111,,3,CL 20170106,IF
+6901743,PSAL,20170531,,3,CP 20170830 Derive,IF
+6901837,PSAL,20161113,,3,CL 20170106,IF
+6901838,PSAL,20160922,,3,CC 20170110 feedback altimetry cls,IF
+6901846,PSAL,20160922,,3,CC 20170110 feedback altimetry cls,IF
+6901855,PSAL,20160522,,3,CL 20170106,IF
+6901860,PSAL,20160922,,3,CC 20170110 feedback altimetry cls,IF
+6901874,PSAL,20161117,,3,VB 20171123,IF
+6901874,TEMP,20161117,,3,CL 20170106,IF
+6901889,PSAL,20160901,,3,CL 20170106,IF
+6902023,PSAL,20160816,,3,CL 20170705,IF
+6902023,TEMP,20160816,,3,CL 20170705,IF
+6902579,PSAL,20150430,,3,CL 20170213 drift -0.1 PSU,IF
+6902602,PSAL,20161012,,3,CL 20170106,IF
+6902612,PSAL,20170813,,3,CP 20171120 Derive,IF
+6902621,PSAL,20151117,,3,CL 20170213 drift -0.3 PSU,IF
+6902624,PSAL,20161004,,3,CCG 20170531 Feedback altimetry CLS,IF
+6902626,PSAL,20160901,,3,VB 20160915 drift de PSAL,IF
+6902639,PSAL,20170515,,3,CL 20170704,IF
+6902660,PSAL,20160831,,4,CL 20161005,IF
+6902661,PSAL,20160922,,3,CC 20170110 feedback altimetry cls,IF
+6902673,PSAL,20170612,,3,CP 20170713,IF
+6902676,PSAL,20161021,,3,CL 20170705,IF
+6902693,PSAL,20170814,,3,CP 20170825,IF
+6903198,PSAL,20170607,,3,CL 20170612,IF
+6903199,PSAL,20161023,,3,CL 20170106,IF
+6903204,PSAL,20170909,,3,CP 20171005 Derive,IF
+2900783,PSAL,20070709,,4,SensorProblem,IN
+2902089,PRES,20131021,,3,VB 21/05/2015 PROVOR ProvBioII transmission anomaly,IN
+2902089,PSAL,20131021,,3,VB 21/05/2015 PROVOR ProvBioII transmission anomaly,IN
+2902089,TEMP,20131021,,3,VB 21/05/2015 PROVOR ProvBioII transmission anomaly,IN
+1902179,PSAL,20160211,,4,sensor problem,JA
+1902179,TEMP,20160422,,4,sensor problem,JA
+29000,PSAL,20050301,,4,sensor probrem,JA
+2900239,PSAL,20020818,,3,fresh drift,JA
+2900334,PRES,20060723,,4,pressure sensor problem,JA
+2900334,PSAL,20060723,,4,pressure sensor problem,JA
+2900334,TEMP,20060723,,4,pressure sensor problem,JA
+2900549,PSAL,20100716,,3,wrong value,JA
+2900550,PSAL,20110402,,4,wrong value,JA
+2900575,PSAL,20060420,20060501,3,fresh offset,JA
+2900580,PSAL,20080622,,3,salty drift,JA
+2900584,PSAL,20070407,20070919,3,fresh offset,JA
+2900616,PRES,20060226,20060302,4,on surface,JA
+2900616,PSAL,20060226,20060302,4,on surface,JA
+2900616,TEMP,20060226,20060302,4,on surface,JA
+2900667,PSAL,20070814,20070915,3,fresh offset,JA
+2900678,PSAL,20061023,20061216,3,fresh offset,JA
+2900731,PSAL,20080611,20080617,3,fresh offset,JA
+2900928,PRES,20090130,,4,pressure sensor problem,JA
+2900928,PSAL,20090130,,4,pressure sensor problem,JA
+2900928,TEMP,20090130,,4,pressure sensor problem,JA
+2900937,PRES,20110915,,4,pressure sensor problem,JA
+2900937,PSAL,20110915,,4,pressure sensor problem,JA
+2900937,TEMP,20110915,,4,pressure sensor problem,JA
+2900941,PSAL,20090119,,3,fresh offset,JA
+2900942,PSAL,20090119,,3,salty drift,JA
+2900956,PSAL,20110605,20111202,3,salty drift,JA
+2900992,PRES,20100727,,4,wrong value,JA
+2900992,PSAL,20100727,,4,wrong value,JA
+2900992,TEMP,20100727,,4,wrong value,JA
+2901003,PRES,20121218,,4,on surface,JA
+2901003,PSAL,20121218,,4,on surface,JA
+2901003,TEMP,20121218,,4,on surface,JA
+2901021,PSAL,20120601,,3,salty drift,JA
+2901024,PRES,20120827,,4,on surface,JA
+2901024,PSAL,20120827,,4,on surface,JA
+2901024,TEMP,20120827,,4,on surface,JA
+2901027,PSAL,20110926,,4,wrong value,JA
+2901040,PRES,20111121,,4,pressure sensor problem,JA
+2901040,PSAL,20111121,,4,pressure sensor problem,JA
+2901040,TEMP,20111121,,4,pressure sensor problem,JA
+2901054,PSAL,20111025,,3,fresh offset,JA
+2901658,PSAL,20120121,,3,fresh offset,JA
+2901678,PSAL,20130830,,4,sensor problem,JA
+2901678,TEMP,20130830,,4,sensor problem,JA
+2901682,PRES,20120523,,3,salty temp drift,JA
+2901682,PSAL,20120523,,3,salty drift,JA
+2901682,TEMP,20120523,,3,temp drift,JA
+2901692,PSAL,20120607,,3,salty drift,JA
+2902378,PSAL,20130111,,3,salty drift,JA
+2902416,PSAL,20141002,,4,sensor problem,JA
+2902425,PSAL,20150929,,3,salty drift,JA
+2902426,PSAL,20130721,,3,salty drift,JA
+2902428,PSAL,20150810,,3,salty drift,JA
+2902429,PSAL,20130324,,4,sensor problem,JA
+2902431,DOXY,20110509,,4,sensor problem,JA
+2902431,PSAL,20110509,,4,sensor problem,JA
+2902464,PSAL,20160212,,4,sensor problem,JA
+2902465,PSAL,20151231,,4,sensor problem,JA
+2902473,PSAL,20160118,,4,sensor problem,JA
+2902478,PSAL,20140223,,4,sensor problem,JA
+2902478,TEMP,20140223,,4,sensor problem,JA
+2902487,PSAL,20140524,,4,fresh salinity offset,JA
+2902498,PSAL,20140328,,4,sensor problem,JA
+2902501,PSAL,20140928,,4,sensor problem,JA
+2902503,PSAL,20140415,,4,sensor problem,JA
+2902505,PSAL,20140323,,4,sensor problem,JA
+2902505,TEMP,20140323,,3,sensor problem,JA
+2902536,PRES,20151009,20160924,4,sensor problem,JA
+2902536,PSAL,20151009,20160924,4,sensor problem,JA
+2902536,TEMP,20151009,20160924,4,sensor problem,JA
+29027,TEMP,20000124,,4,sensor probrem,JA
+2902945,PSAL,20160727,,3,salty drift,JA
+2902965,PSAL,20160206,,4,sensor problem,JA
+2902965,TEMP,20160611,,3,temp drift,JA
+2902975,PSAL,20161216,,3,salty drift,JA
+2902985,PSAL,20171115,,3,salty drift,JA
+2902986,PRES,20161002,,4,sensor problem,JA
+2902986,PSAL,20161002,,4,sensor problem,JA
+2902986,TEMP,20161002,,4,sensor problem,JA
+2903186,PSAL,20170821,,3,salty drift,JA
+29032,PSAL,20010628,,3,salty drift,JA
+29033,PSAL,20000711,,3,salty drift,JA
+29036,PSAL,20010701,,3,salty drift,JA
+29074,PSAL,20050825,,4,sensor probrem,JA
+4900393,PSAL,20050824,20050903,3,Altimetric QC error,JA
+4900945,PSAL,20110502,20110522,3,salinity drift,JA
+4900947,PRES,20111118,,4,pressure sensor problem,JA
+4900947,PSAL,20111118,,4,pressure sensor problem,JA
+4900947,TEMP,20111118,,4,pressure sensor problem,JA
+4901688,PSAL,20140618,,4,sensor problem,JA
+4901688,TEMP,20140618,,4,sensor problem,JA
+4901692,PSAL,20121129,,4,sensor problem,JA
+4901695,PRES,20130317,20130526,4,pressure sensor problem,JA
+4901695,PSAL,20130317,20130526,4,pressure sensor problem,JA
+4901695,TEMP,20130317,20130526,4,pressure sensor problem,JA
+4902368,PSAL,20170802,,4,sensor problem,JA
+4902374,PSAL,20170721,20170731,4,sensor problem,JA
+5900173,PSAL,20040501,,3,fresh offset,JA
+5900268,PSAL,20060424,,3,salty drift,JA
+5900283,PRES,20030817,,3,on shore,JA
+5900283,PSAL,20030817,,3,on shore,JA
+5900283,TEMP,20030817,,3,on shore,JA
+5900309,PRES,20040311,,3,on shore,JA
+5900309,PSAL,20040311,,3,on shore,JA
+5900309,TEMP,20040311,,3,on shore,JA
+5900451,PSAL,20020330,,3,fresh offset,JA
+5900799,PSAL,20050118,,3,fresh offset,JA
+5900812,PSAL,20061203,,3,salty drift,JA
+5900923,PRES,20071103,,4,pressure sensor problem,JA
+5900923,PSAL,20051015,20060211,3,fresh offset,JA
+5900923,PSAL,20071103,,4,pressure sensor problem,JA
+5900923,TEMP,20071103,,4,pressure sensor problem,JA
+5901529,PSAL,20070314,,3,fresh offset,JA
+5901560,PRES,20100509,,4,on shore,JA
+5901560,PSAL,20100509,,4,on shore,JA
+5901560,TEMP,20100509,,4,on shore,JA
+5901581,PRES,20090305,,4,wrong value,JA
+5901581,PSAL,20090305,,4,wrong value,JA
+5901581,TEMP,20090305,,4,wrong value,JA
+5901945,PSAL,20111202,,3,salty offset,JA
+5901954,PRES,20100513,,4,wrong value,JA
+5901954,PSAL,20100513,,4,wrong value,JA
+5901954,TEMP,20100513,,4,wrong value,JA
+5901955,PRES,20100817,,4,wrong value,JA
+5901955,PSAL,20100817,,4,wrong value,JA
+5901955,TEMP,20100817,,4,wrong value,JA
+5901956,PRES,20100713,,4,wrong value,JA
+5901956,PSAL,20100713,,4,wrong value,JA
+5901956,TEMP,20100713,,4,wrong value,JA
+5901960,PSAL,20130419,20130608,3,fresh offset,JA
+5901994,PRES,20130707,,4,sensor problem,JA
+5901994,PSAL,20130707,,4,sensor problem,JA
+5901994,TEMP,20130707,,4,sensor problem,JA
+5904874,PSAL,20130516,,4,sensor problem,JA
+5904931,PSAL,20140222,,4,sensor problem,JA
+5904931,TEMP,20140222,,4,sensor problem,JA
+2900434,PRES,20071129,20090422,4,salinity drift,KM
+2900434,PSAL,20071129,20090422,4,salinity drift,KM
+2900434,TEMP,20071129,20090422,4,salinity drift,KM
+2900440,PRES,20131028,20140424,4,sensor drift,KM
+2900440,PSAL,20131028,20140424,4,sensor drift,KM
+2900440,TEMP,20131028,20140424,4,sensor drift,KM
+2900441,PRES,20121203,20130401,4,sensor drift,KM
+2900441,PSAL,20121203,20130401,4,sensor drift,KM
+2900441,TEMP,20121203,20130401,4,sensor drift,KM
+2900635,PRES,20101010,20110418,4,salinity drift,KM
+2900635,PSAL,20101010,20110418,4,salinity drift,KM
+2900635,TEMP,20101010,20110418,4,salinity drift,KM
+2900638,PRES,20140903,20141015,4,sensor drift,KM
+2900638,PSAL,20140903,20141015,4,sensor drift,KM
+2900638,TEMP,20140903,20141015,4,sensor drift,KM
+2900890,PRES,20090116,20110615,4,sensor problem,KM
+2900890,PSAL,20090116,20110615,4,sensor problem,KM
+2900890,TEMP,20090116,20110615,4,sensor problem,KM
+2900603,PRES,20060717,,3,hit bottom and bad data after returned ,KO
+2900603,PSAL,20060717,,3,hit bottom and bad data after returned ,KO
+2900603,TEMP,20060717,,3,hit bottom and bad data after returned ,KO
+2901204,PRES,20101022,,3,hit bottom and bad data after returned ,KO
+2901204,PSAL,20101022,,3,hit bottom and bad data after returned ,KO
+2901204,TEMP,20101022,,3,hit bottom and bad data after returned ,KO
+2901209,PRES,20121001,,3,hit bottom and bad data after returned ,KO
+2901209,PSAL,20121001,,3,hit bottom and bad data after returned ,KO
+2901209,TEMP,20121001,,3,hit bottom and bad data after returned ,KO
+4900632,PRES,20060907,,4,TNPD problem,ME
+4900632,PSAL,20060907,,4,TNPD problem,ME
+4900632,TEMP,20060907,,4,TNPD problem,ME
+4901108,PRES,20090907,,4,TNPD problem,ME
+4901108,PSAL,20090907,,4,TNPD problem,ME
+4901108,TEMP,20090907,,4,TNPD problem,ME
+4901188,PSAL,20161101,,2,Salinity drift,ME
+4901777,PSAL,20170111,,3,Salinity drift,ME
+4901790,PSAL,20170810,,2,Salinity drift,ME
+4901792,PSAL,20170928,,3,Salinity drift,ME
+4901824,PSAL,20161217,,4,Salinity drift,ME
+4901824,TEMP,20161217,,4,Temperature drift,ME
+4901825,PSAL,20170926,,3,Salinity drift,ME

@@ -1,0 +1,726 @@
+netcdf \4900634/D4900634_077 {
+dimensions:
+	DATE_TIME = 14 ;
+	STRING256 = 256 ;
+	STRING64 = 64 ;
+	STRING32 = 32 ;
+	STRING16 = 16 ;
+	STRING8 = 8 ;
+	STRING4 = 4 ;
+	STRING2 = 2 ;
+	N_PROF = 1 ;
+	N_PARAM = 3 ;
+	N_LEVELS = 71 ;
+	N_CALIB = 2 ;
+	N_HISTORY = UNLIMITED ; // (9 currently)
+variables:
+	char DATA_TYPE(STRING16) ;
+		DATA_TYPE:long_name = "Data type" ;
+		DATA_TYPE:conventions = "Argo reference table 1" ;
+		DATA_TYPE:_FillValue = " " ;
+	char FORMAT_VERSION(STRING4) ;
+		FORMAT_VERSION:long_name = "File format version" ;
+		FORMAT_VERSION:_FillValue = " " ;
+	char HANDBOOK_VERSION(STRING4) ;
+		HANDBOOK_VERSION:long_name = "Data handbook version" ;
+		HANDBOOK_VERSION:_FillValue = " " ;
+	char REFERENCE_DATE_TIME(DATE_TIME) ;
+		REFERENCE_DATE_TIME:long_name = "Date of reference for Julian days" ;
+		REFERENCE_DATE_TIME:conventions = "YYYYMMDDHHMISS" ;
+		REFERENCE_DATE_TIME:_FillValue = " " ;
+	char DATE_CREATION(DATE_TIME) ;
+		DATE_CREATION:long_name = "Date of file creation" ;
+		DATE_CREATION:conventions = "YYYYMMDDHHMISS" ;
+		DATE_CREATION:_FillValue = " " ;
+	char DATE_UPDATE(DATE_TIME) ;
+		DATE_UPDATE:long_name = "Date of update of this file" ;
+		DATE_UPDATE:conventions = "YYYYMMDDHHMISS" ;
+		DATE_UPDATE:_FillValue = " " ;
+	char PLATFORM_NUMBER(N_PROF, STRING8) ;
+		PLATFORM_NUMBER:long_name = "Float unique identifier" ;
+		PLATFORM_NUMBER:conventions = "WMO float identifier : A9IIIII" ;
+		PLATFORM_NUMBER:_FillValue = " " ;
+	char PROJECT_NAME(N_PROF, STRING64) ;
+		PROJECT_NAME:long_name = "Name of the project" ;
+		PROJECT_NAME:_FillValue = " " ;
+	char PI_NAME(N_PROF, STRING64) ;
+		PI_NAME:long_name = "Name of the principal investigator" ;
+		PI_NAME:_FillValue = " " ;
+	char STATION_PARAMETERS(N_PROF, N_PARAM, STRING16) ;
+		STATION_PARAMETERS:long_name = "List of available parameters for the station" ;
+		STATION_PARAMETERS:conventions = "Argo reference table 3" ;
+		STATION_PARAMETERS:_FillValue = " " ;
+	int CYCLE_NUMBER(N_PROF) ;
+		CYCLE_NUMBER:long_name = "Float cycle number" ;
+		CYCLE_NUMBER:conventions = "0...N, 0 : launch cycle (if exists), 1 : first complete cycle" ;
+		CYCLE_NUMBER:_FillValue = 99999 ;
+	char DIRECTION(N_PROF) ;
+		DIRECTION:long_name = "Direction of the station profiles" ;
+		DIRECTION:conventions = "A: ascending profiles, D: descending profiles" ;
+		DIRECTION:_FillValue = " " ;
+	char DATA_CENTRE(N_PROF, STRING2) ;
+		DATA_CENTRE:long_name = "Data centre in charge of float data processing" ;
+		DATA_CENTRE:conventions = "Argo reference table 4" ;
+		DATA_CENTRE:_FillValue = " " ;
+	char DC_REFERENCE(N_PROF, STRING32) ;
+		DC_REFERENCE:long_name = "Station unique identifier in data centre" ;
+		DC_REFERENCE:conventions = "Data centre convention" ;
+		DC_REFERENCE:_FillValue = " " ;
+	char DATA_STATE_INDICATOR(N_PROF, STRING4) ;
+		DATA_STATE_INDICATOR:long_name = "Degree of processing the data have passed through" ;
+		DATA_STATE_INDICATOR:conventions = "Argo reference table 6" ;
+		DATA_STATE_INDICATOR:_FillValue = " " ;
+	char DATA_MODE(N_PROF) ;
+		DATA_MODE:long_name = "Delayed mode or real time data" ;
+		DATA_MODE:conventions = "R : real time; D : delayed mode; A : real time with adjustment" ;
+		DATA_MODE:_FillValue = " " ;
+	char PLATFORM_TYPE(N_PROF, STRING32) ;
+		PLATFORM_TYPE:long_name = "Type of float" ;
+		PLATFORM_TYPE:_FillValue = " " ;
+		PLATFORM_TYPE:conventions = "Argo reference table 23" ;
+	char FLOAT_SERIAL_NO(N_PROF, STRING32) ;
+		FLOAT_SERIAL_NO:long_name = "Serial number of the float" ;
+		FLOAT_SERIAL_NO:_FillValue = " " ;
+	char FIRMWARE_VERSION(N_PROF, STRING32) ;
+		FIRMWARE_VERSION:long_name = "Instrument firmware version" ;
+		FIRMWARE_VERSION:_FillValue = " " ;
+	char WMO_INST_TYPE(N_PROF, STRING4) ;
+		WMO_INST_TYPE:long_name = "Coded instrument type" ;
+		WMO_INST_TYPE:conventions = "Argo reference table 8" ;
+		WMO_INST_TYPE:_FillValue = " " ;
+	double JULD(N_PROF) ;
+		JULD:long_name = "Julian day (UTC) of the station relative to REFERENCE_DATE_TIME" ;
+		JULD:standard_name = "time" ;
+		JULD:units = "days since 1950-01-01 00:00:00 UTC" ;
+		JULD:conventions = "Relative julian days with decimal part (as parts of day)" ;
+		JULD:_FillValue = 999999. ;
+		JULD:axis = "T" ;
+		JULD:resolution = 1.e-05 ;
+	char JULD_QC(N_PROF) ;
+		JULD_QC:long_name = "Quality on date and time" ;
+		JULD_QC:conventions = "Argo reference table 2" ;
+		JULD_QC:_FillValue = " " ;
+	double JULD_LOCATION(N_PROF) ;
+		JULD_LOCATION:long_name = "Julian day (UTC) of the location relative to REFERENCE_DATE_TIME" ;
+		JULD_LOCATION:units = "days since 1950-01-01 00:00:00 UTC" ;
+		JULD_LOCATION:conventions = "Relative julian days with decimal part (as parts of day)" ;
+		JULD_LOCATION:_FillValue = 999999. ;
+		JULD_LOCATION:resolution = 1.e-05 ;
+	double LATITUDE(N_PROF) ;
+		LATITUDE:long_name = "Latitude of the station, best estimate" ;
+		LATITUDE:standard_name = "latitude" ;
+		LATITUDE:units = "degree_north" ;
+		LATITUDE:_FillValue = 99999. ;
+		LATITUDE:valid_min = -90. ;
+		LATITUDE:valid_max = 90. ;
+		LATITUDE:axis = "Y" ;
+		LATITUDE:reference = "WGS84" ;
+		LATITUDE:coordinate_reference_frame = "urn:ogc:crs:EPSG::4326" ;
+	double LONGITUDE(N_PROF) ;
+		LONGITUDE:long_name = "Longitude of the station, best estimate" ;
+		LONGITUDE:standard_name = "longitude" ;
+		LONGITUDE:units = "degree_east" ;
+		LONGITUDE:_FillValue = 99999. ;
+		LONGITUDE:valid_min = -180. ;
+		LONGITUDE:valid_max = 180. ;
+		LONGITUDE:axis = "X" ;
+		LONGITUDE:reference = "WGS84" ;
+		LONGITUDE:coordinate_reference_frame = "urn:ogc:crs:EPSG::4326" ;
+	char POSITION_QC(N_PROF) ;
+		POSITION_QC:long_name = "Quality on position (latitude and longitude)" ;
+		POSITION_QC:conventions = "Argo reference table 2" ;
+		POSITION_QC:_FillValue = " " ;
+	char POSITIONING_SYSTEM(N_PROF, STRING8) ;
+		POSITIONING_SYSTEM:long_name = "Positioning system" ;
+		POSITIONING_SYSTEM:_FillValue = " " ;
+	char PROFILE_PRES_QC(N_PROF) ;
+		PROFILE_PRES_QC:long_name = "Global quality flag of PRES profile" ;
+		PROFILE_PRES_QC:conventions = "Argo reference table 2a" ;
+		PROFILE_PRES_QC:_FillValue = " " ;
+	char PROFILE_TEMP_QC(N_PROF) ;
+		PROFILE_TEMP_QC:long_name = "Global quality flag of TEMP profile" ;
+		PROFILE_TEMP_QC:conventions = "Argo reference table 2a" ;
+		PROFILE_TEMP_QC:_FillValue = " " ;
+	char PROFILE_PSAL_QC(N_PROF) ;
+		PROFILE_PSAL_QC:long_name = "Global quality flag of PSAL profile" ;
+		PROFILE_PSAL_QC:conventions = "Argo reference table 2a" ;
+		PROFILE_PSAL_QC:_FillValue = " " ;
+	char VERTICAL_SAMPLING_SCHEME(N_PROF, STRING256) ;
+		VERTICAL_SAMPLING_SCHEME:long_name = "Vertical sampling scheme" ;
+		VERTICAL_SAMPLING_SCHEME:conventions = "Argo reference table 16" ;
+		VERTICAL_SAMPLING_SCHEME:_FillValue = " " ;
+	int CONFIG_MISSION_NUMBER(N_PROF) ;
+		CONFIG_MISSION_NUMBER:long_name = "Unique number denoting the missions performed by the float" ;
+		CONFIG_MISSION_NUMBER:conventions = "1...N, 1 : first complete mission" ;
+		CONFIG_MISSION_NUMBER:_FillValue = 99999 ;
+	float PRES(N_PROF, N_LEVELS) ;
+		PRES:long_name = "Sea water pressure, equals 0 at sea-level" ;
+		PRES:standard_name = "sea_water_pressure" ;
+		PRES:_FillValue = 99999.f ;
+		PRES:units = "decibar" ;
+		PRES:valid_min = 0.f ;
+		PRES:valid_max = 12000.f ;
+		PRES:C_format = "%7.1f" ;
+		PRES:FORTRAN_format = "F7.1" ;
+		PRES:resolution = 0.1f ;
+		PRES:axis = "Z" ;
+		PRES:coordinate_reference_frame = "urn:ogc:crs:EPSG::5113" ;
+	char PRES_QC(N_PROF, N_LEVELS) ;
+		PRES_QC:long_name = "quality flag" ;
+		PRES_QC:conventions = "Argo reference table 2" ;
+		PRES_QC:_FillValue = " " ;
+	float PRES_ADJUSTED(N_PROF, N_LEVELS) ;
+		PRES_ADJUSTED:long_name = "Sea water pressure, equals 0 at sea-level" ;
+		PRES_ADJUSTED:_FillValue = 99999.f ;
+		PRES_ADJUSTED:units = "decibar" ;
+		PRES_ADJUSTED:valid_min = 0.f ;
+		PRES_ADJUSTED:valid_max = 12000.f ;
+		PRES_ADJUSTED:C_format = "%7.1f" ;
+		PRES_ADJUSTED:FORTRAN_format = "F7.1" ;
+		PRES_ADJUSTED:resolution = 0.1f ;
+		PRES_ADJUSTED:standard_name = "sea_water_pressure" ;
+		PRES_ADJUSTED:axis = "X" ;
+	char PRES_ADJUSTED_QC(N_PROF, N_LEVELS) ;
+		PRES_ADJUSTED_QC:long_name = "quality flag" ;
+		PRES_ADJUSTED_QC:conventions = "Argo reference table 2" ;
+		PRES_ADJUSTED_QC:_FillValue = " " ;
+	float PRES_ADJUSTED_ERROR(N_PROF, N_LEVELS) ;
+		PRES_ADJUSTED_ERROR:long_name = "Contains the error on the adjusted values as determined by the delayed mode QC process" ;
+		PRES_ADJUSTED_ERROR:_FillValue = 99999.f ;
+		PRES_ADJUSTED_ERROR:units = "decibar" ;
+		PRES_ADJUSTED_ERROR:C_format = "%7.1f" ;
+		PRES_ADJUSTED_ERROR:FORTRAN_format = "F7.1" ;
+		PRES_ADJUSTED_ERROR:resolution = 0.1f ;
+	float TEMP(N_PROF, N_LEVELS) ;
+		TEMP:long_name = "Sea temperature in-situ ITS-90 scale" ;
+		TEMP:standard_name = "sea_water_temperature" ;
+		TEMP:_FillValue = 99999.f ;
+		TEMP:units = "degree_Celsius" ;
+		TEMP:valid_min = -2.5f ;
+		TEMP:valid_max = 40.f ;
+		TEMP:C_format = "%9.3f" ;
+		TEMP:FORTRAN_format = "F9.3" ;
+		TEMP:resolution = 0.001f ;
+	char TEMP_QC(N_PROF, N_LEVELS) ;
+		TEMP_QC:long_name = "quality flag" ;
+		TEMP_QC:conventions = "Argo reference table 2" ;
+		TEMP_QC:_FillValue = " " ;
+	float TEMP_ADJUSTED(N_PROF, N_LEVELS) ;
+		TEMP_ADJUSTED:long_name = "Sea temperature in-situ ITS-90 scale" ;
+		TEMP_ADJUSTED:_FillValue = 99999.f ;
+		TEMP_ADJUSTED:units = "degree_Celsius" ;
+		TEMP_ADJUSTED:valid_min = -2.5f ;
+		TEMP_ADJUSTED:valid_max = 40.f ;
+		TEMP_ADJUSTED:C_format = "%9.3f" ;
+		TEMP_ADJUSTED:FORTRAN_format = "F9.3" ;
+		TEMP_ADJUSTED:resolution = 0.001f ;
+		TEMP_ADJUSTED:standard_name = "sea_water_temperature" ;
+	char TEMP_ADJUSTED_QC(N_PROF, N_LEVELS) ;
+		TEMP_ADJUSTED_QC:long_name = "quality flag" ;
+		TEMP_ADJUSTED_QC:conventions = "Argo reference table 2" ;
+		TEMP_ADJUSTED_QC:_FillValue = " " ;
+	float TEMP_ADJUSTED_ERROR(N_PROF, N_LEVELS) ;
+		TEMP_ADJUSTED_ERROR:long_name = "Contains the error on the adjusted values as determined by the delayed mode QC process" ;
+		TEMP_ADJUSTED_ERROR:_FillValue = 99999.f ;
+		TEMP_ADJUSTED_ERROR:units = "degree_Celsius" ;
+		TEMP_ADJUSTED_ERROR:C_format = "%9.3f" ;
+		TEMP_ADJUSTED_ERROR:FORTRAN_format = "F9.3" ;
+		TEMP_ADJUSTED_ERROR:resolution = 0.001f ;
+	float PSAL(N_PROF, N_LEVELS) ;
+		PSAL:long_name = "Practical salinity" ;
+		PSAL:standard_name = "sea_water_salinity" ;
+		PSAL:_FillValue = 99999.f ;
+		PSAL:units = "psu" ;
+		PSAL:valid_min = 2.f ;
+		PSAL:valid_max = 41.f ;
+		PSAL:C_format = "%9.3f" ;
+		PSAL:FORTRAN_format = "F9.3" ;
+		PSAL:resolution = 0.001f ;
+	char PSAL_QC(N_PROF, N_LEVELS) ;
+		PSAL_QC:long_name = "quality flag" ;
+		PSAL_QC:conventions = "Argo reference table 2" ;
+		PSAL_QC:_FillValue = " " ;
+	float PSAL_ADJUSTED(N_PROF, N_LEVELS) ;
+		PSAL_ADJUSTED:long_name = "Practical salinity" ;
+		PSAL_ADJUSTED:_FillValue = 99999.f ;
+		PSAL_ADJUSTED:units = "psu" ;
+		PSAL_ADJUSTED:valid_min = 2.f ;
+		PSAL_ADJUSTED:valid_max = 41.f ;
+		PSAL_ADJUSTED:C_format = "%9.3f" ;
+		PSAL_ADJUSTED:FORTRAN_format = "F9.3" ;
+		PSAL_ADJUSTED:resolution = 0.001f ;
+		PSAL_ADJUSTED:standard_name = "sea_water_salinity" ;
+	char PSAL_ADJUSTED_QC(N_PROF, N_LEVELS) ;
+		PSAL_ADJUSTED_QC:long_name = "quality flag" ;
+		PSAL_ADJUSTED_QC:conventions = "Argo reference table 2" ;
+		PSAL_ADJUSTED_QC:_FillValue = " " ;
+	float PSAL_ADJUSTED_ERROR(N_PROF, N_LEVELS) ;
+		PSAL_ADJUSTED_ERROR:long_name = "Contains the error on the adjusted values as determined by the delayed mode QC process" ;
+		PSAL_ADJUSTED_ERROR:_FillValue = 99999.f ;
+		PSAL_ADJUSTED_ERROR:units = "psu" ;
+		PSAL_ADJUSTED_ERROR:C_format = "%9.3f" ;
+		PSAL_ADJUSTED_ERROR:FORTRAN_format = "F9.3" ;
+		PSAL_ADJUSTED_ERROR:resolution = 0.001f ;
+	char PARAMETER(N_PROF, N_CALIB, N_PARAM, STRING16) ;
+		PARAMETER:long_name = "List of parameters with calibration information" ;
+		PARAMETER:conventions = "Argo reference table 3" ;
+		PARAMETER:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_EQUATION(N_PROF, N_CALIB, N_PARAM, STRING256) ;
+		SCIENTIFIC_CALIB_EQUATION:long_name = "Calibration equation for this parameter" ;
+		SCIENTIFIC_CALIB_EQUATION:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_COEFFICIENT(N_PROF, N_CALIB, N_PARAM, STRING256) ;
+		SCIENTIFIC_CALIB_COEFFICIENT:long_name = "Calibration coefficients for this equation" ;
+		SCIENTIFIC_CALIB_COEFFICIENT:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_COMMENT(N_PROF, N_CALIB, N_PARAM, STRING256) ;
+		SCIENTIFIC_CALIB_COMMENT:long_name = "Comment applying to this parameter calibration" ;
+		SCIENTIFIC_CALIB_COMMENT:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_DATE(N_PROF, N_CALIB, N_PARAM, DATE_TIME) ;
+		SCIENTIFIC_CALIB_DATE:long_name = "Date of calibration" ;
+		SCIENTIFIC_CALIB_DATE:_FillValue = " " ;
+		SCIENTIFIC_CALIB_DATE:conventions = "YYYYMMDDHHMISS" ;
+	char HISTORY_INSTITUTION(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_INSTITUTION:long_name = "Institution which performed action" ;
+		HISTORY_INSTITUTION:conventions = "Argo reference table 4" ;
+		HISTORY_INSTITUTION:_FillValue = " " ;
+	char HISTORY_STEP(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_STEP:long_name = "Step in data processing" ;
+		HISTORY_STEP:conventions = "Argo reference table 12" ;
+		HISTORY_STEP:_FillValue = " " ;
+	char HISTORY_SOFTWARE(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_SOFTWARE:long_name = "Name of software which performed action" ;
+		HISTORY_SOFTWARE:conventions = "Institution dependent" ;
+		HISTORY_SOFTWARE:_FillValue = " " ;
+	char HISTORY_SOFTWARE_RELEASE(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_SOFTWARE_RELEASE:long_name = "Version/release of software which performed action" ;
+		HISTORY_SOFTWARE_RELEASE:conventions = "Institution dependent" ;
+		HISTORY_SOFTWARE_RELEASE:_FillValue = " " ;
+	char HISTORY_REFERENCE(N_HISTORY, N_PROF, STRING64) ;
+		HISTORY_REFERENCE:long_name = "Reference of database" ;
+		HISTORY_REFERENCE:conventions = "Institution dependent" ;
+		HISTORY_REFERENCE:_FillValue = " " ;
+	char HISTORY_DATE(N_HISTORY, N_PROF, DATE_TIME) ;
+		HISTORY_DATE:long_name = "Date the history record was created" ;
+		HISTORY_DATE:conventions = "YYYYMMDDHHMISS" ;
+		HISTORY_DATE:_FillValue = " " ;
+	char HISTORY_ACTION(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_ACTION:long_name = "Action performed on data" ;
+		HISTORY_ACTION:conventions = "Argo reference table 7" ;
+		HISTORY_ACTION:_FillValue = " " ;
+	char HISTORY_PARAMETER(N_HISTORY, N_PROF, STRING16) ;
+		HISTORY_PARAMETER:long_name = "Station parameter action is performed on" ;
+		HISTORY_PARAMETER:conventions = "Argo reference table 3" ;
+		HISTORY_PARAMETER:_FillValue = " " ;
+	float HISTORY_START_PRES(N_HISTORY, N_PROF) ;
+		HISTORY_START_PRES:long_name = "Start pressure action applied on" ;
+		HISTORY_START_PRES:_FillValue = 99999.f ;
+		HISTORY_START_PRES:units = "decibar" ;
+	float HISTORY_STOP_PRES(N_HISTORY, N_PROF) ;
+		HISTORY_STOP_PRES:long_name = "Stop pressure action applied on" ;
+		HISTORY_STOP_PRES:_FillValue = 99999.f ;
+		HISTORY_STOP_PRES:units = "decibar" ;
+	float HISTORY_PREVIOUS_VALUE(N_HISTORY, N_PROF) ;
+		HISTORY_PREVIOUS_VALUE:long_name = "Parameter/Flag previous value before action" ;
+		HISTORY_PREVIOUS_VALUE:_FillValue = 99999.f ;
+	char HISTORY_QCTEST(N_HISTORY, N_PROF, STRING16) ;
+		HISTORY_QCTEST:long_name = "Documentation of tests performed, tests failed (in hex form)" ;
+		HISTORY_QCTEST:conventions = "Write tests performed when ACTION=QCP$; tests failed when ACTION=QCF$" ;
+		HISTORY_QCTEST:_FillValue = " " ;
+
+// global attributes:
+		:title = "Argo float vertical profile" ;
+		:institution = "MEDS" ;
+		:source = "Argo float" ;
+		:history = "2015-05-22T20:18:44Z creation" ;
+		:references = "http://www.argodatamgt.org/Documentation" ;
+		:comment = " " ;
+		:user_manual_version = "3.1" ;
+		:Conventions = "Argo-3.1 CF-1.6" ;
+		:featureType = "trajectoryProfile" ;
+data:
+
+ DATA_TYPE = "Argo profile    " ;
+
+ FORMAT_VERSION = "3.1 " ;
+
+ HANDBOOK_VERSION = "1.2 " ;
+
+ REFERENCE_DATE_TIME = "19500101000000" ;
+
+ DATE_CREATION = "20150522201844" ;
+
+ DATE_UPDATE = "20150522201844" ;
+
+ PLATFORM_NUMBER =
+  "4900634 " ;
+
+ PROJECT_NAME =
+  "Canadian Argo                                                   " ;
+
+ PI_NAME =
+  "Blair Greenan                                                   " ;
+
+ STATION_PARAMETERS =
+  "PRES            ",
+  "TEMP            ",
+  "PSAL            " ;
+
+ CYCLE_NUMBER = 77 ;
+
+ DIRECTION = "A" ;
+
+ DATA_CENTRE =
+  "ME" ;
+
+ DC_REFERENCE =
+  "49006349660PF                   " ;
+
+ DATA_STATE_INDICATOR =
+  "2C+ " ;
+
+ DATA_MODE = "D" ;
+
+ PLATFORM_TYPE =
+  "APEX-SBE                        " ;
+
+ FLOAT_SERIAL_NO =
+  "2000                            " ;
+
+ FIRMWARE_VERSION =
+  "n/a                             " ;
+
+ WMO_INST_TYPE =
+  "846 " ;
+
+ JULD = 21066.6145833333 ;
+
+ JULD_QC = "1" ;
+
+ JULD_LOCATION = 21066.6145833333 ;
+
+ LATITUDE = 44.6529998779297 ;
+
+ LONGITUDE = -158.38200378418 ;
+
+ POSITION_QC = "1" ;
+
+ POSITIONING_SYSTEM =
+  "ARGOS   " ;
+
+ PROFILE_PRES_QC = "A" ;
+
+ PROFILE_TEMP_QC = "A" ;
+
+ PROFILE_PSAL_QC = "A" ;
+
+ VERTICAL_SAMPLING_SCHEME =
+  "Primary sampling: discrete                                                                                                                                                                                                                                      " ;
+
+ CONFIG_MISSION_NUMBER = 0 ;
+
+ PRES =
+      5.3,     9.6,    18.5,    29.4,    39.6,    49.5,    59.3,    69.1, 
+       79.2,    89.2,    99.4,   109.1,   119.6,   129.6,   139.2,   149.2, 
+      159.0,   169.5,   179.4,   189.1,   198.9,   208.9,   219.1,   228.9, 
+      239.2,   249.5,   259.2,   269.1,   279.3,   289.4,   299.3,   309.0, 
+      319.3,   329.4,   339.1,   349.0,   359.0,   378.7,   399.4,   449.5, 
+      499.0,   549.5,   599.2,   648.9,   699.2,   749.2,   798.9,   849.3, 
+      899.3,   949.0,   999.5,  1049.2,  1099.3,  1149.1,  1199.1,  1248.8, 
+     1298.8,  1349.0,  1399.2,  1449.2,  1499.2,  1549.4,  1599.3,  1649.0, 
+     1699.5,  1749.4,  1799.3,  1848.9,  1899.4,  1948.8,  1998.7 ;
+
+ PRES_QC =
+  "11111111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ PRES_ADJUSTED =
+      3.0,     7.3,    16.2,    27.1,    37.3,    47.2,    57.0,    66.8, 
+       76.9,    86.9,    97.1,   106.8,   117.3,   127.3,   136.9,   146.9, 
+      156.7,   167.2,   177.1,   186.8,   196.6,   206.6,   216.8,   226.6, 
+      236.9,   247.2,   256.9,   266.8,   277.0,   287.1,   297.0,   306.7, 
+      317.0,   327.1,   336.8,   346.7,   356.7,   376.4,   397.1,   447.2, 
+      496.7,   547.2,   596.9,   646.6,   696.9,   746.9,   796.6,   847.0, 
+      897.0,   946.7,   997.2,  1046.9,  1097.0,  1146.8,  1196.8,  1246.5, 
+     1296.5,  1346.7,  1396.9,  1446.9,  1496.9,  1547.1,  1597.0,  1646.7, 
+     1697.2,  1747.1,  1797.0,  1846.6,  1897.1,  1946.5,  1996.4 ;
+
+ PRES_ADJUSTED_QC =
+  "11111111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ PRES_ADJUSTED_ERROR =
+      2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4 ;
+
+ TEMP =
+     14.573,    14.573,    14.563,    12.156,     9.516,     8.935, 
+        8.032,     7.696,     7.209,     6.991,     6.974,     7.024, 
+        7.114,     7.005,     7.054,     7.169,     7.296,     7.336, 
+        7.459,     7.368,     7.296,     7.169,     7.044,     6.959, 
+        6.741,     6.672,     6.564,     6.514,     6.379,     6.256, 
+        6.128,     5.989,     5.827,     5.698,     5.599,     5.512, 
+        5.425,     5.247,     5.065,     4.699,     4.496,     4.337, 
+        4.166,     4.048,     3.883,     3.719,     3.589,     3.445, 
+        3.330,     3.209,     3.122,     3.020,     2.921,     2.847, 
+        2.769,     2.702,     2.637,     2.579,     2.509,     2.441, 
+        2.392,     2.344,     2.296,     2.248,     2.211,     2.175, 
+        2.148,     2.108,     2.071,     2.041,     1.998 ;
+
+ TEMP_QC =
+  "11211111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ TEMP_ADJUSTED =
+     14.573,    14.573,    14.563,    12.156,     9.516,     8.935, 
+        8.032,     7.696,     7.209,     6.991,     6.974,     7.024, 
+        7.114,     7.005,     7.054,     7.169,     7.296,     7.336, 
+        7.459,     7.368,     7.296,     7.169,     7.044,     6.959, 
+        6.741,     6.672,     6.564,     6.514,     6.379,     6.256, 
+        6.128,     5.989,     5.827,     5.698,     5.599,     5.512, 
+        5.425,     5.247,     5.065,     4.699,     4.496,     4.337, 
+        4.166,     4.048,     3.883,     3.719,     3.589,     3.445, 
+        3.330,     3.209,     3.122,     3.020,     2.921,     2.847, 
+        2.769,     2.702,     2.637,     2.579,     2.509,     2.441, 
+        2.392,     2.344,     2.296,     2.248,     2.211,     2.175, 
+        2.148,     2.108,     2.071,     2.041,     1.998 ;
+
+ TEMP_ADJUSTED_QC =
+  "11211111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ TEMP_ADJUSTED_ERROR =
+      0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002 ;
+
+ PSAL =
+     32.893,    32.894,    32.937,    33.109,    33.248,    33.305, 
+       33.344,    33.372,    33.346,    33.346,    33.367,    33.391, 
+       33.428,    33.446,    33.508,    33.574,    33.646,    33.709, 
+       33.798,    33.828,    33.836,    33.836,    33.849,    33.857, 
+       33.856,    33.871,    33.877,    33.888,    33.888,    33.892, 
+       33.894,    33.904,    33.898,    33.902,    33.907,    33.911, 
+       33.920,    33.924,    33.936,    33.965,    34.013,    34.069, 
+       34.103,    34.143,    34.177,    34.211,    34.238,    34.269, 
+       34.292,    34.315,    34.334,    34.351,    34.371,    34.388, 
+       34.405,    34.420,    34.433,    34.445,    34.459,    34.475, 
+       34.487,    34.498,    34.508,    34.518,    34.526,    34.534, 
+       34.541,    34.549,    34.557,    34.564,    34.573 ;
+
+ PSAL_QC =
+  "11211111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ PSAL_ADJUSTED =
+     32.898,    32.899,    32.942,    33.114,    33.253,    33.310, 
+       33.350,    33.378,    33.352,    33.352,    33.373,    33.397, 
+       33.434,    33.452,    33.514,    33.580,    33.652,    33.715, 
+       33.804,    33.834,    33.842,    33.842,    33.855,    33.863, 
+       33.862,    33.877,    33.883,    33.894,    33.894,    33.898, 
+       33.900,    33.910,    33.904,    33.908,    33.913,    33.917, 
+       33.926,    33.930,    33.942,    33.971,    34.019,    34.075, 
+       34.109,    34.149,    34.183,    34.217,    34.244,    34.275, 
+       34.298,    34.321,    34.340,    34.357,    34.377,    34.394, 
+       34.411,    34.426,    34.439,    34.451,    34.465,    34.481, 
+       34.493,    34.504,    34.514,    34.524,    34.532,    34.540, 
+       34.547,    34.555,    34.563,    34.570,    34.579 ;
+
+ PSAL_ADJUSTED_QC =
+  "11211111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ PSAL_ADJUSTED_ERROR =
+      0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010 ;
+
+ PARAMETER =
+  "PRES            ",
+  "TEMP            ",
+  "PSAL            ",
+  "PRES            ",
+  "TEMP            ",
+  "PSAL            " ;
+
+ SCIENTIFIC_CALIB_EQUATION =
+  "Pcorrected = Praw(n) - surface_pres_offset(n)+5                                                                                                                                                                                                                 ",
+  "                                                                                                                                                                                                                                                                ",
+  "                                                                                                                                                                                                                                                                ",
+  "PRES_ADJUSTED=PRES + coefficient (see procedure 3.2.1 in Argo DMQC manual v2.6)                                                                                                                                                                                 ",
+  "                                                                                                                                                                                                                                                                ",
+  "PSAL_ADJUSTED is calculated from a potential conductivity (ref to 0 dbar) multiplicative adjustment term r.                                                                                                                                                     " ;
+
+ SCIENTIFIC_CALIB_COEFFICIENT =
+  "surface_pres_offset = 6.0                                                                                                                                                                                                                                       ",
+  "                                                                                                                                                                                                                                                                ",
+  "COEFFICIENT r FOR CONDUCTIVITY IS 1.000198, +/- 0.0002441766                                                                                                                                                                                                    ",
+  "ADDITIVE COEFFICIENT FOR PRESSURE ADJUSTMENT IS -2.32db                                                                                                                                                                                                         ",
+  "                                                                                                                                                                                                                                                                ",
+  "r=1.00005, \261 4.662269e-005                                                                                                                                                                                                                                      " ;
+
+ SCIENTIFIC_CALIB_COMMENT =
+  "n/a                                                                                                                                                                                                                                                             ",
+  "n/a                                                                                                                                                                                                                                                             ",
+  "Visual piecewise linear fit done upon inspection of profiles 1 to 113. 2 breakpoints. RMS error between conductivity correction determined by DMQC software and linear interpolation is : 2.8092e-008.",
+  "PRES_ADJUSTED is calculated following the 3.2.1 procedure in the Argo Quality Control Manual version 2.6. No significant pressure drift was detected.Pressure evaluation done on 19-Dec-2012 10:19:02                                                           ",
+  "No approved method for delayed-mode qc on TEMP is available                                                                                                                                                                                                     ",
+  "Sensor drift detected. Adjusted salinity to OW(2010) statistical recommendation with CTD_2010V2(WOD2009+),ARGO_2011V1,BOTTLE_2008V1 as reference database. Mapping scales used are 56/52 (lon) 52/50 (lat).                                                     " ;
+
+ SCIENTIFIC_CALIB_DATE =
+  "20090302170146",
+  "20080905185109",
+  "20080905185109",
+  "20121219093007",
+  "20121219093007",
+  "20121219093007" ;
+
+ HISTORY_INSTITUTION =
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  " ;
+
+ HISTORY_STEP =
+  "RFMT",
+  "ARDP",
+  "ARGQ",
+  "ARGQ",
+  "ARUP",
+  "ARSQ",
+  "ARDU",
+  "ARGQ",
+  "ARSQ" ;
+
+ HISTORY_SOFTWARE =
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "WJO ",
+  "    ",
+  "    ",
+  "OW  " ;
+
+ HISTORY_SOFTWARE_RELEASE =
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "2.0b",
+  "1.0 ",
+  "    ",
+  "1.1 " ;
+
+ HISTORY_REFERENCE =
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "WOD2001 WITH MIN_MAP_ERR = 0.004                                ",
+  "                                                                ",
+  "                                                                ",
+  "CTD_2010V2(WOD2009+),ARGO_2011V1,BOTTLE_2008V1                  " ;
+
+ HISTORY_DATE =
+  "20070905000000",
+  "20070905000000",
+  "20121219093007",
+  "20070905000000",
+  "20070905000000",
+  "20081016000000",
+  "20090227000000",
+  "20121219093007",
+  "20121219093007" ;
+
+ HISTORY_ACTION =
+  "CR  ",
+  "CR  ",
+  "QCP$",
+  "QCF$",
+  "UP  ",
+  "QC  ",
+  "UP  ",
+  "CF  ",
+  "QCCV" ;
+
+ HISTORY_PARAMETER =
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "PSAL            ",
+  "RCRD            ",
+  "PSAL            ",
+  "                " ;
+
+ HISTORY_START_PRES =
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  18.5,
+  _ ;
+
+ HISTORY_STOP_PRES =
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  18.5,
+  _ ;
+
+ HISTORY_PREVIOUS_VALUE =
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  1,
+  _ ;
+
+ HISTORY_QCTEST =
+  "                ",
+  "                ",
+  "000FFBCE        ",
+  "0               ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                " ;
+}

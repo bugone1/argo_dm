@@ -1,0 +1,25 @@
+BASE=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\
+DATA=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\
+DNP=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\donotprocess\
+DONE=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\medsftp\alreadydone\
+INGESTEDC:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\ingested\
+limPRES=[-100 3000]
+%limSAL=[30 42]
+limSAL=[20 42]
+limTEMP=[-2.21 40]
+limDOXY=[-5 600]
+limTEMP_DOXY=[-2.5 40]
+MATLAB=C:\Users\maz\Desktop\MEDS Project\argo_dm\matlab_codes\ow_v2_x\
+MAX_DATA=150
+MEDSFTPC:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\medsftp\
+METAFILES=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\metafiles\
+MIN_MAP_ERR=.008
+minmaxSAL=[20 42]
+MODE=R
+NEW=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration/\data\new\
+OUT=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\output\
+PI=Blair Greenan
+RAWFLAGSPRES_DIR=C:\Users\maz\Desktop\MEDS Project\argo_dm\data\temppresraw\
+REDO=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data/new\redo\
+RUN_MODE=normal
+TECHFILES=C:\Users\maz\Desktop\MEDS Project\argo_dm\calibration\data\techfiles\

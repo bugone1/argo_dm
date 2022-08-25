@@ -1,0 +1,1515 @@
+netcdf D4901755_150.nc {
+dimensions:
+	DATE_TIME = 14 ;
+	STRING256 = 256 ;
+	STRING64 = 64 ;
+	STRING32 = 32 ;
+	STRING16 = 16 ;
+	STRING8 = 8 ;
+	STRING4 = 4 ;
+	STRING2 = 2 ;
+	N_PROF = 1 ;
+	N_PARAM = 3 ;
+	N_LEVELS = 563 ;
+	N_CALIB = 1 ;
+	N_HISTORY = 20 ;
+variables:
+	char DATA_TYPE(STRING16) ;
+		DATA_TYPE:long_name = "Data type" ;
+		DATA_TYPE:conventions = "Argo reference table 1" ;
+		DATA_TYPE:_FillValue = " " ;
+	char FORMAT_VERSION(STRING4) ;
+		FORMAT_VERSION:long_name = "File format version" ;
+		FORMAT_VERSION:_FillValue = " " ;
+	char HANDBOOK_VERSION(STRING4) ;
+		HANDBOOK_VERSION:long_name = "Data handbook version" ;
+		HANDBOOK_VERSION:_FillValue = " " ;
+	char REFERENCE_DATE_TIME(DATE_TIME) ;
+		REFERENCE_DATE_TIME:long_name = "Date of reference for Julian days" ;
+		REFERENCE_DATE_TIME:conventions = "YYYYMMDDHHMISS" ;
+		REFERENCE_DATE_TIME:_FillValue = " " ;
+	char DATE_CREATION(DATE_TIME) ;
+		DATE_CREATION:long_name = "Date of file creation" ;
+		DATE_CREATION:conventions = "YYYYMMDDHHMISS" ;
+		DATE_CREATION:_FillValue = " " ;
+	char DATE_UPDATE(DATE_TIME) ;
+		DATE_UPDATE:long_name = "Date of update of this file" ;
+		DATE_UPDATE:conventions = "YYYYMMDDHHMISS" ;
+		DATE_UPDATE:_FillValue = " " ;
+	char PLATFORM_NUMBER(N_PROF, STRING8) ;
+		PLATFORM_NUMBER:long_name = "Float unique identifier" ;
+		PLATFORM_NUMBER:conventions = "WMO float identifier : A9IIIII" ;
+		PLATFORM_NUMBER:_FillValue = " " ;
+	char PROJECT_NAME(N_PROF, STRING64) ;
+		PROJECT_NAME:long_name = "Name of the project" ;
+		PROJECT_NAME:_FillValue = " " ;
+	char PI_NAME(N_PROF, STRING64) ;
+		PI_NAME:long_name = "Name of the principal investigator" ;
+		PI_NAME:_FillValue = " " ;
+	char STATION_PARAMETERS(N_PROF, N_PARAM, STRING16) ;
+		STATION_PARAMETERS:long_name = "List of available parameters for the station" ;
+		STATION_PARAMETERS:conventions = "Argo reference table 3" ;
+		STATION_PARAMETERS:_FillValue = " " ;
+	int CYCLE_NUMBER(N_PROF) ;
+		CYCLE_NUMBER:long_name = "Float cycle number" ;
+		CYCLE_NUMBER:conventions = "0...N, 0 : launch cycle (if exists), 1 : first complete cycle" ;
+		CYCLE_NUMBER:_FillValue = 99999 ;
+	char DIRECTION(N_PROF) ;
+		DIRECTION:long_name = "Direction of the station profiles" ;
+		DIRECTION:conventions = "A: ascending profiles, D: descending profiles" ;
+		DIRECTION:_FillValue = " " ;
+	char DATA_CENTRE(N_PROF, STRING2) ;
+		DATA_CENTRE:long_name = "Data centre in charge of float data processing" ;
+		DATA_CENTRE:conventions = "Argo reference table 4" ;
+		DATA_CENTRE:_FillValue = " " ;
+	char DC_REFERENCE(N_PROF, STRING32) ;
+		DC_REFERENCE:long_name = "Station unique identifier in data centre" ;
+		DC_REFERENCE:conventions = "Data centre convention" ;
+		DC_REFERENCE:_FillValue = " " ;
+	char DATA_STATE_INDICATOR(N_PROF, STRING4) ;
+		DATA_STATE_INDICATOR:long_name = "Degree of processing the data have passed through" ;
+		DATA_STATE_INDICATOR:conventions = "Argo reference table 6" ;
+		DATA_STATE_INDICATOR:_FillValue = " " ;
+	char DATA_MODE(N_PROF) ;
+		DATA_MODE:long_name = "Delayed mode or real time data" ;
+		DATA_MODE:conventions = "R : real time; D : delayed mode; A : real time with adjustment" ;
+		DATA_MODE:_FillValue = " " ;
+	char PLATFORM_TYPE(N_PROF, STRING32) ;
+		PLATFORM_TYPE:long_name = "Type of float" ;
+		PLATFORM_TYPE:_FillValue = " " ;
+		PLATFORM_TYPE:conventions = "Argo reference table 23" ;
+	char FLOAT_SERIAL_NO(N_PROF, STRING32) ;
+		FLOAT_SERIAL_NO:long_name = "Serial number of the float" ;
+		FLOAT_SERIAL_NO:_FillValue = " " ;
+	char FIRMWARE_VERSION(N_PROF, STRING32) ;
+		FIRMWARE_VERSION:long_name = "Instrument firmware version" ;
+		FIRMWARE_VERSION:_FillValue = " " ;
+	char WMO_INST_TYPE(N_PROF, STRING4) ;
+		WMO_INST_TYPE:long_name = "Coded instrument type" ;
+		WMO_INST_TYPE:conventions = "Argo reference table 8" ;
+		WMO_INST_TYPE:_FillValue = " " ;
+	double JULD(N_PROF) ;
+		JULD:long_name = "Julian day (UTC) of the station relative to REFERENCE_DATE_TIME" ;
+		JULD:standard_name = "time" ;
+		JULD:units = "days since 1950-01-01 00:00:00 UTC" ;
+		JULD:conventions = "Relative julian days with decimal part (as parts of day)" ;
+		JULD:_FillValue = 999999. ;
+		JULD:axis = "T" ;
+		JULD:resolution = 1.e-05 ;
+	char JULD_QC(N_PROF) ;
+		JULD_QC:long_name = "Quality on date and time" ;
+		JULD_QC:conventions = "Argo reference table 2" ;
+		JULD_QC:_FillValue = " " ;
+	double JULD_LOCATION(N_PROF) ;
+		JULD_LOCATION:long_name = "Julian day (UTC) of the location relative to REFERENCE_DATE_TIME" ;
+		JULD_LOCATION:units = "days since 1950-01-01 00:00:00 UTC" ;
+		JULD_LOCATION:conventions = "Relative julian days with decimal part (as parts of day)" ;
+		JULD_LOCATION:_FillValue = 999999. ;
+		JULD_LOCATION:resolution = 1.e-05 ;
+	double LATITUDE(N_PROF) ;
+		LATITUDE:long_name = "Latitude of the station, best estimate" ;
+		LATITUDE:standard_name = "latitude" ;
+		LATITUDE:units = "degree_north" ;
+		LATITUDE:_FillValue = 99999. ;
+		LATITUDE:valid_min = -90. ;
+		LATITUDE:valid_max = 90. ;
+		LATITUDE:axis = "Y" ;
+		LATITUDE:reference = "WGS84" ;
+		LATITUDE:coordinate_reference_frame = "urn:ogc:crs:EPSG::4326" ;
+	double LONGITUDE(N_PROF) ;
+		LONGITUDE:long_name = "Longitude of the station, best estimate" ;
+		LONGITUDE:standard_name = "longitude" ;
+		LONGITUDE:units = "degree_east" ;
+		LONGITUDE:_FillValue = 99999. ;
+		LONGITUDE:valid_min = -180. ;
+		LONGITUDE:valid_max = 180. ;
+		LONGITUDE:axis = "X" ;
+		LONGITUDE:reference = "WGS84" ;
+		LONGITUDE:coordinate_reference_frame = "urn:ogc:crs:EPSG::4326" ;
+	char POSITION_QC(N_PROF) ;
+		POSITION_QC:long_name = "Quality on position (latitude and longitude)" ;
+		POSITION_QC:conventions = "Argo reference table 2" ;
+		POSITION_QC:_FillValue = " " ;
+	char POSITIONING_SYSTEM(N_PROF, STRING8) ;
+		POSITIONING_SYSTEM:long_name = "Positioning system" ;
+		POSITIONING_SYSTEM:_FillValue = " " ;
+	char PROFILE_PRES_QC(N_PROF) ;
+		PROFILE_PRES_QC:long_name = "Global quality flag of PRES profile" ;
+		PROFILE_PRES_QC:conventions = "Argo reference table 2a" ;
+		PROFILE_PRES_QC:_FillValue = " " ;
+	char PROFILE_TEMP_QC(N_PROF) ;
+		PROFILE_TEMP_QC:long_name = "Global quality flag of TEMP profile" ;
+		PROFILE_TEMP_QC:conventions = "Argo reference table 2a" ;
+		PROFILE_TEMP_QC:_FillValue = " " ;
+	char PROFILE_PSAL_QC(N_PROF) ;
+		PROFILE_PSAL_QC:long_name = "Global quality flag of PSAL profile" ;
+		PROFILE_PSAL_QC:conventions = "Argo reference table 2a" ;
+		PROFILE_PSAL_QC:_FillValue = " " ;
+	char VERTICAL_SAMPLING_SCHEME(N_PROF, STRING256) ;
+		VERTICAL_SAMPLING_SCHEME:long_name = "Vertical sampling scheme" ;
+		VERTICAL_SAMPLING_SCHEME:conventions = "Argo reference table 16" ;
+		VERTICAL_SAMPLING_SCHEME:_FillValue = " " ;
+	int CONFIG_MISSION_NUMBER(N_PROF) ;
+		CONFIG_MISSION_NUMBER:long_name = "Unique number denoting the missions performed by the float" ;
+		CONFIG_MISSION_NUMBER:conventions = "1...N, 1 : first complete mission" ;
+		CONFIG_MISSION_NUMBER:_FillValue = 99999 ;
+	float PRES(N_PROF, N_LEVELS) ;
+		PRES:long_name = "Sea water pressure, equals 0 at sea-level" ;
+		PRES:standard_name = "sea_water_pressure" ;
+		PRES:_FillValue = 99999.f ;
+		PRES:units = "decibar" ;
+		PRES:valid_min = 0.f ;
+		PRES:valid_max = 12000.f ;
+		PRES:C_format = "%7.1f" ;
+		PRES:FORTRAN_format = "F7.1" ;
+		PRES:resolution = 0.1f ;
+		PRES:axis = "Z" ;
+		PRES:coordinate_reference_frame = "urn:ogc:crs:EPSG::5113" ;
+	char PRES_QC(N_PROF, N_LEVELS) ;
+		PRES_QC:long_name = "quality flag" ;
+		PRES_QC:conventions = "Argo reference table 2" ;
+		PRES_QC:_FillValue = " " ;
+	float PRES_ADJUSTED(N_PROF, N_LEVELS) ;
+		PRES_ADJUSTED:long_name = "Sea water pressure, equals 0 at sea-level" ;
+		PRES_ADJUSTED:_FillValue = 99999.f ;
+		PRES_ADJUSTED:units = "decibar" ;
+		PRES_ADJUSTED:valid_min = 0.f ;
+		PRES_ADJUSTED:valid_max = 12000.f ;
+		PRES_ADJUSTED:C_format = "%7.1f" ;
+		PRES_ADJUSTED:FORTRAN_format = "F7.1" ;
+		PRES_ADJUSTED:resolution = 0.1f ;
+		PRES_ADJUSTED:standard_name = "sea_water_pressure" ;
+		PRES_ADJUSTED:axis = "X" ;
+	char PRES_ADJUSTED_QC(N_PROF, N_LEVELS) ;
+		PRES_ADJUSTED_QC:long_name = "quality flag" ;
+		PRES_ADJUSTED_QC:conventions = "Argo reference table 2" ;
+		PRES_ADJUSTED_QC:_FillValue = " " ;
+	float PRES_ADJUSTED_ERROR(N_PROF, N_LEVELS) ;
+		PRES_ADJUSTED_ERROR:long_name = "Contains the error on the adjusted values as determined by the delayed mode QC process" ;
+		PRES_ADJUSTED_ERROR:_FillValue = 99999.f ;
+		PRES_ADJUSTED_ERROR:units = "decibar" ;
+		PRES_ADJUSTED_ERROR:C_format = "%7.1f" ;
+		PRES_ADJUSTED_ERROR:FORTRAN_format = "F7.1" ;
+		PRES_ADJUSTED_ERROR:resolution = 0.1f ;
+	float TEMP(N_PROF, N_LEVELS) ;
+		TEMP:long_name = "Sea temperature in-situ ITS-90 scale" ;
+		TEMP:standard_name = "sea_water_temperature" ;
+		TEMP:_FillValue = 99999.f ;
+		TEMP:units = "degree_Celsius" ;
+		TEMP:valid_min = -2.5f ;
+		TEMP:valid_max = 40.f ;
+		TEMP:C_format = "%9.3f" ;
+		TEMP:FORTRAN_format = "F9.3" ;
+		TEMP:resolution = 0.001f ;
+	char TEMP_QC(N_PROF, N_LEVELS) ;
+		TEMP_QC:long_name = "quality flag" ;
+		TEMP_QC:conventions = "Argo reference table 2" ;
+		TEMP_QC:_FillValue = " " ;
+	float TEMP_ADJUSTED(N_PROF, N_LEVELS) ;
+		TEMP_ADJUSTED:long_name = "Sea temperature in-situ ITS-90 scale" ;
+		TEMP_ADJUSTED:_FillValue = 99999.f ;
+		TEMP_ADJUSTED:units = "degree_Celsius" ;
+		TEMP_ADJUSTED:valid_min = -2.5f ;
+		TEMP_ADJUSTED:valid_max = 40.f ;
+		TEMP_ADJUSTED:C_format = "%9.3f" ;
+		TEMP_ADJUSTED:FORTRAN_format = "F9.3" ;
+		TEMP_ADJUSTED:resolution = 0.001f ;
+		TEMP_ADJUSTED:standard_name = "sea_water_temperature" ;
+	char TEMP_ADJUSTED_QC(N_PROF, N_LEVELS) ;
+		TEMP_ADJUSTED_QC:long_name = "quality flag" ;
+		TEMP_ADJUSTED_QC:conventions = "Argo reference table 2" ;
+		TEMP_ADJUSTED_QC:_FillValue = " " ;
+	float TEMP_ADJUSTED_ERROR(N_PROF, N_LEVELS) ;
+		TEMP_ADJUSTED_ERROR:long_name = "Contains the error on the adjusted values as determined by the delayed mode QC process" ;
+		TEMP_ADJUSTED_ERROR:_FillValue = 99999.f ;
+		TEMP_ADJUSTED_ERROR:units = "degree_Celsius" ;
+		TEMP_ADJUSTED_ERROR:C_format = "%9.3f" ;
+		TEMP_ADJUSTED_ERROR:FORTRAN_format = "F9.3" ;
+		TEMP_ADJUSTED_ERROR:resolution = 0.001f ;
+	float PSAL(N_PROF, N_LEVELS) ;
+		PSAL:long_name = "Practical salinity" ;
+		PSAL:standard_name = "sea_water_salinity" ;
+		PSAL:_FillValue = 99999.f ;
+		PSAL:units = "psu" ;
+		PSAL:valid_min = 2.f ;
+		PSAL:valid_max = 41.f ;
+		PSAL:C_format = "%9.3f" ;
+		PSAL:FORTRAN_format = "F9.3" ;
+		PSAL:resolution = 0.001f ;
+	char PSAL_QC(N_PROF, N_LEVELS) ;
+		PSAL_QC:long_name = "quality flag" ;
+		PSAL_QC:conventions = "Argo reference table 2" ;
+		PSAL_QC:_FillValue = " " ;
+	float PSAL_ADJUSTED(N_PROF, N_LEVELS) ;
+		PSAL_ADJUSTED:long_name = "Practical salinity" ;
+		PSAL_ADJUSTED:_FillValue = 99999.f ;
+		PSAL_ADJUSTED:units = "psu" ;
+		PSAL_ADJUSTED:valid_min = 2.f ;
+		PSAL_ADJUSTED:valid_max = 41.f ;
+		PSAL_ADJUSTED:C_format = "%9.3f" ;
+		PSAL_ADJUSTED:FORTRAN_format = "F9.3" ;
+		PSAL_ADJUSTED:resolution = 0.001f ;
+		PSAL_ADJUSTED:standard_name = "sea_water_salinity" ;
+	char PSAL_ADJUSTED_QC(N_PROF, N_LEVELS) ;
+		PSAL_ADJUSTED_QC:long_name = "quality flag" ;
+		PSAL_ADJUSTED_QC:conventions = "Argo reference table 2" ;
+		PSAL_ADJUSTED_QC:_FillValue = " " ;
+	float PSAL_ADJUSTED_ERROR(N_PROF, N_LEVELS) ;
+		PSAL_ADJUSTED_ERROR:long_name = "Contains the error on the adjusted values as determined by the delayed mode QC process" ;
+		PSAL_ADJUSTED_ERROR:_FillValue = 99999.f ;
+		PSAL_ADJUSTED_ERROR:units = "psu" ;
+		PSAL_ADJUSTED_ERROR:C_format = "%9.3f" ;
+		PSAL_ADJUSTED_ERROR:FORTRAN_format = "F9.3" ;
+		PSAL_ADJUSTED_ERROR:resolution = 0.001f ;
+	char PARAMETER(N_PROF, N_CALIB, N_PARAM, STRING16) ;
+		PARAMETER:long_name = "List of parameters with calibration information" ;
+		PARAMETER:conventions = "Argo reference table 3" ;
+		PARAMETER:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_EQUATION(N_PROF, N_CALIB, N_PARAM, STRING256) ;
+		SCIENTIFIC_CALIB_EQUATION:long_name = "Calibration equation for this parameter" ;
+		SCIENTIFIC_CALIB_EQUATION:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_COEFFICIENT(N_PROF, N_CALIB, N_PARAM, STRING256) ;
+		SCIENTIFIC_CALIB_COEFFICIENT:long_name = "Calibration coefficients for this equation" ;
+		SCIENTIFIC_CALIB_COEFFICIENT:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_COMMENT(N_PROF, N_CALIB, N_PARAM, STRING256) ;
+		SCIENTIFIC_CALIB_COMMENT:long_name = "Comment applying to this parameter calibration" ;
+		SCIENTIFIC_CALIB_COMMENT:_FillValue = " " ;
+	char SCIENTIFIC_CALIB_DATE(N_PROF, N_CALIB, N_PARAM, DATE_TIME) ;
+		SCIENTIFIC_CALIB_DATE:long_name = "Date of calibration" ;
+		SCIENTIFIC_CALIB_DATE:_FillValue = " " ;
+		SCIENTIFIC_CALIB_DATE:conventions = "YYYYMMDDHHMISS" ;
+	char HISTORY_INSTITUTION(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_INSTITUTION:long_name = "Institution which performed action" ;
+		HISTORY_INSTITUTION:conventions = "Argo reference table 4" ;
+		HISTORY_INSTITUTION:_FillValue = " " ;
+	char HISTORY_STEP(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_STEP:long_name = "Step in data processing" ;
+		HISTORY_STEP:conventions = "Argo reference table 12" ;
+		HISTORY_STEP:_FillValue = " " ;
+	char HISTORY_SOFTWARE(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_SOFTWARE:long_name = "Name of software which performed action" ;
+		HISTORY_SOFTWARE:conventions = "Institution dependent" ;
+		HISTORY_SOFTWARE:_FillValue = " " ;
+	char HISTORY_SOFTWARE_RELEASE(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_SOFTWARE_RELEASE:long_name = "Version/release of software which performed action" ;
+		HISTORY_SOFTWARE_RELEASE:conventions = "Institution dependent" ;
+		HISTORY_SOFTWARE_RELEASE:_FillValue = " " ;
+	char HISTORY_REFERENCE(N_HISTORY, N_PROF, STRING64) ;
+		HISTORY_REFERENCE:long_name = "Reference of database" ;
+		HISTORY_REFERENCE:conventions = "Institution dependent" ;
+		HISTORY_REFERENCE:_FillValue = " " ;
+	char HISTORY_DATE(N_HISTORY, N_PROF, DATE_TIME) ;
+		HISTORY_DATE:long_name = "Date the history record was created" ;
+		HISTORY_DATE:conventions = "YYYYMMDDHHMISS" ;
+		HISTORY_DATE:_FillValue = " " ;
+	char HISTORY_ACTION(N_HISTORY, N_PROF, STRING4) ;
+		HISTORY_ACTION:long_name = "Action performed on data" ;
+		HISTORY_ACTION:conventions = "Argo reference table 7" ;
+		HISTORY_ACTION:_FillValue = " " ;
+	char HISTORY_PARAMETER(N_HISTORY, N_PROF, STRING16) ;
+		HISTORY_PARAMETER:long_name = "Station parameter action is performed on" ;
+		HISTORY_PARAMETER:conventions = "Argo reference table 3" ;
+		HISTORY_PARAMETER:_FillValue = " " ;
+	float HISTORY_START_PRES(N_HISTORY, N_PROF) ;
+		HISTORY_START_PRES:long_name = "Start pressure action applied on" ;
+		HISTORY_START_PRES:_FillValue = 99999.f ;
+		HISTORY_START_PRES:units = "decibar" ;
+	float HISTORY_STOP_PRES(N_HISTORY, N_PROF) ;
+		HISTORY_STOP_PRES:long_name = "Stop pressure action applied on" ;
+		HISTORY_STOP_PRES:_FillValue = 99999.f ;
+		HISTORY_STOP_PRES:units = "decibar" ;
+	float HISTORY_PREVIOUS_VALUE(N_HISTORY, N_PROF) ;
+		HISTORY_PREVIOUS_VALUE:long_name = "Parameter/Flag previous value before action" ;
+		HISTORY_PREVIOUS_VALUE:_FillValue = 99999.f ;
+	char HISTORY_QCTEST(N_HISTORY, N_PROF, STRING16) ;
+		HISTORY_QCTEST:long_name = "Documentation of tests performed, tests failed (in hex form)" ;
+		HISTORY_QCTEST:conventions = "Write tests performed when ACTION=QCP$; tests failed when ACTION=QCF$" ;
+		HISTORY_QCTEST:_FillValue = " " ;
+
+// global attributes:
+		:title = "Argo float vertical profile" ;
+		:institution = "MEDS" ;
+		:source = "Argo float" ;
+		:history = "2017-09-01T15:46:19Z creation" ;
+		:references = "http://www.argodatamgt.org/Documentation" ;
+		:comment = " " ;
+		:user_manual_version = "3.1" ;
+		:Conventions = "Argo-3.1 CF-1.6" ;
+		:featureType = "trajectoryProfile" ;
+data:
+
+ DATA_TYPE = "Argo profile    " ;
+
+ FORMAT_VERSION = "3.1 " ;
+
+ HANDBOOK_VERSION = "1.2 " ;
+
+ REFERENCE_DATE_TIME = "19500101000000" ;
+
+ DATE_CREATION = "20170901114619" ;
+
+ DATE_UPDATE = "20170914184235" ;
+
+ PLATFORM_NUMBER =
+  "4901755 " ;
+
+ PROJECT_NAME =
+  "Argo Canada                                                     " ;
+
+ PI_NAME =
+  "Blair Greenan                                                   " ;
+
+ STATION_PARAMETERS =
+  "PRES            ",
+  "TEMP            ",
+  "PSAL            " ;
+
+ CYCLE_NUMBER = 150 ;
+
+ DIRECTION = "A" ;
+
+ DATA_CENTRE =
+  "ME" ;
+
+ DC_REFERENCE =
+  "4901755_9948_TE                 " ;
+
+ DATA_STATE_INDICATOR =
+  "2C+ " ;
+
+ DATA_MODE = "D" ;
+
+ PLATFORM_TYPE =
+  "NOVA                            " ;
+
+ FLOAT_SERIAL_NO =
+  "85                              " ;
+
+ FIRMWARE_VERSION =
+  "n/a                             " ;
+
+ WMO_INST_TYPE =
+  "865 " ;
+
+ JULD = 24655.9875 ;
+
+ JULD_QC = "1" ;
+
+ JULD_LOCATION = 24655.9875 ;
+
+ LATITUDE = 42.2134017944336 ;
+
+ LONGITUDE = -51.3200988769531 ;
+
+ POSITION_QC = "1" ;
+
+ POSITIONING_SYSTEM =
+  "GPS     " ;
+
+ PROFILE_PRES_QC = "B" ;
+
+ PROFILE_TEMP_QC = "B" ;
+
+ PROFILE_PSAL_QC = "B" ;
+
+ VERTICAL_SAMPLING_SCHEME =
+  "Primary sampling: averaged [2-dbar bin average]                                                                                                                                                                                                                 " ;
+
+ CONFIG_MISSION_NUMBER = 1 ;
+
+ PRES =
+      3.0,     2.2,     4.0,     5.0,     6.0,     8.0,     7.1,     9.0, 
+       10.0,    11.0,    12.9,    12.0,    13.9,    15.0,    16.1,    17.1, 
+       18.1,    20.0,    19.1,    21.0,    22.0,    23.0,    24.0,    25.0, 
+       26.0,    27.0,    28.0,    29.0,    30.0,    31.0,    32.0,    33.1, 
+       35.0,    34.1,    36.0,    37.0,    38.1,    39.1,    41.0,    40.1, 
+       42.0,    43.0,    44.0,    46.0,    45.1,    47.0,    48.0,    49.0, 
+       50.0,    51.0,    52.0,    53.0,    54.0,    55.0,    56.0,    57.0, 
+       58.0,    59.0,    60.0,    61.0,    62.0,    63.0,    64.0,    65.0, 
+       66.1,    68.0,    67.1,    69.0,    70.0,    71.0,    72.0,    73.0, 
+       74.0,    75.0,    76.0,    78.9,    78.0,    77.1,    80.0,    82.0, 
+       81.1,    83.0,    84.0,    86.0,    85.1,    87.0,    88.0,    89.0, 
+       90.0,    91.1,    93.0,    92.1,    94.0,    95.0,    96.0,    97.0, 
+       98.0,    99.0,   100.0,   102.4,   105.0,   107.5,   110.0,   112.5, 
+      115.0,   117.4,   119.9,   122.5,   125.0,   127.5,   130.0,   132.5, 
+      135.0,   137.5,   140.0,   142.5,   145.0,   147.5,   150.0,   152.5, 
+      155.0,   157.5,   160.0,   162.5,   165.0,   167.5,   170.0,   172.6, 
+      175.0,   177.5,   180.0,   182.5,   185.0,   187.5,   190.0,   192.5, 
+      195.0,   197.5,   200.0,   202.5,   205.0,   207.5,   210.0,   212.5, 
+      215.0,   217.5,   220.0,   222.5,   225.0,   227.6,   230.0,   232.5, 
+      235.0,   237.5,   240.0,   242.5,   245.0,   247.5,   250.0,   252.5, 
+      255.0,   257.5,   260.0,   262.5,   265.0,   267.5,   270.0,   272.5, 
+      275.0,   277.5,   280.0,   282.5,   285.0,   287.5,   290.0,   292.5, 
+      295.0,   297.6,   300.0,   302.5,   305.0,   307.5,   310.0,   312.5, 
+      315.0,   317.6,   320.0,   322.5,   325.1,   327.6,   330.0,   332.5, 
+      335.0,   337.5,   340.0,   342.5,   345.0,   347.5,   350.0,   352.5, 
+      355.0,   357.5,   360.1,   362.5,   365.0,   367.6,   370.0,   372.5, 
+      374.9,   377.5,   380.1,   382.5,   385.0,   387.5,   390.0,   392.5, 
+      395.0,   397.5,   400.0,   402.5,   405.1,   407.6,   410.0,   412.5, 
+      415.1,   417.6,   420.1,   422.5,   425.0,   427.5,   430.0,   432.5, 
+      435.0,   437.5,   440.0,   442.5,   445.0,   447.5,   450.1,   452.5, 
+      455.0,   457.5,   460.1,   462.5,   465.0,   467.5,   470.0,   472.5, 
+      475.0,   477.5,   480.0,   482.5,   485.0,   487.5,   490.0,   492.5, 
+      495.0,   497.5,   500.0,   505.0,   510.0,   515.0,   519.9,   525.0, 
+      530.0,   535.0,   540.0,   545.0,   550.1,   555.0,   560.0,   565.0, 
+      570.1,   575.1,   580.1,   585.1,   590.0,   595.0,   600.0,   605.0, 
+      610.0,   615.0,   620.0,   625.0,   630.0,   635.0,   640.0,   645.0, 
+      650.0,   655.0,   660.0,   665.0,   670.0,   675.1,   680.1,   685.0, 
+      690.0,   695.0,   700.0,   705.0,   710.0,   714.9,   720.0,   725.0, 
+      730.1,   735.0,   740.0,   745.0,   750.0,   755.1,   760.0,   765.0, 
+      770.0,   775.0,   780.0,   785.0,   790.1,   795.1,   800.1,   805.0, 
+      809.9,   814.9,   820.0,   825.0,   830.0,   835.0,   840.0,   845.1, 
+      850.0,   855.0,   860.0,   865.0,   870.0,   875.0,   880.0,   884.9, 
+      890.0,   895.0,   900.0,   905.0,   910.0,   915.0,   919.9,   925.0, 
+      930.0,   934.9,   939.9,   944.9,   950.0,   955.0,   960.0,   965.0, 
+      970.0,   975.0,   979.9,   985.0,   990.1,   995.0,  1000.0,  1005.0, 
+     1010.0,  1015.0,  1020.0,  1024.9,  1030.0,  1035.0,  1040.1,  1045.0, 
+     1050.0,  1055.1,  1060.0,  1064.9,  1070.0,  1075.0,  1080.0,  1084.9, 
+     1090.0,  1095.0,  1100.0,  1105.0,  1110.1,  1115.0,  1119.9,  1125.0, 
+     1130.0,  1135.0,  1140.0,  1145.0,  1150.0,  1155.1,  1160.0,  1165.0, 
+     1170.0,  1175.0,  1180.0,  1185.0,  1190.1,  1195.0,  1199.9,  1205.0, 
+     1210.0,  1215.0,  1220.0,  1225.0,  1230.0,  1235.0,  1239.9,  1245.0, 
+     1250.0,  1255.0,  1260.1,  1265.0,  1270.0,  1275.1,  1280.0,  1285.0, 
+     1290.0,  1295.0,  1300.1,  1305.0,  1310.0,  1314.9,  1319.9,  1324.9, 
+     1330.0,  1335.0,  1340.0,  1345.1,  1350.0,  1355.0,  1359.9,  1365.0, 
+     1370.0,  1375.0,  1380.0,  1385.0,  1390.1,  1395.0,  1400.0,  1405.0, 
+     1410.0,  1415.0,  1420.0,  1425.0,  1429.9,  1434.9,  1440.0,  1445.0, 
+     1450.0,  1455.0,  1460.0,  1465.0,  1470.0,  1475.0,  1480.0,  1485.0, 
+     1490.0,  1495.0,  1500.0,  1505.0,  1510.0,  1515.0,  1520.0,  1525.0, 
+     1530.0,  1535.1,  1540.1,  1545.0,  1550.0,  1555.0,  1560.0,  1565.0, 
+     1570.0,  1575.0,  1580.0,  1585.0,  1590.1,  1595.0,  1600.0,  1605.0, 
+     1610.0,  1615.0,  1620.0,  1624.9,  1630.0,  1635.0,  1640.0,  1645.1, 
+     1650.1,  1655.0,  1660.0,  1665.0,  1670.0,  1675.0,  1680.0,  1685.0, 
+     1690.0,  1695.0,  1700.0,  1705.0,  1710.0,  1715.0,  1720.1,  1725.0, 
+     1730.0,  1735.0,  1740.0,  1745.0,  1750.1,  1755.0,  1760.1,  1765.0, 
+     1770.0,  1775.0,  1780.0,  1785.0,  1790.0,  1794.9,  1799.9,  1805.0, 
+     1810.0,  1815.0,  1820.0,  1824.9,  1829.9,  1834.9,  1839.9,  1845.0, 
+     1850.0,  1855.0,  1860.0,  1865.0,  1870.0,  1875.0,  1880.0,  1885.0, 
+     1890.0,  1895.0,  1900.0,  1905.0,  1910.0,  1915.0,  1920.0,  1925.0, 
+     1930.0,  1935.0,  1940.0,  1945.1,  1950.0,  1955.0,  1960.0,  1965.0, 
+     1969.9,  1974.9,  1979.9,  1984.9,  1989.9,  1995.0,  2000.0,  2005.0, 
+     2010.0,  2015.0,  2020.0 ;
+
+ PRES_QC =
+  "14111141111411111141111111111111141111141111411111111111111111111141111111114411411141111114111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ PRES_ADJUSTED =
+      3.0, _,     4.0,     5.0,     6.0,     8.0, _,     9.0,    10.0, 
+       11.0,    12.9, _,    13.9,    15.0,    16.1,    17.1,    18.1, 
+       20.0, _,    21.0,    22.0,    23.0,    24.0,    25.0,    26.0, 
+       27.0,    28.0,    29.0,    30.0,    31.0,    32.0,    33.1,    35.0, 
+    _,    36.0,    37.0,    38.1,    39.1,    41.0, _,    42.0,    43.0, 
+       44.0,    46.0, _,    47.0,    48.0,    49.0,    50.0,    51.0, 
+       52.0,    53.0,    54.0,    55.0,    56.0,    57.0,    58.0,    59.0, 
+       60.0,    61.0,    62.0,    63.0,    64.0,    65.0,    66.1,    68.0, 
+    _,    69.0,    70.0,    71.0,    72.0,    73.0,    74.0,    75.0, 
+       76.0,    78.9, _, _,    80.0,    82.0, _,    83.0,    84.0,    86.0, 
+    _,    87.0,    88.0,    89.0,    90.0,    91.1,    93.0, _,    94.0, 
+       95.0,    96.0,    97.0,    98.0,    99.0,   100.0,   102.4,   105.0, 
+      107.5,   110.0,   112.5,   115.0,   117.4,   119.9,   122.5,   125.0, 
+      127.5,   130.0,   132.5,   135.0,   137.5,   140.0,   142.5,   145.0, 
+      147.5,   150.0,   152.5,   155.0,   157.5,   160.0,   162.5,   165.0, 
+      167.5,   170.0,   172.6,   175.0,   177.5,   180.0,   182.5,   185.0, 
+      187.5,   190.0,   192.5,   195.0,   197.5,   200.0,   202.5,   205.0, 
+      207.5,   210.0,   212.5,   215.0,   217.5,   220.0,   222.5,   225.0, 
+      227.6,   230.0,   232.5,   235.0,   237.5,   240.0,   242.5,   245.0, 
+      247.5,   250.0,   252.5,   255.0,   257.5,   260.0,   262.5,   265.0, 
+      267.5,   270.0,   272.5,   275.0,   277.5,   280.0,   282.5,   285.0, 
+      287.5,   290.0,   292.5,   295.0,   297.6,   300.0,   302.5,   305.0, 
+      307.5,   310.0,   312.5,   315.0,   317.6,   320.0,   322.5,   325.1, 
+      327.6,   330.0,   332.5,   335.0,   337.5,   340.0,   342.5,   345.0, 
+      347.5,   350.0,   352.5,   355.0,   357.5,   360.1,   362.5,   365.0, 
+      367.6,   370.0,   372.5,   374.9,   377.5,   380.1,   382.5,   385.0, 
+      387.5,   390.0,   392.5,   395.0,   397.5,   400.0,   402.5,   405.1, 
+      407.6,   410.0,   412.5,   415.1,   417.6,   420.1,   422.5,   425.0, 
+      427.5,   430.0,   432.5,   435.0,   437.5,   440.0,   442.5,   445.0, 
+      447.5,   450.1,   452.5,   455.0,   457.5,   460.1,   462.5,   465.0, 
+      467.5,   470.0,   472.5,   475.0,   477.5,   480.0,   482.5,   485.0, 
+      487.5,   490.0,   492.5,   495.0,   497.5,   500.0,   505.0,   510.0, 
+      515.0,   519.9,   525.0,   530.0,   535.0,   540.0,   545.0,   550.1, 
+      555.0,   560.0,   565.0,   570.1,   575.1,   580.1,   585.1,   590.0, 
+      595.0,   600.0,   605.0,   610.0,   615.0,   620.0,   625.0,   630.0, 
+      635.0,   640.0,   645.0,   650.0,   655.0,   660.0,   665.0,   670.0, 
+      675.1,   680.1,   685.0,   690.0,   695.0,   700.0,   705.0,   710.0, 
+      714.9,   720.0,   725.0,   730.1,   735.0,   740.0,   745.0,   750.0, 
+      755.1,   760.0,   765.0,   770.0,   775.0,   780.0,   785.0,   790.1, 
+      795.1,   800.1,   805.0,   809.9,   814.9,   820.0,   825.0,   830.0, 
+      835.0,   840.0,   845.1,   850.0,   855.0,   860.0,   865.0,   870.0, 
+      875.0,   880.0,   884.9,   890.0,   895.0,   900.0,   905.0,   910.0, 
+      915.0,   919.9,   925.0,   930.0,   934.9,   939.9,   944.9,   950.0, 
+      955.0,   960.0,   965.0,   970.0,   975.0,   979.9,   985.0,   990.1, 
+      995.0,  1000.0,  1005.0,  1010.0,  1015.0,  1020.0,  1024.9,  1030.0, 
+     1035.0,  1040.1,  1045.0,  1050.0,  1055.1,  1060.0,  1064.9,  1070.0, 
+     1075.0,  1080.0,  1084.9,  1090.0,  1095.0,  1100.0,  1105.0,  1110.1, 
+     1115.0,  1119.9,  1125.0,  1130.0,  1135.0,  1140.0,  1145.0,  1150.0, 
+     1155.1,  1160.0,  1165.0,  1170.0,  1175.0,  1180.0,  1185.0,  1190.1, 
+     1195.0,  1199.9,  1205.0,  1210.0,  1215.0,  1220.0,  1225.0,  1230.0, 
+     1235.0,  1239.9,  1245.0,  1250.0,  1255.0,  1260.1,  1265.0,  1270.0, 
+     1275.1,  1280.0,  1285.0,  1290.0,  1295.0,  1300.1,  1305.0,  1310.0, 
+     1314.9,  1319.9,  1324.9,  1330.0,  1335.0,  1340.0,  1345.1,  1350.0, 
+     1355.0,  1359.9,  1365.0,  1370.0,  1375.0,  1380.0,  1385.0,  1390.1, 
+     1395.0,  1400.0,  1405.0,  1410.0,  1415.0,  1420.0,  1425.0,  1429.9, 
+     1434.9,  1440.0,  1445.0,  1450.0,  1455.0,  1460.0,  1465.0,  1470.0, 
+     1475.0,  1480.0,  1485.0,  1490.0,  1495.0,  1500.0,  1505.0,  1510.0, 
+     1515.0,  1520.0,  1525.0,  1530.0,  1535.1,  1540.1,  1545.0,  1550.0, 
+     1555.0,  1560.0,  1565.0,  1570.0,  1575.0,  1580.0,  1585.0,  1590.1, 
+     1595.0,  1600.0,  1605.0,  1610.0,  1615.0,  1620.0,  1624.9,  1630.0, 
+     1635.0,  1640.0,  1645.1,  1650.1,  1655.0,  1660.0,  1665.0,  1670.0, 
+     1675.0,  1680.0,  1685.0,  1690.0,  1695.0,  1700.0,  1705.0,  1710.0, 
+     1715.0,  1720.1,  1725.0,  1730.0,  1735.0,  1740.0,  1745.0,  1750.1, 
+     1755.0,  1760.1,  1765.0,  1770.0,  1775.0,  1780.0,  1785.0,  1790.0, 
+     1794.9,  1799.9,  1805.0,  1810.0,  1815.0,  1820.0,  1824.9,  1829.9, 
+     1834.9,  1839.9,  1845.0,  1850.0,  1855.0,  1860.0,  1865.0,  1870.0, 
+     1875.0,  1880.0,  1885.0,  1890.0,  1895.0,  1900.0,  1905.0,  1910.0, 
+     1915.0,  1920.0,  1925.0,  1930.0,  1935.0,  1940.0,  1945.1,  1950.0, 
+     1955.0,  1960.0,  1965.0,  1969.9,  1974.9,  1979.9,  1984.9,  1989.9, 
+     1995.0,  2000.0,  2005.0,  2010.0,  2015.0,  2020.0 ;
+
+ PRES_ADJUSTED_QC =
+  "14111141111411111141111111111111141111141111411111111111111111111141111111114411411141111114111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" ;
+
+ PRES_ADJUSTED_ERROR =
+      2.4, _,     2.4,     2.4,     2.4,     2.4, _,     2.4,     2.4, 
+        2.4,     2.4, _,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4, _,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+    _,     2.4,     2.4,     2.4,     2.4,     2.4, _,     2.4,     2.4, 
+        2.4,     2.4, _,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+    _,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4, _, _,     2.4,     2.4, _,     2.4,     2.4,     2.4, 
+    _,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, _,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4,     2.4, 
+        2.4,     2.4,     2.4,     2.4,     2.4,     2.4 ;
+
+ TEMP =
+     16.614,    16.915,    15.266,    14.187,    13.543,    12.972, 
+       13.074,    12.856,    12.651,    12.545,    12.327,    12.520, 
+       11.968,    11.675,    11.294,    11.017,    10.753,    10.387, 
+       10.524,    10.198,     9.908,     9.808,     9.585,     9.360, 
+        9.089,     8.753,     8.463,     7.993,     7.428,     7.066, 
+        7.020,     6.954,     6.643,     6.738,     6.578,     6.513, 
+        6.436,     6.381,     6.178,     6.279,     6.039,     5.809, 
+        5.652,     5.272,     5.333,     5.481,     5.658,     5.691, 
+        5.734,     5.713,     5.683,     5.712,     5.827,     5.979, 
+        6.025,     5.858,     5.889,     5.766,     5.517,     5.352, 
+        5.503,     5.140,     4.647,     4.185,     3.927,     4.102, 
+        3.999,     4.146,     4.162,     4.035,     3.959,     4.041, 
+        4.115,     4.155,     4.239,     4.558,     4.465,     4.420, 
+        4.684,     4.906,     4.822,     4.937,     4.967,     5.128, 
+        5.067,     5.205,     5.270,     5.380,     5.526,     5.644, 
+        5.884,     5.763,     5.998,     6.036,     6.019,     5.859, 
+        5.321,     5.694,     6.149,     6.070,     5.221,     5.663, 
+        6.079,     6.561,     6.969,     7.870,     7.755,     7.600, 
+        8.019,     8.033,     8.024,     8.243,     8.684,     8.415, 
+        8.434,     8.199,     7.647,     7.457,     7.449,     7.556, 
+        7.566,     7.578,     8.147,     9.228,     9.219,     8.894, 
+        8.072,     8.022,     7.803,     7.302,     7.150,     6.962, 
+        6.843,     6.574,     6.392,     6.447,     6.402,     6.521, 
+        6.695,     7.203,     7.073,     6.657,     6.577,     6.178, 
+        6.047,     6.068,     6.243,     6.481,     6.509,     6.448, 
+        6.358,     6.309,     6.243,     6.195,     6.351,     6.794, 
+        7.768,     7.787,     7.647,     7.335,     7.226,     7.293, 
+        7.387,     7.394,     7.339,     7.283,     7.163,     7.209, 
+        7.548,     7.648,     7.601,     7.665,     7.669,     7.820, 
+        8.147,     8.278,     8.349,     8.369,     8.364,     8.344, 
+        8.283,     8.188,     8.086,     8.005,     7.939,     7.891, 
+        7.880,     7.861,     7.794,     7.702,     7.493,     7.268, 
+        7.353,     7.328,     7.318,     7.340,     7.235,     7.184, 
+        6.919,     6.671,     6.430,     6.256,     6.231,     6.161, 
+        6.151,     6.147,     6.195,     6.286,     6.255,     6.182, 
+        6.171,     6.047,     5.996,     5.997,     5.981,     5.939, 
+        5.907,     5.895,     5.938,     5.973,     5.962,     5.935, 
+        5.905,     5.815,     5.790,     5.933,     5.795,     5.657, 
+        5.647,     5.690,     5.740,     5.794,     5.819,     5.816, 
+        5.750,     5.663,     5.398,     5.314,     5.328,     5.292, 
+        5.223,     5.129,     5.068,     5.050,     5.056,     5.095, 
+        5.095,     5.072,     4.967,     4.925,     4.914,     4.909, 
+        4.971,     5.116,     5.115,     5.179,     5.241,     5.239, 
+        5.281,     5.277,     5.238,     5.208,     5.095,     5.159, 
+        5.242,     5.125,     5.050,     5.089,     5.139,     5.070, 
+        5.012,     4.996,     4.972,     4.956,     4.929,     4.905, 
+        4.893,     4.939,     4.951,     4.954,     4.960,     4.965, 
+        4.981,     4.988,     4.957,     5.002,     5.125,     5.187, 
+        5.231,     5.253,     5.261,     5.262,     5.262,     5.267, 
+        5.293,     5.279,     5.267,     5.279,     5.305,     5.303, 
+        5.262,     5.253,     5.275,     5.273,     5.227,     5.117, 
+        5.029,     5.002,     4.973,     4.949,     4.935,     4.927, 
+        4.917,     4.910,     4.911,     4.909,     4.896,     4.874, 
+        4.859,     4.788,     4.582,     4.500,     4.485,     4.475, 
+        4.455,     4.467,     4.478,     4.477,     4.473,     4.471, 
+        4.471,     4.467,     4.444,     4.408,     4.416,     4.410, 
+        4.350,     4.338,     4.374,     4.418,     4.414,     4.389, 
+        4.334,     4.323,     4.325,     4.336,     4.337,     4.311, 
+        4.271,     4.254,     4.255,     4.211,     4.186,     4.186, 
+        4.188,     4.197,     4.208,     4.187,     4.170,     4.150, 
+        4.130,     4.118,     4.100,     4.090,     4.087,     4.081, 
+        4.085,     4.072,     4.084,     4.087,     4.063,     4.043, 
+        4.031,     4.023,     4.016,     4.008,     4.001,     3.997, 
+        3.968,     3.958,     3.949,     3.935,     3.929,     3.926, 
+        3.928,     3.928,     3.923,     3.909,     3.906,     3.916, 
+        3.907,     3.905,     3.903,     3.899,     3.896,     3.896, 
+        3.894,     3.892,     3.889,     3.869,     3.853,     3.835, 
+        3.836,     3.852,     3.863,     3.872,     3.877,     3.874, 
+        3.872,     3.866,     3.861,     3.859,     3.868,     3.869, 
+        3.878,     3.896,     3.901,     3.908,     3.905,     3.906, 
+        3.911,     3.903,     3.897,     3.887,     3.888,     3.916, 
+        3.922,     3.902,     3.888,     3.885,     3.890,     3.896, 
+        3.878,     3.865,     3.861,     3.857,     3.851,     3.852, 
+        3.848,     3.846,     3.845,     3.839,     3.833,     3.819, 
+        3.814,     3.800,     3.780,     3.770,     3.753,     3.743, 
+        3.742,     3.743,     3.744,     3.747,     3.749,     3.750, 
+        3.749,     3.748,     3.749,     3.768,     3.779,     3.789, 
+        3.792,     3.797,     3.800,     3.800,     3.801,     3.807, 
+        3.841,     3.852,     3.859,     3.863,     3.867,     3.870, 
+        3.860,     3.860,     3.877,     3.883,     3.883,     3.882, 
+        3.880,     3.876,     3.875,     3.875,     3.871,     3.869, 
+        3.868,     3.868,     3.865,     3.859,     3.854,     3.848, 
+        3.844,     3.843,     3.841,     3.833,     3.823,     3.819, 
+        3.816,     3.811,     3.807,     3.803,     3.799,     3.798, 
+        3.795,     3.791,     3.790,     3.788,     3.775,     3.766, 
+        3.757,     3.754,     3.741,     3.720,     3.707,     3.704, 
+        3.689,     3.677,     3.673,     3.701,     3.692,     3.684, 
+        3.666,     3.668,     3.676,     3.677,     3.677,     3.676, 
+        3.675,     3.669,     3.654,     3.642,     3.647,     3.645, 
+        3.635,     3.627,     3.617,     3.611,     3.605,     3.593, 
+        3.582,     3.577,     3.568,     3.562,     3.557,     3.550, 
+        3.542,     3.528,     3.519,     3.515,     3.510,     3.501, 
+        3.495,     3.485,     3.476,     3.472,     3.466,     3.463, 
+        3.461,     3.460,     3.456,     3.453,     3.454 ;
+
+ TEMP_QC =
+  "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111113333" ;
+
+ TEMP_ADJUSTED =
+     16.614,    16.915,    15.266,    14.187,    13.543,    12.972, 
+       13.074,    12.856,    12.651,    12.545,    12.327,    12.520, 
+       11.968,    11.675,    11.294,    11.017,    10.753,    10.387, 
+       10.524,    10.198,     9.908,     9.808,     9.585,     9.360, 
+        9.089,     8.753,     8.463,     7.993,     7.428,     7.066, 
+        7.020,     6.954,     6.643,     6.738,     6.578,     6.513, 
+        6.436,     6.381,     6.178,     6.279,     6.039,     5.809, 
+        5.652,     5.272,     5.333,     5.481,     5.658,     5.691, 
+        5.734,     5.713,     5.683,     5.712,     5.827,     5.979, 
+        6.025,     5.858,     5.889,     5.766,     5.517,     5.352, 
+        5.503,     5.140,     4.647,     4.185,     3.927,     4.102, 
+        3.999,     4.146,     4.162,     4.035,     3.959,     4.041, 
+        4.115,     4.155,     4.239,     4.558,     4.465,     4.420, 
+        4.684,     4.906,     4.822,     4.937,     4.967,     5.128, 
+        5.067,     5.205,     5.270,     5.380,     5.526,     5.644, 
+        5.884,     5.763,     5.998,     6.036,     6.019,     5.859, 
+        5.321,     5.694,     6.149,     6.070,     5.221,     5.663, 
+        6.079,     6.561,     6.969,     7.870,     7.755,     7.600, 
+        8.019,     8.033,     8.024,     8.243,     8.684,     8.415, 
+        8.434,     8.199,     7.647,     7.457,     7.449,     7.556, 
+        7.566,     7.578,     8.147,     9.228,     9.219,     8.894, 
+        8.072,     8.022,     7.803,     7.302,     7.150,     6.962, 
+        6.843,     6.574,     6.392,     6.447,     6.402,     6.521, 
+        6.695,     7.203,     7.073,     6.657,     6.577,     6.178, 
+        6.047,     6.068,     6.243,     6.481,     6.509,     6.448, 
+        6.358,     6.309,     6.243,     6.195,     6.351,     6.794, 
+        7.768,     7.787,     7.647,     7.335,     7.226,     7.293, 
+        7.387,     7.394,     7.339,     7.283,     7.163,     7.209, 
+        7.548,     7.648,     7.601,     7.665,     7.669,     7.820, 
+        8.147,     8.278,     8.349,     8.369,     8.364,     8.344, 
+        8.283,     8.188,     8.086,     8.005,     7.939,     7.891, 
+        7.880,     7.861,     7.794,     7.702,     7.493,     7.268, 
+        7.353,     7.328,     7.318,     7.340,     7.235,     7.184, 
+        6.919,     6.671,     6.430,     6.256,     6.231,     6.161, 
+        6.151,     6.147,     6.195,     6.286,     6.255,     6.182, 
+        6.171,     6.047,     5.996,     5.997,     5.981,     5.939, 
+        5.907,     5.895,     5.938,     5.973,     5.962,     5.935, 
+        5.905,     5.815,     5.790,     5.933,     5.795,     5.657, 
+        5.647,     5.690,     5.740,     5.794,     5.819,     5.816, 
+        5.750,     5.663,     5.398,     5.314,     5.328,     5.292, 
+        5.223,     5.129,     5.068,     5.050,     5.056,     5.095, 
+        5.095,     5.072,     4.967,     4.925,     4.914,     4.909, 
+        4.971,     5.116,     5.115,     5.179,     5.241,     5.239, 
+        5.281,     5.277,     5.238,     5.208,     5.095,     5.159, 
+        5.242,     5.125,     5.050,     5.089,     5.139,     5.070, 
+        5.012,     4.996,     4.972,     4.956,     4.929,     4.905, 
+        4.893,     4.939,     4.951,     4.954,     4.960,     4.965, 
+        4.981,     4.988,     4.957,     5.002,     5.125,     5.187, 
+        5.231,     5.253,     5.261,     5.262,     5.262,     5.267, 
+        5.293,     5.279,     5.267,     5.279,     5.305,     5.303, 
+        5.262,     5.253,     5.275,     5.273,     5.227,     5.117, 
+        5.029,     5.002,     4.973,     4.949,     4.935,     4.927, 
+        4.917,     4.910,     4.911,     4.909,     4.896,     4.874, 
+        4.859,     4.788,     4.582,     4.500,     4.485,     4.475, 
+        4.455,     4.467,     4.478,     4.477,     4.473,     4.471, 
+        4.471,     4.467,     4.444,     4.408,     4.416,     4.410, 
+        4.350,     4.338,     4.374,     4.418,     4.414,     4.389, 
+        4.334,     4.323,     4.325,     4.336,     4.337,     4.311, 
+        4.271,     4.254,     4.255,     4.211,     4.186,     4.186, 
+        4.188,     4.197,     4.208,     4.187,     4.170,     4.150, 
+        4.130,     4.118,     4.100,     4.090,     4.087,     4.081, 
+        4.085,     4.072,     4.084,     4.087,     4.063,     4.043, 
+        4.031,     4.023,     4.016,     4.008,     4.001,     3.997, 
+        3.968,     3.958,     3.949,     3.935,     3.929,     3.926, 
+        3.928,     3.928,     3.923,     3.909,     3.906,     3.916, 
+        3.907,     3.905,     3.903,     3.899,     3.896,     3.896, 
+        3.894,     3.892,     3.889,     3.869,     3.853,     3.835, 
+        3.836,     3.852,     3.863,     3.872,     3.877,     3.874, 
+        3.872,     3.866,     3.861,     3.859,     3.868,     3.869, 
+        3.878,     3.896,     3.901,     3.908,     3.905,     3.906, 
+        3.911,     3.903,     3.897,     3.887,     3.888,     3.916, 
+        3.922,     3.902,     3.888,     3.885,     3.890,     3.896, 
+        3.878,     3.865,     3.861,     3.857,     3.851,     3.852, 
+        3.848,     3.846,     3.845,     3.839,     3.833,     3.819, 
+        3.814,     3.800,     3.780,     3.770,     3.753,     3.743, 
+        3.742,     3.743,     3.744,     3.747,     3.749,     3.750, 
+        3.749,     3.748,     3.749,     3.768,     3.779,     3.789, 
+        3.792,     3.797,     3.800,     3.800,     3.801,     3.807, 
+        3.841,     3.852,     3.859,     3.863,     3.867,     3.870, 
+        3.860,     3.860,     3.877,     3.883,     3.883,     3.882, 
+        3.880,     3.876,     3.875,     3.875,     3.871,     3.869, 
+        3.868,     3.868,     3.865,     3.859,     3.854,     3.848, 
+        3.844,     3.843,     3.841,     3.833,     3.823,     3.819, 
+        3.816,     3.811,     3.807,     3.803,     3.799,     3.798, 
+        3.795,     3.791,     3.790,     3.788,     3.775,     3.766, 
+        3.757,     3.754,     3.741,     3.720,     3.707,     3.704, 
+        3.689,     3.677,     3.673,     3.701,     3.692,     3.684, 
+        3.666,     3.668,     3.676,     3.677,     3.677,     3.676, 
+        3.675,     3.669,     3.654,     3.642,     3.647,     3.645, 
+        3.635,     3.627,     3.617,     3.611,     3.605,     3.593, 
+        3.582,     3.577,     3.568,     3.562,     3.557,     3.550, 
+        3.542,     3.528,     3.519,     3.515,     3.510,     3.501, 
+        3.495,     3.485,     3.476,     3.472,     3.466,     3.463, 
+        3.461,     3.460,     3.456,     3.453,     3.454 ;
+
+ TEMP_ADJUSTED_QC =
+  "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111113333" ;
+
+ TEMP_ADJUSTED_ERROR =
+      0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002,     0.002, 
+        0.002,     0.002,     0.002,     0.002,     0.002 ;
+
+ PSAL =
+     32.804,    32.822,    32.850,    32.841,    32.833,    32.816, 
+       32.825,    32.811,    32.806,    32.795,    32.781,    32.786, 
+       32.763,    32.751,    32.732,    32.715,    32.706,    32.680, 
+       32.689,    32.668,    32.668,    32.662,    32.664,    32.644, 
+       32.646,    32.628,    32.625,    32.637,    32.665,    32.673, 
+       32.673,    32.683,    32.695,    32.694,    32.696,    32.697, 
+       32.696,    32.695,    32.696,    32.697,    32.706,    32.712, 
+       32.712,    32.758,    32.730,    32.801,    32.866,    32.883, 
+       32.899,    32.905,    32.906,    32.917,    32.938,    32.968, 
+       32.997,    33.036,    33.087,    33.092,    33.068,    33.057, 
+       33.142,    33.149,    33.149,    33.152,    33.136,    33.176, 
+       33.149,    33.191,    33.198,    33.201,    33.200,    33.222, 
+       33.246,    33.260,    33.285,    33.371,    33.351,    33.333, 
+       33.407,    33.476,    33.446,    33.494,    33.509,    33.564, 
+       33.538,    33.590,    33.611,    33.636,    33.679,    33.711, 
+       33.773,    33.742,    33.801,    33.819,    33.814,    33.819, 
+       33.788,    33.830,    33.900,    33.912,    33.877,    33.974, 
+       34.061,    34.166,    34.257,    34.441,    34.454,    34.446, 
+       34.537,    34.542,    34.546,    34.590,    34.661,    34.636, 
+       34.639,    34.602,    34.520,    34.494,    34.497,    34.517, 
+       34.525,    34.542,    34.666,    34.890,    34.877,    34.814, 
+       34.663,    34.648,    34.614,    34.532,    34.508,    34.481, 
+       34.461,    34.429,    34.415,    34.429,    34.432,    34.462, 
+       34.497,    34.595,    34.582,    34.526,    34.507,    34.463, 
+       34.447,    34.454,    34.483,    34.528,    34.531,    34.525, 
+       34.514,    34.511,    34.509,    34.513,    34.551,    34.636, 
+       34.804,    34.816,    34.796,    34.755,    34.741,    34.757, 
+       34.782,    34.791,    34.784,    34.777,    34.769,    34.788, 
+       34.850,    34.880,    34.883,    34.901,    34.908,    34.944, 
+       35.013,    35.040,    35.056,    35.060,    35.071,    35.073, 
+       35.069,    35.059,    35.050,    35.042,    35.036,    35.032, 
+       35.035,    35.038,    35.029,    35.015,    34.992,    34.970, 
+       34.991,    34.994,    34.995,    35.000,    34.984,    34.971, 
+       34.934,    34.895,    34.865,    34.842,    34.837,    34.829, 
+       34.829,    34.830,    34.841,    34.868,    34.876,    34.872, 
+       34.870,    34.858,    34.853,    34.853,    34.851,    34.847, 
+       34.846,    34.850,    34.861,    34.870,    34.876,    34.875, 
+       34.871,    34.865,    34.869,    34.900,    34.886,    34.872, 
+       34.874,    34.884,    34.893,    34.903,    34.906,    34.905, 
+       34.894,    34.880,    34.850,    34.838,    34.840,    34.838, 
+       34.838,    34.832,    34.828,    34.829,    34.834,    34.842, 
+       34.842,    34.840,    34.831,    34.826,    34.826,    34.828, 
+       34.842,    34.868,    34.869,    34.880,    34.891,    34.892, 
+       34.900,    34.902,    34.899,    34.895,    34.885,    34.906, 
+       34.926,    34.917,    34.913,    34.923,    34.932,    34.925, 
+       34.923,    34.921,    34.919,    34.918,    34.918,    34.918, 
+       34.922,    34.934,    34.937,    34.938,    34.940,    34.942, 
+       34.946,    34.952,    34.952,    34.970,    34.995,    35.007, 
+       35.016,    35.022,    35.028,    35.029,    35.030,    35.032, 
+       35.041,    35.042,    35.044,    35.049,    35.056,    35.057, 
+       35.053,    35.053,    35.058,    35.058,    35.052,    35.037, 
+       35.027,    35.024,    35.022,    35.020,    35.018,    35.018, 
+       35.017,    35.017,    35.017,    35.017,    35.015,    35.013, 
+       35.009,    34.997,    34.968,    34.957,    34.956,    34.954, 
+       34.953,    34.956,    34.958,    34.958,    34.959,    34.960, 
+       34.960,    34.959,    34.957,    34.954,    34.957,    34.956, 
+       34.949,    34.950,    34.956,    34.965,    34.964,    34.961, 
+       34.955,    34.955,    34.956,    34.958,    34.959,    34.955, 
+       34.950,    34.949,    34.950,    34.944,    34.941,    34.941, 
+       34.942,    34.944,    34.945,    34.943,    34.940,    34.938, 
+       34.936,    34.934,    34.933,    34.933,    34.933,    34.932, 
+       34.933,    34.933,    34.935,    34.935,    34.933,    34.930, 
+       34.929,    34.929,    34.928,    34.927,    34.927,    34.925, 
+       34.922,    34.921,    34.920,    34.918,    34.918,    34.918, 
+       34.919,    34.919,    34.918,    34.917,    34.919,    34.915, 
+       34.916,    34.916,    34.916,    34.917,    34.917,    34.916, 
+       34.915,    34.913,    34.906,    34.906,    34.908,    34.914, 
+       34.923,    34.924,    34.923,    34.924,    34.920,    34.920, 
+       34.918,    34.919,    34.921,    34.926,    34.927,    34.930, 
+       34.937,    34.932,    34.933,    34.932,    34.930,    34.935, 
+       34.928,    34.928,    34.928,    34.933,    34.946,    34.937, 
+       34.925,    34.925,    34.932,    34.935,    34.934,    34.925, 
+       34.925,    34.928,    34.929,    34.927,    34.930,    34.929, 
+       34.928,    34.928,    34.925,    34.923,    34.918,    34.921, 
+       34.915,    34.912,    34.912,    34.912,    34.912,    34.918, 
+       34.919,    34.920,    34.921,    34.922,    34.922,    34.923, 
+       34.924,    34.927,    34.938,    34.939,    34.939,    34.938, 
+       34.939,    34.940,    34.940,    34.942,    34.948,    34.960, 
+       34.958,    34.955,    34.955,    34.955,    34.955,    34.951, 
+       34.954,    34.964,    34.960,    34.958,    34.958,    34.957, 
+       34.957,    34.958,    34.958,    34.957,    34.958,    34.958, 
+       34.958,    34.957,    34.955,    34.956,    34.955,    34.956, 
+       34.957,    34.956,    34.953,    34.953,    34.955,    34.956, 
+       34.955,    34.955,    34.955,    34.954,    34.956,    34.955, 
+       34.954,    34.955,    34.953,    34.949,    34.947,    34.947, 
+       34.948,    34.944,    34.936,    34.941,    34.945,    34.938, 
+       34.941,    34.944,    34.959,    34.945,    34.943,    34.939, 
+       34.949,    34.953,    34.951,    34.950,    34.949,    34.948, 
+       34.944,    34.941,    34.940,    34.948,    34.945,    34.940, 
+       34.941,    34.938,    34.940,    34.937,    34.936,    34.935, 
+       34.937,    34.935,    34.936,    34.936,    34.934,    34.934, 
+       34.932,    34.933,    34.935,    34.935,    34.932,    34.933, 
+       34.931,    34.931,    34.934,    34.934,    34.934,    34.935, 
+       34.935,    34.934,    34.935,    34.938,    34.937 ;
+
+ PSAL_QC =
+  "14111141111411111141111111111111141111141111411111111111111111111141111111114411411141111114111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111113333" ;
+
+ PSAL_ADJUSTED =
+     32.804, _,    32.850,    32.841,    32.833,    32.816, _,    32.811, 
+       32.806,    32.795,    32.781, _,    32.763,    32.751,    32.732, 
+       32.715,    32.706,    32.680, _,    32.668,    32.668,    32.662, 
+       32.664,    32.644,    32.646,    32.628,    32.625,    32.637, 
+       32.665,    32.673,    32.673,    32.683,    32.695, _,    32.696, 
+       32.697,    32.696,    32.695,    32.696, _,    32.706,    32.712, 
+       32.712,    32.758, _,    32.801,    32.866,    32.883,    32.899, 
+       32.905,    32.906,    32.917,    32.938,    32.968,    32.997, 
+       33.036,    33.087,    33.092,    33.068,    33.057,    33.142, 
+       33.149,    33.149,    33.152,    33.136,    33.176, _,    33.191, 
+       33.198,    33.201,    33.200,    33.222,    33.246,    33.260, 
+       33.285,    33.371, _, _,    33.407,    33.476, _,    33.494, 
+       33.509,    33.564, _,    33.590,    33.611,    33.636,    33.679, 
+       33.711,    33.773, _,    33.801,    33.819,    33.814,    33.819, 
+       33.788,    33.830,    33.900,    33.912,    33.877,    33.974, 
+       34.061,    34.166,    34.257,    34.441,    34.454,    34.446, 
+       34.537,    34.542,    34.546,    34.590,    34.661,    34.636, 
+       34.639,    34.602,    34.520,    34.494,    34.497,    34.517, 
+       34.525,    34.542,    34.666,    34.890,    34.877,    34.814, 
+       34.663,    34.648,    34.614,    34.532,    34.508,    34.481, 
+       34.461,    34.429,    34.415,    34.429,    34.432,    34.462, 
+       34.497,    34.595,    34.582,    34.526,    34.507,    34.463, 
+       34.447,    34.454,    34.483,    34.528,    34.531,    34.525, 
+       34.514,    34.511,    34.509,    34.513,    34.551,    34.636, 
+       34.804,    34.816,    34.796,    34.755,    34.741,    34.757, 
+       34.782,    34.791,    34.784,    34.777,    34.769,    34.788, 
+       34.850,    34.880,    34.883,    34.901,    34.908,    34.944, 
+       35.013,    35.040,    35.056,    35.060,    35.071,    35.073, 
+       35.069,    35.059,    35.050,    35.042,    35.036,    35.032, 
+       35.035,    35.038,    35.029,    35.015,    34.992,    34.970, 
+       34.991,    34.994,    34.995,    35.000,    34.984,    34.971, 
+       34.934,    34.895,    34.865,    34.842,    34.837,    34.829, 
+       34.829,    34.830,    34.841,    34.868,    34.876,    34.872, 
+       34.870,    34.858,    34.853,    34.853,    34.851,    34.847, 
+       34.846,    34.850,    34.861,    34.870,    34.876,    34.875, 
+       34.871,    34.865,    34.869,    34.900,    34.886,    34.872, 
+       34.874,    34.884,    34.893,    34.903,    34.906,    34.905, 
+       34.894,    34.880,    34.850,    34.838,    34.840,    34.838, 
+       34.838,    34.832,    34.828,    34.829,    34.834,    34.842, 
+       34.842,    34.840,    34.831,    34.826,    34.826,    34.828, 
+       34.842,    34.868,    34.869,    34.880,    34.891,    34.892, 
+       34.900,    34.902,    34.899,    34.895,    34.885,    34.906, 
+       34.926,    34.917,    34.913,    34.923,    34.932,    34.925, 
+       34.923,    34.921,    34.919,    34.918,    34.918,    34.918, 
+       34.922,    34.934,    34.937,    34.938,    34.940,    34.942, 
+       34.946,    34.952,    34.952,    34.970,    34.995,    35.007, 
+       35.016,    35.022,    35.028,    35.029,    35.030,    35.032, 
+       35.041,    35.042,    35.044,    35.049,    35.056,    35.057, 
+       35.053,    35.053,    35.058,    35.058,    35.052,    35.037, 
+       35.027,    35.024,    35.022,    35.020,    35.018,    35.018, 
+       35.017,    35.017,    35.017,    35.017,    35.015,    35.013, 
+       35.009,    34.997,    34.968,    34.957,    34.956,    34.954, 
+       34.953,    34.956,    34.958,    34.958,    34.959,    34.960, 
+       34.960,    34.959,    34.957,    34.954,    34.957,    34.956, 
+       34.949,    34.950,    34.956,    34.965,    34.964,    34.961, 
+       34.955,    34.955,    34.956,    34.958,    34.959,    34.955, 
+       34.950,    34.949,    34.950,    34.944,    34.941,    34.941, 
+       34.942,    34.944,    34.945,    34.943,    34.940,    34.938, 
+       34.936,    34.934,    34.933,    34.933,    34.933,    34.932, 
+       34.933,    34.933,    34.935,    34.935,    34.933,    34.930, 
+       34.929,    34.929,    34.928,    34.927,    34.927,    34.925, 
+       34.922,    34.921,    34.920,    34.918,    34.918,    34.918, 
+       34.919,    34.919,    34.918,    34.917,    34.919,    34.915, 
+       34.916,    34.916,    34.916,    34.917,    34.917,    34.916, 
+       34.915,    34.913,    34.906,    34.906,    34.908,    34.914, 
+       34.923,    34.924,    34.923,    34.924,    34.920,    34.920, 
+       34.918,    34.919,    34.921,    34.926,    34.927,    34.930, 
+       34.937,    34.932,    34.933,    34.932,    34.930,    34.935, 
+       34.928,    34.928,    34.928,    34.933,    34.946,    34.937, 
+       34.925,    34.925,    34.932,    34.935,    34.934,    34.925, 
+       34.925,    34.928,    34.929,    34.927,    34.930,    34.929, 
+       34.928,    34.928,    34.925,    34.923,    34.918,    34.921, 
+       34.915,    34.912,    34.912,    34.912,    34.912,    34.918, 
+       34.919,    34.920,    34.921,    34.922,    34.922,    34.923, 
+       34.924,    34.927,    34.938,    34.939,    34.939,    34.938, 
+       34.939,    34.940,    34.940,    34.942,    34.948,    34.960, 
+       34.958,    34.955,    34.955,    34.955,    34.955,    34.951, 
+       34.954,    34.964,    34.960,    34.958,    34.958,    34.957, 
+       34.957,    34.958,    34.958,    34.957,    34.958,    34.958, 
+       34.958,    34.957,    34.955,    34.956,    34.955,    34.956, 
+       34.957,    34.956,    34.953,    34.953,    34.955,    34.956, 
+       34.955,    34.955,    34.955,    34.954,    34.956,    34.955, 
+       34.954,    34.955,    34.953,    34.949,    34.947,    34.947, 
+       34.948,    34.944,    34.936,    34.941,    34.945,    34.938, 
+       34.941,    34.944,    34.959,    34.945,    34.943,    34.939, 
+       34.949,    34.953,    34.951,    34.950,    34.949,    34.948, 
+       34.944,    34.941,    34.940,    34.948,    34.945,    34.940, 
+       34.941,    34.938,    34.940,    34.937,    34.936,    34.935, 
+       34.937,    34.935,    34.936,    34.936,    34.934,    34.934, 
+       34.932,    34.933,    34.935,    34.935,    34.932,    34.933, 
+       34.931,    34.931,    34.934,    34.934,    34.934,    34.935, 
+       34.935, _, _, _, _ ;
+
+ PSAL_ADJUSTED_QC =
+  "14111141111411111141111111111111141111141111411111111111111111111141111111114411411141111114111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111114444" ;
+
+ PSAL_ADJUSTED_ERROR =
+      0.010, _,     0.010,     0.010,     0.010,     0.010, _,     0.010, 
+        0.010,     0.010,     0.010, _,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010, _,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010, _,     0.010, 
+        0.010,     0.010,     0.010,     0.010, _,     0.010,     0.010, 
+        0.010,     0.010, _,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010, _,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010, _, _,     0.010,     0.010, _,     0.010, 
+        0.010,     0.010, _,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010, _,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010,     0.010,     0.010,     0.010,     0.010,     0.010, 
+        0.010, _, _, _, _ ;
+
+ PARAMETER =
+  "PRES            ",
+  "TEMP            ",
+  "PSAL            " ;
+
+ SCIENTIFIC_CALIB_EQUATION =
+  "PRES_ADJUSTED=PRES + coefficient (see procedure 3.2 in Argo DMQC manual v3.0)                                                                                                                                                                                   ",
+  "                                                                                                                                                                                                                                                                ",
+  "                                                                                                                                                                                                                                                                " ;
+
+ SCIENTIFIC_CALIB_COEFFICIENT =
+  "ADDITIVE COEFFICIENT FOR PRESSURE ADJUSTMENT IS 0 dbar                                                                                                                                                                                                          ",
+  "                                                                                                                                                                                                                                                                ",
+  "                                                                                                                                                                                                                                                                " ;
+
+ SCIENTIFIC_CALIB_COMMENT =
+  "PRES_ADJUSTED is calculated following the 3.2 procedure in the Argo Quality Control Manual version 3.0. No significant pressure drift was detected.Pressure evaluation done on 12-Sep-2017 11:43:06                                                             ",
+  "No approved method for delayed-mode qc on TEMP is available                                                                                                                                                                                                     ",
+  "No adjustment is needed on this parameter because no significant sensor drift has been detected.                                                                                                                                                                " ;
+
+ SCIENTIFIC_CALIB_DATE =
+  "20170914133623",
+  "20170914133623",
+  "20170914133623" ;
+
+ HISTORY_INSTITUTION =
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  ",
+  "ME  " ;
+
+ HISTORY_STEP =
+  "ARGQ",
+  "JVFM",
+  "ARDP",
+  "ARUP",
+  "ARDU",
+  "ARGQ",
+  "ARSQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ",
+  "ARGQ" ;
+
+ HISTORY_SOFTWARE =
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "OW  ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    " ;
+
+ HISTORY_SOFTWARE_RELEASE =
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "1.0 ",
+  "1.1 ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    ",
+  "    " ;
+
+ HISTORY_REFERENCE =
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "CTD_2017V01(WOD2009+),ARGO_2017V02,BOTTLE_2008V1                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                ",
+  "                                                                " ;
+
+ HISTORY_DATE =
+  "20170706000000",
+  "20170706000000",
+  "20170724000000",
+  "20170724000000",
+  "20170828000000",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623",
+  "20170914133623" ;
+
+ HISTORY_ACTION =
+  "QCF$",
+  "CR  ",
+  "CR  ",
+  "UP  ",
+  "UP  ",
+  "QCP$",
+  "QCCV",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  ",
+  "CF  " ;
+
+ HISTORY_PARAMETER =
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "RCRD            ",
+  "                ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            ",
+  "PSAL            " ;
+
+ HISTORY_START_PRES =
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  2.2,
+  7.1,
+  12,
+  19.1,
+  34.1,
+  40.1,
+  45.1,
+  67.1,
+  78,
+  81.1,
+  85.1,
+  92.1,
+  2005 ;
+
+ HISTORY_STOP_PRES =
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  2.2,
+  7.1,
+  12,
+  19.1,
+  34.1,
+  40.1,
+  45.1,
+  67.1,
+  77.1,
+  81.1,
+  85.1,
+  92.1,
+  2020 ;
+
+ HISTORY_PREVIOUS_VALUE =
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  _,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1 ;
+
+ HISTORY_QCTEST =
+  "0000000000      ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "000FFBFE        ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                " ;
+}

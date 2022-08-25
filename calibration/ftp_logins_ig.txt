@@ -1,0 +1,3 @@
+id,host,path,user,pwd
+ifremer,ftp.ifremer.fr,/ifremer/argo/dac/meds/,anonymous,isabelle.gaboury@dfo-mpo.gc.ca
+meds,ftp.meds-sdmm.dfo-mpo.gc.ca,/pub/argo/,igabouryi@sshreadwrite,
